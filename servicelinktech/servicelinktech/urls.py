@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from django.urls import path, include
 
 urlpatterns = [
-    path('social-auth/', include('social_django.urls', namespace='social')),
+    #path('social-auth/', include('social_django.urls', namespace='social')),
     path("", include('business_apps.urls')),
     path("admin/", admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
