@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "business_apps",
-    "bootstrap4",
+    #"bootstrap4",
     #"social_django",
 ]
 
