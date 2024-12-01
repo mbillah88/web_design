@@ -1,25 +1,16 @@
 
-@media only screen and (max-width: 575px) { 
-  .wrapper{
-    flex-direction: column;
-  }
+@media only screen and (min-width: 576px) { 
  
-  #sidebar{
-    width: 100%;
-    min-width: 100%;
-    z-index: 1000;
-    transition: all .25s ease-in-out;
-    display: flex;
-    flex-direction: column;
-    background-color: #ec31ec;
-  }
 
 }
+@media only screen and (max-width: 575px) { 
 
+}
 
 .wrapper{
   display: flex;
 }
+
 #sidebar{
   width: 70px;
   min-width: 70px;
@@ -38,18 +29,11 @@
 #sidebar li{
   list-style: none ;
 }
-
 #sidebar.expand{
   width: 230px;
   min-width: 230px;
 }
 
-#toggle-btn{
-  background-color: transparent;
-  cursor: pointer;
-  border: 0;
-  padding: .5rem 1.5rem;
-}
 .sidebar-logo{
   margin: auto 0;
 }
