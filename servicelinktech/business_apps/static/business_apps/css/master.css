@@ -1,11 +1,28 @@
-
-@media only screen and (min-width: 576px) { 
- 
-
-}
 @media only screen and (max-width: 575px) { 
-
+  .wrapper{
+    flex-direction: column;
+  }
+   
+  #sidebar.expand{
+    width: 100%;
+    min-width: 100%;
+    z-index: 1000;
+    transition: all .25s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    background-color: #ec315a;
+  }
+  #toggle-btn{
+    display: none;
+  }
 }
+@media only screen and (min-width: 576px) { 
+  .navbar-toggler{
+    display: none;
+  }
+}
+
+
 
 .wrapper{
   display: flex;

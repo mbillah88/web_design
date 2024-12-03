@@ -3,17 +3,30 @@
   .wrapper{
     flex-direction: column;
   }
- 
-  #sidebar{
+   
+  #sidebar.expand{
     width: 100%;
     min-width: 100%;
     z-index: 1000;
     transition: all .25s ease-in-out;
     display: flex;
     flex-direction: column;
-    background-color: #ec31ec;
+    background-color: #ec315a;
   }
+  button#toggle-btn{
+    display: none;
+  }
+}
 
+@media only screen and (min-width: 575px) {   
+  #sidebar.expand{
+    width: 230px;
+    min-width: 230px;
+  }
+  #sidebar{
+    width: 430px;
+    min-width: 430px;
+  }
 }
 
 
@@ -37,11 +50,6 @@
 }
 #sidebar li{
   list-style: none ;
-}
-
-#sidebar.expand{
-  width: 230px;
-  min-width: 230px;
 }
 
 #toggle-btn{
