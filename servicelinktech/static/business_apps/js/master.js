@@ -2,11 +2,9 @@ function myFunction(x) {
     if (x.matches) { // If media query matches
       document.body.style.backgroundColor = "yellow";
       document.querySelector("#navbarToggleExternalContent").classList.remove("show");
-      document.querySelector("#sidebar").classList.add("expands");
     } else {
       document.body.style.backgroundColor = "pink";
       document.querySelector("#navbarToggleExternalContent").classList.add("show");
-      document.querySelector("#sidebar").classList.add("expand");
     }
   }
   

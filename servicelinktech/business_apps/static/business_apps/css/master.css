@@ -3,7 +3,7 @@
     flex-direction: column;
   }
    
-  #sidebar.expand{
+  #sidebar.expands{
     width: 100%;
     min-width: 100%;
     z-index: 1000;
@@ -21,8 +21,6 @@
     display: none;
   }
 }
-
-
 
 .wrapper{
   display: flex;
