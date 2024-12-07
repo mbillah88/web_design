@@ -23,9 +23,8 @@
     width: 230px;
     min-width: 230px;
   }
-  #sidebar{
-    width: 430px;
-    min-width: 430px;
+  button#toggle-btn-nav.navbar-toggler{
+    display: none;
   }
 }
 
@@ -33,6 +32,10 @@
 .wrapper{
   display: flex;
 }
+#nav-header{  
+  transition: all 5s ease-in;
+}
+
 #sidebar{
   width: 70px;
   min-width: 70px;
@@ -52,7 +55,7 @@
   list-style: none ;
 }
 
-#toggle-btn{
+.toggle-btn1{
   background-color: transparent;
   cursor: pointer;
   border: 0;
@@ -117,6 +120,7 @@ a.sidebar-link:hover{
 
 #sidebar:not(.expand) #toggle-btn{
   padding: .5rem .6rem;
+  justify-content: center;
 }
 #sidebar:not(.expand) a.sidebar-link{
   padding: .625rem 1.250rem;

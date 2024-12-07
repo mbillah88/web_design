@@ -20,6 +20,11 @@
   .navbar-toggler{
     display: none;
   }
+
+  .navbar{
+    width: 200px;
+    flex-direction: column;
+  }
 }
 
 .wrapper{
