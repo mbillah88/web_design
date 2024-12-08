@@ -6,7 +6,7 @@ function myFunction(x) {
     } else {
       document.body.style.backgroundColor = "pink";
       document.querySelector("#navbarToggleExternalContent").classList.add("show");
-      document.querySelector("#sidebar").classList.add("expand");
+      //document.querySelector("#side-nav").classList.add("condense");
     }
   }
   
@@ -20,3 +20,9 @@ function myFunction(x) {
   x.addEventListener("change", function() {
     myFunction(x);
   });
+
+  // Sidenav Button  
+  function sidebarBtn() {
+    var element = document.getElementById("side-nav");
+    element.classList.toggle("condense");
+ }

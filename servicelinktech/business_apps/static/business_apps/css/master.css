@@ -11,24 +11,28 @@
     display: flex;
     flex-direction: column;
     background-color: #ec315a;
-  }
-  #toggle-btn{
+  } 
+  #sid-nav-btn{
     display: none;
   }
 }
-@media only screen and (min-width: 576px) { 
-  .navbar-toggler{
-    display: none;
-  }
-
-  .navbar{
-    width: 200px;
+@media only screen and (min-width: 576px) {   
+  #side-nav{
     flex-direction: column;
+  }
+  #sid-nav-btn.navbar-toggler{
+    display: block;
+    padding: 0px;
   }
 }
 
 .wrapper{
   display: flex;
+}
+
+#side-nav.condense{
+  width: 70px;
+  min-width: 70px;
 }
 
 #sidebar{
@@ -64,8 +68,8 @@
   transition: all;
 }
 
-#sidebar:not(.expand) .sidebar-logo,
-#sidebar:not(.expand) a.sidebar-link span{
+#side-nav:not(.condense) .sidebar-logo,
+#side-nav:not(.condense) a.sidebar-link span{
   display: none;
 }
 .sidebar-nav{
@@ -94,7 +98,7 @@ a.sidebar-link:hover{
 .sidebar-item{
   position: relative;
 }
-#sidebar:not(.expand) .sidebar-item .sidebar-dropdown{
+#side-nav:not(.condense) .sidebar-item .sidebar-dropdown{
   position: absolute;
   top: 0;
   left: 70px;
@@ -104,17 +108,17 @@ a.sidebar-link:hover{
   display: none;
 }
 
-#sidebar:not(.expand) .sidebar-item:hover .has-dropdown+.sidebar-dropdown{
+#side-nav:not(.condense) .sidebar-item:hover .has-dropdown+.sidebar-dropdown{
   display: block;
   max-height: 15em;
   width: 100%;
   opacity: 1;
 }
 
-#sidebar:not(.expand) #toggle-btn{
+#side-nav:not(.condense) #toggle-btn{
   padding: .5rem .6rem;
 }
-#sidebar:not(.expand) a.sidebar-link{
+#side-nav:not(.condense) a.sidebar-link{
   padding: .625rem 1.250rem;
 }
 .main{
