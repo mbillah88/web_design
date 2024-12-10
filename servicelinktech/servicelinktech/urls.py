@@ -19,9 +19,13 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
+from django.views.generic.base import TemplateView
 
 urlpatterns = [
     #path('social-auth/', include('social_django.urls', namespace='social')),
     path("", include('business_apps.urls')),
-    path("admin/", admin.site.urls),
+    path("admin/", include('business_apps.urls')),
+    path("dj-admin/", admin.site.urls),
+    path("accounts/", include("django.contrib.auth.urls")), 
+    #path("", TemplateView.as_view(template_name="public_home.html"), name="home"),  # new
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

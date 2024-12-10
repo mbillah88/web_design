@@ -12,7 +12,7 @@
 </head>
 <body>
   <div class="wrapper">
-    <nav id="side-nav" class="navbar navbar-expand-sm bg-dark navbar-dark condense">
+    <nav id="side-nav" class="navbar navbar-expand-sm bg-dark navbar-dark">
         <div class="container-fluid">
           <a class="navbar-brand" href="#">          
             <img class="rounded-pill" style="width: 140px;" src="{% static 'business_apps/img/slt_bannar.jpg' %}" alt="SLT Logo">      
@@ -34,9 +34,12 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a href="#" class="sidebar-link has-dropdown" data-bs-toggle="collapse" data-bs-target="#sales" aria-expanded="false" aria-controls="sales">
+              <a href="#" class="sidebar-link has-dropdown justify-content" data-bs-toggle="collapse" data-bs-target="#sales" aria-expanded="false" aria-controls="sales">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/></svg>              
                 <span class="">Sales</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4"/>
+                </svg>
               </a>
               <ul id="sales" class="sidebar-dropdown list-unstyled collapse">              
                 <li class="sidebar-item">
@@ -169,7 +172,7 @@
             </li>
           </ul>
           <div class="sidebar-footer">
-            <a href="#" class="sidebar-link">
+            <a href="{% url 'logout' %}" class="sidebar-link">
               <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"/></svg>
               <span>Logout</span>
             </a>
@@ -178,7 +181,11 @@
     </nav>
 
     <div class="container mt-3">
-      <h3>Collapsible Navbar</h3>
+      {% if user.is_authenticated %}
+              
+      <h3> {{ user.username }} Collapsible Navbar</h3>
+        {% else %}
+      {% endif %}
       <p>In this example, the navigation bar is hidden on small screens and replaced by a button in the top right corner (try to re-size this window).</p>
       <p>Only when the button is clicked, the navigation bar will be displayed.</p>
       <p>Tip: You can also remove the .navbar-expand-md class to ALWAYS hide navbar links and display the toggler button.</p>
