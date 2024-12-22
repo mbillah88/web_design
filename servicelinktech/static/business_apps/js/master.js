@@ -1,20 +1,22 @@
-function myFunction(x) {
-    if (x.matches) { // If media query matches
-      document.body.style.backgroundColor = "yellow";
-      document.querySelector("#navbarToggleExternalContent").classList.remove("show");
-    } else {
-      document.body.style.backgroundColor = "pink";
-      document.querySelector("#navbarToggleExternalContent").classList.add("show");
-    }
-  }
+ function toggleSubMenu(button){
+  //button.nextElementSiblings.classList.toggle('show');
+  var dropdownBtn = document.querySelectorAll(".dropdown-btn");
+  const drop_container = document.querySelectorAll(".sub-menu");
+  //Add this for toggling dropdown
+  lastOpened = null;
   
-  // Create a MediaQueryList object
-  var x = window.matchMedia("(max-width: 575px)")
-  
-  // Call listener function at run time
-  myFunction(x);
-  
-  // Attach listener function on state changes
-  x.addEventListener("change", function() {
-    myFunction(x);
-  });
+  dropdownBtn.forEach(btn => btn.addEventListener('click', function() {      
+    var menuContent = this.nextElementSibling;
+    drop_container.forEach(b => b.classList.remove("show"));
+    menuContent.classList.toggle("show");  
+   
+  }));
+}
+  // Sidenav Button  
+  function sidebarBtn(button) {
+   // var element = document.getElementsByClassName("sub-menu");
+    //element.classList.toggle("show");    
+    document.querySelector("#side-nav").classList.toggle("condense");
+ }
+
+ 

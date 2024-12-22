@@ -33,6 +33,7 @@
 .condense{
   width: 70px;
   min-width: 70px;
+  transition: all .15s ease-in-out;
 }
 
 #sidebar{
@@ -69,6 +70,7 @@
 }
 #side-nav.condense .container-fluid{
   justify-content: center;
+  height: 50px;
 }
 .condense .navbar-brand,
 .condense a.sidebar-link span{
@@ -104,7 +106,7 @@ a.sidebar-link:hover{
   position: absolute;
   top: 0;
   left: 70px;
-  background-color: #0e223e;
+  background-color: #65851c;
   padding: 0;
   min-width: 15rem;
   display: none;
@@ -122,6 +124,21 @@ a.sidebar-link:hover{
 }
 .condense a.sidebar-link{
   padding: .625rem 1.250rem;
+}
+
+#side-nav .sub-menu{
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: 300ms ease-in-out;
+
+  > div{
+    overflow: hidden;
+  }
+
+}
+#side-nav .sub-menu.show{
+  grid-template-rows: 1fr;
+  
 }
 .main{
   min-height: 100vh;

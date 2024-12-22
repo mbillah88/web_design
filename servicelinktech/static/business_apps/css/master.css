@@ -3,7 +3,7 @@
     flex-direction: column;
   }
    
-  #sidebar.expand{
+  #sidebar.expands{
     width: 100%;
     min-width: 100%;
     z-index: 1000;
@@ -11,22 +11,29 @@
     display: flex;
     flex-direction: column;
     background-color: #ec315a;
-  }
-  #toggle-btn{
+  } 
+  #sid-nav-btn{
     display: none;
   }
 }
-@media only screen and (min-width: 576px) { 
-  .navbar-toggler{
-    display: none;
+@media only screen and (min-width: 576px) {   
+  #side-nav{
+    flex-direction: column;
+  }
+  #sid-nav-btn.navbar-toggler{
+    display: block;
+    padding: 0px;
   }
 }
-
-
-
 
 .wrapper{
   display: flex;
+}
+
+.condense{
+  width: 70px;
+  min-width: 70px;
+  transition: all .15s ease-in-out;
 }
 
 #sidebar{
@@ -61,9 +68,12 @@
   font-weight: 600;
   transition: all;
 }
-
-#sidebar:not(.expand) .sidebar-logo,
-#sidebar:not(.expand) a.sidebar-link span{
+#side-nav.condense .container-fluid{
+  justify-content: center;
+  height: 50px;
+}
+.condense .navbar-brand,
+.condense a.sidebar-link span{
   display: none;
 }
 .sidebar-nav{
@@ -92,28 +102,43 @@ a.sidebar-link:hover{
 .sidebar-item{
   position: relative;
 }
-#sidebar:not(.expand) .sidebar-item .sidebar-dropdown{
+.condense .sidebar-item .sidebar-dropdown{
   position: absolute;
   top: 0;
   left: 70px;
-  background-color: #0e223e;
+  background-color: #65851c;
   padding: 0;
   min-width: 15rem;
   display: none;
 }
 
-#sidebar:not(.expand) .sidebar-item:hover .has-dropdown+.sidebar-dropdown{
+.condense .sidebar-item:hover .has-dropdown+.sidebar-dropdown{
   display: block;
   max-height: 15em;
   width: 100%;
   opacity: 1;
 }
 
-#sidebar:not(.expand) #toggle-btn{
+.condense #toggle-btn{
   padding: .5rem .6rem;
 }
-#sidebar:not(.expand) a.sidebar-link{
+.condense a.sidebar-link{
   padding: .625rem 1.250rem;
+}
+
+#side-nav .sub-menu{
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: 300ms ease-in-out;
+
+  > div{
+    overflow: hidden;
+  }
+
+}
+#side-nav .sub-menu.show{
+  grid-template-rows: 1fr;
+  
 }
 .main{
   min-height: 100vh;

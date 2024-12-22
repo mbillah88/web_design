@@ -43,7 +43,7 @@ def sidebar(request):
   return HttpResponse(template.render())
 
 def business(request):
-  template = loader.get_template('business_apps/master.html')
+  template = loader.get_template('business_apps/landingp.html')
   return HttpResponse(template.render())
 
 # @login_required
