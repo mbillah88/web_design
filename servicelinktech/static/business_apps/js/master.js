@@ -16,7 +16,14 @@
   function sidebarBtn(button) {
    // var element = document.getElementsByClassName("sub-menu");
     //element.classList.toggle("show");    
-    document.querySelector("#side-nav").classList.toggle("condense");
+    document.querySelector("#sidebar").classList.toggle("expand");
+    document.querySelector(".sub-item").classList.remove("show");
  }
 
+  // Submenu Button  
+  function sidebarBtn1(button) {
+    // var element = document.getElementsByClassName("sub-menu");
+     //element.classList.toggle("show");    
+     document.querySelector(".sub-item").classList.toggle("show");
+  }
  

@@ -15,7 +15,7 @@
                 <button id="sid-nav-btn1" class="toggle-btn1" onclick="sidebarBtn()">
                     <span class="navbar-toggler-icon"><<</span>
                 </button>
-                <button id="sid-nav-btn2" class="toggle-btn1" onclick="sidebarBtn()">
+                <button id="sid-nav-btn2" class="toggle-btn1" onclick="sidebarBtn1()">
                     <span class="navbar-toggler-icon"><<</span>
                 </button>    
             </div>
@@ -30,27 +30,21 @@
                     <a href="#" class="sidebar-link"onclick="sidebarBtn1()">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/></svg>              
                         <span class="">Sales</span>
-                    </a>  
-                    <div class="sub-item">
-                        <div class="side-item">
-                            <a href="#" class="sidebar-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M80-80v-240h240v240H80Zm280 0v-240h240v240H360Zm280 0v-240h240v240H640ZM80-360v-240h240v240H80Zm280 0v-240h240v240H360Zm280 0v-240h240v240H640ZM80-640v-240h800v240H80Zm160 400Zm200 0h80-80Zm280 0ZM240-440v-80 80Zm240-40Zm240 40v-80 80ZM160-160h80v-80h-80v80Zm280 0h80v-80h-80v80Zm280 0h80v-80h-80v80ZM160-440h80v-80h-80v80Zm280 0h80v-80h-80v80Zm280 0h80v-80h-80v80Z"/></svg>
-                                <span class="">Dashboard</span>
-                            </a>
-                        </div>
-                        <div class="side-item">
-                            <a href="#" class="sidebar-link has-dropdown collapsed" data-bs-toggle="collapse" data-bs-target="#sales" aria-expanded="false" aria-controls="sales">
+                    </a>                   
+                </div>
+                <div class="sub-item sub-item-menu">
+                        <a href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/></svg>              
+                            <span class="">Sales</span>
+                        </a>              
+                            <a href="#" class=""onclick="sidebarBtn1()">
                                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/></svg>              
                                 <span class="">Sales</span>
-                            </a>                    
-                        </div>
-                        <div class="side-item">
-                            <a href="#" class="sidebar-link">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M440-120v-80h320v-284q0-117-81.5-198.5T480-764q-117 0-198.5 81.5T200-484v244h-40q-33 0-56.5-23.5T80-320v-80q0-21 10.5-39.5T120-469l3-53q8-68 39.5-126t79-101q47.5-43 109-67T480-840q68 0 129 24t109 66.5Q766-707 797-649t40 126l3 52q19 9 29.5 27t10.5 38v92q0 20-10.5 38T840-249v49q0 33-23.5 56.5T760-120H440Zm-80-280q-17 0-28.5-11.5T320-440q0-17 11.5-28.5T360-480q17 0 28.5 11.5T400-440q0 17-11.5 28.5T360-400Zm240 0q-17 0-28.5-11.5T560-440q0-17 11.5-28.5T600-480q17 0 28.5 11.5T640-440q0 17-11.5 28.5T600-400Zm-359-62q-7-106 64-182t177-76q89 0 156.5 56.5T720-519q-91-1-167.5-49T435-698q-16 80-67.5 142.5T241-462Z"/></svg>              
-                                <span class="">Service</span>
-                              </a>                    
-                        </div>
-                    </div>                  
+                            </a>                
+                            <a href="#" class=""onclick="sidebarBtn1()">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM246-720l96 200h280l110-200H246Zm-38-80h590q23 0 35 20.5t1 41.5L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68-39.5t-2-78.5l54-98-144-304H40v-80h130l38 80Zm134 280h280-280Z"/></svg>              
+                                <span class="">Sales</span>
+                            </a>         
                 </div>
                 <div class="side-item">
                     <a href="#" class="sidebar-link">
@@ -91,29 +85,51 @@
             </div>
             <hr>
             <div class="side-bar">
-                <a href="#" class="sidebar-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg>
-                    <span class="">Settings</span>
-                </a>
-                <a href="#" class="sidebar-link">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"/></svg>
-                    <span>Logout</span>
-                </a>
+                <div class="side-item">
+                    <a href="#" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="m370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z"/></svg>
+                        <span class="">Settings</span>
+                    </a>
+                </div>
+                <div class="side-item">                    
+                    <a href="#" class="sidebar-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"/></svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
             </div>
         </aside>
-        <main>
-            <div class="main-container">
+        <main>   
+            <div class="main-container">        
                 <div class="main-container-head">
-                    <h2>Setting the Viewport</h2>
+                    <h2>Dashboard</h2>
+                    <h3>User Name</h3>
                 </div>
-                <div class="content">                
-                    <h2>Setting the Viewport</h2>
-                    <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
-                
-                    <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                <div class="main-content">
+                    <div class="content">                
+                        <h2>Setting the Viewport</h2>
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
                     
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                        
+                    </div>
+                    <div class="content">                
+                        <h2>Setting the Viewport</h2>
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                    
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                        
+                    </div>
+                    <div class="content">                
+                        <h2>Setting the Viewport</h2>
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                    
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                        
+                    </div>
                 </div>
-            </div>
+
+            </div> 
         </main>
     </div>
     <script src="{% static 'business_apps/js/master.js' %}"></script>

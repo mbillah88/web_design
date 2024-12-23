@@ -2,9 +2,10 @@
     --base-color: #201e1e36;
     --text-color: #e9e3e3;
     --text-color-other: #ccc9c9;
-    --line-color: #f5f5f5;
+    --line-color: #a3a1a1;
     --hover-color: #c1fad4;
     --menu-color: #04a08b;
+    --sidebar-color: #001967;
 }
 *{
     margin: 0;
@@ -21,7 +22,7 @@
     aside.nav-side-bar {
         width: 100%;
         height: auto;
-        transition: auto;
+        transition: width 0.5s ease-in-out;
     }
     aside > .side-bar{
         margin-top: 0;
@@ -47,19 +48,20 @@ body{
     margin: 0 auto;
     /*gap: 1.8rem;*/
 }
-aside{
+
+/* Sidebar Start*/
+.nav-side-bar{
+    max-width: 250px;
+    background-color: var(--sidebar-color);    
     display: flex;
     flex-direction: column;
     height: 100vh;
-}
-.nav-side-bar{
-    width: 250px;
-    background-color:  currentColor;    
+    transition: all 0.5s ease-in-out;
 }
 
 .nav-side-bar.expand{
-    width: 70px;
-    transition: all 2s; 
+    max-width: 70px;  
+    transition: all 0.5s ease-in-out;
 }
 .nav-header{    
     display: flex;
@@ -69,50 +71,19 @@ aside{
     background-color: midnightblue;
     padding: .5rem;
     height: 50px;
-}
-.side-bar{
-    display: flex;
-    flex-direction: column;
-    margin-top: 20px;
-    margin-bottom: auto; 
-    gap: .15rem;
-    padding-left: 1em;
-}
-.side-bar a{
-    display: flex;
-    height: 2rem;
-    gap: 1rem;
-    align-items: center;
-    color: var(--menu-color);
-}
-.side-bar a:hover{
-    background-color: var(--hover-color);
-    box-shadow: 0 4px 8px 0 rgb(248, 246, 109), 0 6px 20px 0 rgba(253, 252, 252, 0.562);
-}
-.sub-item{
-    display: none;
-}
-.sub-item.show{
-    display: block;
-}
-.side-footer{
-    display: flex;
-    flex-direction: column;
-    margin-top: 2em;
+    transition: all 0.5s ease-in-out;
 }
 .nav-header-left{    
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    transition: all .2s;
 }
 a.navbar-brands{
     height: 40px;  
     border-radius: .5rem;  
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-.rounded-img{
-    border-radius: .5rem; 
 }
 .toggle-btn1{
     height: 40px;
@@ -122,16 +93,97 @@ a.navbar-brands{
     transform: skewX(14deg);
     padding: .2rem;
 }
+.toggle-btn1:hover{  
+    background-color: #e25a0b;
+    border-color: #0be20b;
+    transition: .02s;
+}
 #sid-nav-btn2{
     display: none;
+}
+
+.side-bar{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    margin-bottom: auto; 
+    gap: .15rem;
+    padding-left: 1em;
+    padding-right: 1em;
+    position: relative;
+    transition: all 0.5s ease-in-out;
+
+}
+.side-bar a{
+    display: flex;
+    height: 2rem;
+    gap: 1rem;
+    align-items: center;
+    color: var(--menu-color);
+    border-top: 1px solid var(--line-color) ;
+    transition: all 0.5s ease-in-out;
+}
+.side-bar a:hover{
+    background-color: var(--hover-color);
+    box-shadow: 0 4px 8px 0 rgb(248, 246, 109), 0 6px 20px 0 rgba(253, 252, 252, 0.562);
 }
 .side-item{
     height: 2.3rem;
     align-content: center;
 }
+.sub-item{
+    background-color: #444546;
+    transition: .5s;
+    display: none;
+    padding: .5rem;
+    overflow: hidden;
+}
+.sub-item a:hover{
+    background-color: #e74f75;
+}
+.sub-item.show{
+    display: block;
+    overflow: hidden;
+}
+.side-footer{
+    display: flex;
+    flex-direction: column;
+    margin-top: 2em;
+    overflow: hidden;
+}
+.rounded-img{
+    border-radius: .5rem; 
+    animation: fadeIn 5s; 
+}
 hr{
     padding: 1px;
 }
+.nav-side-bar.expand .side-item a:hover.sub-item-menu{
+    position: absolute;
+    top: 0;
+    left: 70px;
+    background-color: #910007;
+    padding: 0;
+    min-width: 15rem;
+    display: block;
+  }
+  
+.nav-side-bar.expand .side-item > a > span,
+.nav-side-bar.expand .side-bar >  .sub-item  > a span,
+.nav-side-bar.expand .nav-header > a > img{
+    display: none;
+}
+.nav-side-bar.expand .nav-header > .toggle-btn1{    
+  transform: rotate(180deg);
+  transition: all 0.5s ease-in-out;
+}
+.nav-side-bar.expand .nav-header,
+.nav-side-bar.expand .side-item a{    
+  justify-content: center;
+}
+
+/* Sidebar End*/
+
 main{    
     flex-grow: 1;
 }
@@ -141,11 +193,21 @@ main{
     align-items: center;
 }
 .main-container-head{    
+    display: flex;
+    flex-direction: row;
     background-color: midnightblue;
-    padding: .5rem;
+    padding: .5rem .5rem .5rem 1.5rem;
     height: 50px;
     align-content: center;
+    justify-content: space-between;
+    align-items: center;
     color: cornflowerblue;
+}
+.main-content{
+    margin: 10px;
+    padding: 1rem;
+    display: flex;
+    gap: 1rem;
 }
 .content{
     border: 1px solid var(--line-color);
@@ -153,3 +215,4 @@ main{
     padding: .85em;
     background-color: beige;
 }
+

@@ -19,10 +19,25 @@
     document.querySelector("#sidebar").classList.toggle("expand");
  }
 
-  // Sidenav Button  
+  // Submenu Button  
   function sidebarBtn1(button) {
     // var element = document.getElementsByClassName("sub-menu");
      //element.classList.toggle("show");    
      document.querySelector(".sub-item").classList.toggle("show");
   }
  
+  $(function(){
+    // toggle sidebar collapse
+    $('.btn-toggle-sidebar').on('click', function(){
+        $('.wrapper').toggleClass('sidebar-collapse');
+    });
+    // mark sidebar item as active when clicked
+    $('.sb-item').on('click', function(){
+        if ($(this).hasClass('btn-toggle-sidebar')) {
+          return; // already actived
+        }
+        $(this).siblings().removeClass('active');
+        $(this).siblings().find('.sb-item').removeClass('active');
+        $(this).addClass('active');
+    })
+  });
