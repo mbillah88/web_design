@@ -18,7 +18,7 @@
     .containers{
         flex-direction: column;
     }
-    aside.nav-side-bar {
+    aside#sidebar {
         width: 100%;
         height: auto;
         transition: auto;
@@ -37,21 +37,20 @@
 }
 
 body{
-    width: 100vw;
-    height: 100vh;    
     background-color: var(--base-color);
     font-family: 'Courier New', Courier, monospace;
 }
 .containers{    
     display: flex;
     margin: 0 auto;
+    min-height: 100dvh;    
 }
 aside{
     display: flex;
     flex-direction: column;
     width: 70px;   
     padding: .5rem;
-    background-color:  currentColor; 
+    background-color:  #013d3d; 
     transition: all 330ms ease-in-out;
 }
 .nav-side-bar{
@@ -73,6 +72,10 @@ aside{
 }
 .nav-header >button{
     width: 40px;
+    cursor: pointer;
+}
+.nav-header >button:hover{
+    background-color: blue;
 }
 #sid-nav-btn2{
     display: none;
@@ -99,6 +102,8 @@ aside:not(.nav-side-bar) .side-bar a.sidebar-link span{
   flex: 1 1 auto;
   margin-top: 1rem;
   background-color: darkcyan;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
 }
 .side-nav-body.colaps{    
   display: none;
@@ -132,6 +137,9 @@ a.sidebar-link span{
     flex-grow: 1;
 }
 
+.rotate{    
+    rotate: 90deg;
+}
 main{
     flex-grow: 1;
 }
