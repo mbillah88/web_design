@@ -6,15 +6,17 @@ from django.http import HttpResponse
 from django.template import loader
 
 # Create your views here.
-
+@login_required
 def public_home(request):
+  
   template = loader.get_template('public_home.html')
   return HttpResponse(template.render())
 
+@login_required
 def ulogin(request):
   try:
     if request.user.is_authenticated:
-      return redirect('business_apps/master.html')
+      return redirect('business_apps/new.html')
 
       if request.method == 'POST':
         username = request.POST.get('username')
@@ -29,7 +31,7 @@ def ulogin(request):
 
           if user_obj and user_obj.is_superuser:
             login(request, user_obj)
-            return redirect('business_apps/master.html') 
+            return redirect('public_home.html') 
 
           messages.info(request, 'Invalid Password!')
           return redirect('/')
@@ -38,12 +40,17 @@ def ulogin(request):
   except Exception as e:
     print(e)
 
+@login_required
 def sidebar(request):
-  template = loader.get_template('business_apps/base.html')
+  template = loader.get_template('business_apps/landingp.html')
   return HttpResponse(template.render())
 
+@login_required
 def business(request):
   template = loader.get_template('business_apps/new.html')
   return HttpResponse(template.render())
 
-# @login_required
+@login_required
+def dashboard(request):
+  template = loader.get_template('business_apps/main.html')
+  return HttpResponse(template.render())
