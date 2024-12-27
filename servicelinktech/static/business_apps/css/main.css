@@ -98,6 +98,10 @@ aside:not(.nav-side-bar) .side-bar a.sidebar-link span{
     display: none;
 }
 
+aside:not(.nav-side-bar) .aside:hover{
+    width: 100%;
+}
+
 .side-bar{    
   flex: 1 1 auto;
   margin-top: 1rem;
