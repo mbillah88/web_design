@@ -45,39 +45,28 @@ body{
 .containers{    
     display: flex;
     margin: 0 auto;
-    width: 100%;
-    
-    > main{
-        flex: 1;
-    }
 }
 aside#sidebar{
     display: flex;
     flex-direction: column;
-    width: 70px; 
-    height: 100vh; 
+    width: 70px;   
     padding: .5rem;
     background-color:  #013d3d; 
     transition: all 330ms ease-in-out;
-    position: sticky;
-    top: 0;
-    align-self: start;
 }
-aside#sidebar.nav-side-bar{
-    width: 250px;  
+.nav-side-bar{
+    width: 250px;   
     padding: .5rem;
 }
 .nav-header{    
     display: flex;
-    height: 50px;
+    height: 60px;
     justify-content: space-between;
     align-items: center;
-    flex-flow: row nowrap;
 }
 .nav-header >button, 
 .nav-header >img{    
     height: 40px;
-    max-width: 100%;
     border-radius: .5rem;
     transition: all 2s;
 }
@@ -92,7 +81,6 @@ aside#sidebar.nav-side-bar{
     display: none;
 }
 
-
 aside:not(.nav-side-bar) .nav-header >#sid-nav-btn1{
     rotate: 180deg;
     transition: all 1s;
@@ -103,23 +91,22 @@ aside:not(.nav-side-bar) .side-bar {
     justify-content: center;
 }
 aside:not(.nav-side-bar)  .nav-header >img,
-aside:not(.nav-side-bar) .side-bar a.sidebar-link span,
-aside:not(.nav-side-bar) .side-bar a.sidebar-link svg:last-child{
+aside:not(.nav-side-bar) .side-bar a.sidebar-link span{
     display: none;
 }
 aside:not(.nav-side-bar) .side-bar a.sidebar-link{
     gap: 0;
 }
-/*
-aside:not(.nav-side-bar):hover { 
+
+/*aside:not(.nav-side-bar):hover { 
     width: 100%;
 
     .nav-header >img,
     .side-bar a.sidebar-link span{
         display: block;
     }
-}
-*/
+}*/
+
 .side-bar{    
   flex: 1 1 auto;
   margin-top: 1rem;
@@ -156,6 +143,13 @@ a.sidebar-link{
     border: 1px solid white;
     border-radius: .5rem;
 }
+/*
+svg:last-child {
+    color: #f81212;
+    background-color: rgba(209, 178, 221, 0.651); 
+    rotate: 90deg;
+
+}*/
 a.sidebar-link:hover{
     background-color: rgba(78, 9, 105, 0.651);
     border-left: 5px solid #3b7ddd;
@@ -178,13 +172,18 @@ a.sidebar-link span{
     rotate: 180deg;
     color: #f81212;
 }
-*/
+
 /* Sidebar End*/
 
-main {    
-   flex: 1;
+main{    
+    flex-grow: 1;
 }
-main .main-container-head{    
+.main-container{
+    height: 100vh;
+    /*border: 2px solid whitesmoke;*/
+    align-items: center;
+}
+.main-container-head{    
     display: flex;
     flex-direction: row;
     background-color: midnightblue;
@@ -194,29 +193,14 @@ main .main-container-head{
     justify-content: space-between;
     align-items: center;
     color: cornflowerblue;
-    
-    > div{
-        display: flex;
-        align-items: center;     
-        gap: 1rem;   
-    }
 }
-
-.logout_btn{
-    display: flex;
-    align-items: center;
-    background: none;
-    border: 1px solid wheat;
-    color: wheat;
-    padding: .1rem .2rem .1rem .2rem;       
-}
-main .main-content{
+.main-content{
     margin: 10px;
     padding: 1rem;
     display: flex;
     gap: 1rem;
 }
-main .content{
+.content{
     border: 1px solid var(--line-color);
     border-radius: 1rem;
     padding: .85em;

@@ -13,26 +13,9 @@ function sidebarBtnNav(button) {
 
    // Sidenav Button  
    function sidebarBtn1(button) {
-      button.nextElementSibling.classList.toggle('show')
-      button.classList.toggle('rotate')
-
-      // main menu toggle of sub-menu
-  $(".side-item > a").click(function(e) {
-    // check active
-    var isCurrentActive = $(this).next('.sub-menu').hasClass('show')
+    //button.nextElementSibling.classList.toggle('show')
+    //button.classList.toggle('rotate')
     
-    // remove .visible from other .sub-menu
-    $(".sub-menu").removeClass('show');
-
-    // if current menu deactive add visible 
-    if(!isCurrentActive){
-      $(this).next(".sub-menu").addClass('show');
-    }
-
-    // prevent the <a> from default behavior
-    e.preventDefault();
-  });
-    /*
       const content = button.nextElementSibling; 
       // Close any open content 
       document.querySelectorAll('.content').forEach(item => { 
@@ -45,11 +28,11 @@ function sidebarBtnNav(button) {
             content.style.display = "block"; 
           } else { 
               content.style.display = "none"; 
-            } */
+            } 
             
   }
      
-       /*
+       
    // Sidenav Button Submenu................ drop-down
     document.addEventListener("DOMContentLoaded", function() { 
       const buttons = document.querySelectorAll(".toggle-btn"); 
@@ -61,6 +44,7 @@ function sidebarBtnNav(button) {
             document.querySelectorAll('.sub-item').forEach(item => { 
               if (item !== content) { 
                 item.classList.remove("show");
+                button.classList.remove('rotate');
               } 
               
             }); 
@@ -72,15 +56,16 @@ function sidebarBtnNav(button) {
               if (content.style.display === "none" || !content.style.display) { 
                   //content.style.display = "block"; 
                   content.classList.add("show");
+                  button.classList.add('rotate')
               } else { 
                   content.classList.remove("show");
-                  buttons.classList.remove("rotate");
                 }
               }
+              button.classList.add('rotate');
             }); 
           });
         });
-*/
+
  
 // Add active class to the current button (highlight it)
 var btns = document.getElementsByClassName("sidebar-link");
@@ -101,9 +86,9 @@ function myFunction(x) {
      document.querySelector("#sidebar").classList.add("nav-side-bar");
      document.querySelector(".side-nav-body").classList.add("colaps");
    } else {
-     document.body.style.backgroundColor = "dark";
+     document.body.style.backgroundColor = "pink";
      document.querySelector(".side-nav-body").classList.remove("colaps");
-    // document.querySelector("#sidebar").classList.add("nav-side-bar");
+     document.querySelector("#sidebar").classList.add("nav-side-bar");
    }
  }
  

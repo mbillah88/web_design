@@ -2,7 +2,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'business_apps/css/main.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
@@ -23,7 +22,7 @@
           <div class="side-nav-body">
             <div class="side-bar">
                 <div class="side-item">
-                    <a href="dashboard" class="sidebar-link toggle-btn active">
+                    <a href="#" class="sidebar-link toggle-btn active">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M80-80v-240h240v240H80Zm280 0v-240h240v240H360Zm280 0v-240h240v240H640ZM80-360v-240h240v240H80Zm280 0v-240h240v240H360Zm280 0v-240h240v240H640ZM80-640v-240h800v240H80Zm160 400Zm200 0h80-80Zm280 0ZM240-440v-80 80Zm240-40Zm240 40v-80 80ZM160-160h80v-80h-80v80Zm280 0h80v-80h-80v80Zm280 0h80v-80h-80v80ZM160-440h80v-80h-80v80Zm280 0h80v-80h-80v80Zm280 0h80v-80h-80v80Z"/></svg>
                         <span class="tooltiptext">Dashboard</span>
                     </a>
@@ -38,7 +37,7 @@
                     </a>  
                     <div id="sales" class="sub-item">
                         <div class="side-item-sub">
-                            <a href="nsales" class="sidebar-link">
+                            <a href="#" class="sidebar-link">
                               <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M856-390 570-104q-12 12-27 18t-30 6q-15 0-30-6t-27-18L103-457q-11-11-17-25.5T80-513v-287q0-33 23.5-56.5T160-880h287q16 0 31 6.5t26 17.5l352 353q12 12 17.5 27t5.5 30q0 15-5.5 29.5T856-390ZM513-160l286-286-353-354H160v286l353 354ZM260-640q25 0 42.5-17.5T320-700q0-25-17.5-42.5T260-760q-25 0-42.5 17.5T200-700q0 25 17.5 42.5T260-640Zm220 160Z"/></svg>                                <span class="">New Sales</span>
                             </a>
                             <a href="#" class="sidebar-link">
@@ -112,7 +111,7 @@
                 </a>
               </div>
               <div class="side-item">
-                <a href="{% url 'logout' %}" class="sidebar-link toggle-btn">
+                <a href="#" class="sidebar-link toggle-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"/></svg>
                     <span>Logout</span>
                 </a>
@@ -124,25 +123,53 @@
             <div class="main-container">        
                 <div class="main-container-head">
                     <a>Dashboard</a>
-                    <div>
-                      {% if user.is_authenticated %}
-                        Hi {{ user.username }}!
-                        <form action="{% url 'logout' %}" method="post">
-                          {% csrf_token %}
-                          <button class="logout_btn" type="submit">                            
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"/></svg>
-                            <span>Logout</span>
-                          </button>
-                        </form>
-                        {% else %}
-                        {% endif %}
-                    </div>
-                    
+                    <h3>User Name</h3>
                 </div>
-                {% block content %}
-        
-                
-                {% endblock %}
+                <div class="main-content">
+                    <div class="content">                
+                        <h2>Setting the Viewport</h2>
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                    
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                        
+                    </div>
+                    <div class="content">                
+                        <h2>Setting the Viewport</h2>
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                    
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                        
+                    </div>
+                    <div class="content">                
+                        <h2>Setting the Viewport</h2>
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                    
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                        
+                    </div>
+                    <div class="content">                
+                        <h2>Setting the Viewport</h2>
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                    
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                        
+                    </div>
+                    <div class="content">                
+                        <h2>Setting the Viewport</h2>
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                    
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                        
+                    </div>
+                    <div class="content">                
+                        <h2>Setting the Viewport</h2>
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                    
+                        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
+                        
+                    </div>
+                </div>
+
             </div> 
         </main>
     </div>

@@ -7,8 +7,7 @@ from django.template import loader
 
 # Create your views here.
 @login_required
-def public_home(request):
-  
+def public_home(request):  
   template = loader.get_template('public_home.html')
   return HttpResponse(template.render())
 
@@ -52,5 +51,17 @@ def business(request):
 
 @login_required
 def dashboard(request):
-  template = loader.get_template('business_apps/main.html')
-  return HttpResponse(template.render())
+  return render(request, 'business_apps/dashboard.html')
+  #template = loader.get_template('business_apps/main.html')
+  #return HttpResponse(template.render())
+  
+@login_required
+def new_sales(request):
+  return render(request, 'business_apps/new_sales.html')
+@login_required
+def slaes_list(request):
+  return render(request, 'business_apps/dashboard.html')
+  
+  
+def logout(request):
+  return render(request, 'business_apps/public_home.html')

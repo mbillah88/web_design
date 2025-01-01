@@ -132,8 +132,9 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = "static"
 
-LOGIN_URL ='/login/'
-LOGIN_REDIRECT_URL = "/"  # new
+LOGIN_URL ='login/'
+LOGIN_REDIRECT_URL = "/slt/dashboard"  # new
+LOGOUT_REDIRECT_URL = "home"
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

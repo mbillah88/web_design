@@ -27,44 +27,23 @@
   </head>
 
   <body class="text-center bg-dark" >
-{% block content %}
-
-  {% if form.errors %}
-    <p>Your username and password didn't match. Please try again.</p>
-  {% endif %}
-
-  {% if next %}
-    {% if user.is_authenticated %}
-      <p>Your account doesn't have access to this page. To proceed,
-      please login with an account that has access.</p>
-    {% else %}
-      <p>Please login to see this page.</p>
-    {% endif %}
-  {% endif %}
-
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </tr>
-    </table>
-    <input type="submit" value="login">
-    <input type="hidden" name="next" value="{{ next }}">
-  </form>
-
-  {# Assumes you set up the password_reset view in your URLconf #}
-  <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-
-{% endblock %}
     <div id="login_body" style="height: 100vh;" class="container d-flex flex-wrap p-3">
-      <div class=" border  p-2 d-flex " style="background-color: transparent">
+      <div class=" border  p-2 d-flex  flex-column" style="background-color: transparent">
+        {% block content %}
 
+        {% if form.errors %}
+          <p>Your username and password didn't match. Please try again.</p>
+        {% endif %}
+      
+        {% if next %}
+          {% if user.is_authenticated %}
+            <p>Your account doesn't have access to this page. To proceed,
+            please login with an account that has access.</p>
+          {% else %}
+            <p>Please login to see this page.</p>
+          {% endif %}
+        {% endif %}
+      
         <form method="POST" class=" d-flex flex-column mb-2">
           {% csrf_token %}
           <img class="mb-2 border" src="{% static 'business_apps/img/slt_bannar.jpg' %}" alt="" width="auto" height="72">
@@ -82,7 +61,7 @@
           <button class="btn btn-md btn-primary btn-block" type="submit">Sign in</button>
           <p class="mt-3 mb-3 text-muted">&copy; 2024</p>
         </form>
-
+        {% endblock %}
       </div>
     </div>
   </body>
