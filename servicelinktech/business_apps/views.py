@@ -12,56 +12,13 @@ def public_home(request):
   return HttpResponse(template.render())
 
 @login_required
-def ulogin(request):
-  try:
-    if request.user.is_authenticated:
-      return redirect('business_apps/new.html')
-
-      if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-
-        user_obj = User.objects.filter(username = username)
-        if not user_obj.exists ():
-          messages.info(request, 'Account not found!')
-          return HttpResponseRedirect(request.META.get('HTTP_REFFERE'))
-
-          user_obj = authenticate(username = username, password = password)
-
-          if user_obj and user_obj.is_superuser:
-            login(request, user_obj)
-            return redirect('public_home.html') 
-
-          messages.info(request, 'Invalid Password!')
-          return redirect('/')
-          template = loader.get_template('business_apps/login.html')
-          return HttpResponse(template.render()) 
-  except Exception as e:
-    print(e)
-
-@login_required
-def sidebar(request):
-  template = loader.get_template('business_apps/landingp.html')
-  return HttpResponse(template.render())
-
-@login_required
-def business(request):
-  template = loader.get_template('business_apps/new.html')
-  return HttpResponse(template.render())
+def new_sales(request):
+  return render(request, 'business_apps/new_sales.html')
 
 @login_required
 def dashboard(request):
   return render(request, 'business_apps/dashboard.html')
-  #template = loader.get_template('business_apps/main.html')
-  #return HttpResponse(template.render())
-  
-@login_required
-def new_sales(request):
-  return render(request, 'business_apps/new_sales.html')
-@login_required
-def slaes_list(request):
-  return render(request, 'business_apps/dashboard.html')
   
   
-def logout(request):
-  return render(request, 'business_apps/public_home.html')
+#def logout(request):
+#  return render(request, 'business_apps/public_home.html')

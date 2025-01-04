@@ -18,7 +18,7 @@
     .containers{
         flex-direction: column;
     }
-    aside#sidebar {
+    .containers > aside#sidebar.nav-side-bar{
         width: 100%;
         height: auto;
         transition: auto;
@@ -26,6 +26,9 @@
     aside > .side-bar{
         margin-top: 0;
         margin-bottom: 0;
+    }
+    main .main-content {
+        flex-wrap: wrap;
     }
     #sid-nav-btn1{
         display: none;
@@ -46,6 +49,7 @@ body{
     display: flex;
     margin: 0 auto;
     width: 100%;
+    min-height: 100dvh; 
     
     > main{
         flex: 1;
@@ -55,13 +59,10 @@ aside#sidebar{
     display: flex;
     flex-direction: column;
     width: 70px; 
-    height: 100vh; 
     padding: .5rem;
     background-color:  #013d3d; 
     transition: all 330ms ease-in-out;
-    position: sticky;
     top: 0;
-    align-self: start;
 }
 aside#sidebar.nav-side-bar{
     width: 250px;  
@@ -120,12 +121,13 @@ aside:not(.nav-side-bar):hover {
     }
 }
 */
-.side-bar{    
+aside .side-bar{    
   flex: 1 1 auto;
   margin-top: 1rem;
   background-color: darkcyan;
   padding-top: .5rem;
   padding-bottom: .5rem;
+  overflow: hidden;
 }
 .side-nav-body.colaps{    
   display: none;
@@ -178,7 +180,12 @@ a.sidebar-link span{
     rotate: 180deg;
     color: #f81212;
 }
-*/
+aside > div.side-nav-body{
+    display: flex; 
+    flex-flow: column;
+    flex: auto;
+    transition: all 333ms ease-in-out;
+}
 /* Sidebar End*/
 
 main {    

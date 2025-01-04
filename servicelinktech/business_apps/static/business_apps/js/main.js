@@ -48,8 +48,8 @@ function sidebarBtnNav(button) {
             } */
             
   }
+    /*  
      
-       /*
    // Sidenav Button Submenu................ drop-down
     document.addEventListener("DOMContentLoaded", function() { 
       const buttons = document.querySelectorAll(".toggle-btn"); 
@@ -80,8 +80,8 @@ function sidebarBtnNav(button) {
             }); 
           });
         });
-*/
- 
+
+
 // Add active class to the current button (highlight it)
 var btns = document.getElementsByClassName("sidebar-link");
 for (var i = 0; i < btns.length; i++) {
@@ -91,7 +91,7 @@ for (var i = 0; i < btns.length; i++) {
   this.className += " active";
   });
 }
-  
+  */
 
  
 // Add Body Behavior............
