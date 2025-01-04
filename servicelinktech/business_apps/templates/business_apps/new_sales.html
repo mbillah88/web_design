@@ -13,4 +13,7 @@
 
 {% block content %}
 Sales List
+{% for x in user %}
+  {{ x.username }} {{ x.lastname }} {{ x.id }}
+{% endfor %}
 {% endblock %}

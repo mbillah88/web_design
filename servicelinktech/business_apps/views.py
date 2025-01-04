@@ -13,12 +13,18 @@ def public_home(request):
 
 @login_required
 def new_sales(request):
-  return render(request, 'business_apps/new_sales.html')
+  user = User.objects.all().values() 
+  context = {
+    'user': user,
+  }
+  return render(request, 'business_apps/new_sales.html', context)
 
 @login_required
 def dashboard(request):
-  return render(request, 'business_apps/dashboard.html')
+  user = User.objects.all().values() 
+  context = {
+    'user': user,
+  }
+  return render(request, 'business_apps/dashboard.html', context)
   
   
-#def logout(request):
-#  return render(request, 'business_apps/public_home.html')
