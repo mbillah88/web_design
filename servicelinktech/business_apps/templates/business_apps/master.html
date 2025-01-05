@@ -20,8 +20,8 @@
                     </a>
                     
                     <div>
-                      {% if user.is_authenticated %}
-                        Hi {{ user.username }}!
+                      {% if request.user.is_authenticated %}
+                        Hi {{ request.user.username }}!
                         <form action="{% url 'logout' %}" method="post">
                           {% csrf_token %}
                           <button class="logout_btn" type="submit">                            
@@ -33,10 +33,10 @@
                         You are not is_authenticated
                         {% endif %}
                     </div>
-                    
                 </div>
+
                 {% block content %}        
-                
+               
                 {% endblock %}
             </div> 
         </main>

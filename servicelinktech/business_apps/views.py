@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.template import loader
+from .forms import ItemCategoryForm
 
 # Create your views here.
 @login_required
@@ -27,4 +28,18 @@ def dashboard(request):
   }
   return render(request, 'business_apps/dashboard.html', context)
   
-  
+def item_category_add(request):
+
+    if request.method == 'POST':
+        form = ItemCategoryForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return redirect('success')
+    else:
+        form = ItemCategoryForm()
+    return render(request, 'business_apps/item_category_add.html', {'form': form})
+
+
+def success(request):
+    return HttpResponse('successfully uploaded')
