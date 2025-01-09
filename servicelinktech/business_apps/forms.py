@@ -7,4 +7,5 @@ class ItemCategoryForm(forms.ModelForm):
 
     class Meta:
         model = ItemCategory
-        fields = ['category_name', 'cat_image']
+        fields = ['category_name', 'category_description', 'cat_image']
+      

@@ -40,6 +40,10 @@ def item_category_add(request):
         form = ItemCategoryForm()
     return render(request, 'business_apps/item_category_add.html', {'form': form})
 
+@login_required
+def item_category_list(request):  
+  template = loader.get_template('business_apps/item_category.html')
+  return HttpResponse(template.render())
 
 def success(request):
     return HttpResponse('successfully uploaded')
