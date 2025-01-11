@@ -14,26 +14,28 @@
       <h2>Category List</h2>
     </div>   
         
-    {% for data in cat %} <img src="{{ data.cat_image.url }}">
     <table>
-      <thead>
         <tr>
           <th scope="col">Caegory Image</th>
           <th scope="col">Caegory Name</th>
           <th scope="col">Caegory description</th>
+          <th scope="col">Action</th>
         </tr>
-      </thead>
-      <tbody>
+        {% for data in cat %}
         <tr>
-          <td><img src="{{ data.cat_image.url }}"></td>
-          <td>{{ data.category_name }}</td>
-          <td>{{ data.category_description }}</td>
+          
+          <td><a href="{% url 'slt:category_details' data.pk %}"></a><img src="{{ data.cat_image.url }}" style="height: 100px;"></a></td>
+          <td><a href="{% url 'slt:category_details' data.pk %}">{{ data.category_name }}</a></td>
+          <td><a href="{% url 'slt:category_details' data.pk %}">{{ data.category_description }}</a></td>
+          <td>
+            <a href="{% url 'slt:category_update' data.pk %}">Edit</a>
+            <a href="">Delete</a>
+          </td>
         </tr>
-      </tbody>
+        {% endfor %}
     </table>
     <hr/>
 
-    {% endfor %}
 
   </div>
 </div>

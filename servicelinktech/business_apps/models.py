@@ -12,6 +12,9 @@ class ItemCategory(models.Model):
   category_name = models.CharField(max_length=255)
   category_description = models.CharField(max_length=255)
   cat_image = models.ImageField(upload_to='images/')
+  #created_at = models.DateTimeField()      
+  def __str__(self):         
+    return self.title
 
 
 class ItemBrand(models.Model):

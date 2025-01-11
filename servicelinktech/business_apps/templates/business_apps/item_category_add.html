@@ -11,7 +11,12 @@
 
 <div class="main-content">
   <div class="add-container">
-    <h3>Add Category</h3>
+    <h3>{% if form.instance.pk %}
+      Edit
+     {% else %}
+      Add
+     {% endif %} Category :{{ form.instance.pk}}
+    </h3>
   <form class="form-container" method="POST" enctype="multipart/form-data">
 
     <!-- Security token -->
@@ -20,11 +25,11 @@
     <div class="content">
       <div>
         <label for="id_category_name">Category name:</label>
-        <input type="text" name="category_name" maxlength="255" required id="id_category_name">      
+        <input type="text" name="category_name" maxlength="255" required id="id_category_name" value="{{form.instance.category_name}}">      
       </div>  
       <div>      
         <label for="id_category_description">Category description:</label>
-        <input type="text" name="category_description" maxlength="255" required id="id_category_description">
+        <input type="text" name="category_description" maxlength="255" required id="id_category_description" value="{{form.instance.category_description}}">
       </div>  
     </div>
     <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
@@ -51,7 +56,6 @@
       <button type="submit" class="btn add-item-btn">Add Category</button>
     </div>  
   </form>
-    
   </div>
 </div>
 {% endblock %}
