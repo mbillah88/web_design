@@ -12,47 +12,25 @@
 <div class="main-content">
   <div class="add-container">
     <h3>Add Category</h3>
-  <form class="form-container">
-    <div class="content">  
-        <div class="form-group">
-          <label for="inputAddress">Address</label>
-          <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
-        </div>
-        <div class="form-group">
-          <label for="inputAddress2">Address 2</label>
-          <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-        </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="inputCity">City</label>
-            <input type="text" class="form-control" id="inputCity">
-          </div>
-          <div class="form-group col-md-4">
-            <label for="inputState">State</label>
-            <select id="inputState" class="form-control">
-              <option selected>Choose...</option>
-              <option>...</option>
-            </select>
-          </div>
-          <div class="form-group col-md-2">
-            <label for="inputZip">Zip</label>
-            <input type="text" class="form-control" id="inputZip">
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="gridCheck">
-            <label class="form-check-label" for="gridCheck">
-              Check me out
-            </label>
-          </div>
-        </div>
-        
+  <form class="form-container" method="POST" enctype="multipart/form-data">
+
+    <!-- Security token -->
+    {% csrf_token %}
+    
+    <div class="content">
+      <div>
+        <label for="id_category_name">Category name:</label>
+        <input type="text" name="category_name" maxlength="255" required id="id_category_name">      
+      </div>  
+      <div>      
+        <label for="id_category_description">Category description:</label>
+        <input type="text" name="category_description" maxlength="255" required id="id_category_description">
+      </div>  
     </div>
     <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
-      <input type="file" id="imageInput">
-      <br>
-      <img id="previewImage" alt="Preview" style="width: 200px; height: 200px;">
+      <label for="id_cat_image">Cat image:</label>
+      <input id="imageInput" type="file" name="cat_image" accept="image/*" required id="id_cat_image">
+      <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
     <script>
         const imageInput = document.getElementById('imageInput');
         const previewImage = document.getElementById('previewImage');
@@ -70,7 +48,7 @@
     </script>
     </div>
     <div class="content">  
-      <button type="submit" class="btn add-item-btn">Sign in</button>
+      <button type="submit" class="btn add-item-btn">Add Category</button>
     </div>  
   </form>
     
