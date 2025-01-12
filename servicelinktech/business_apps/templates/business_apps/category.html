@@ -10,8 +10,13 @@
 {% block content %}
 <div class="main-content">
   <div class="content">    
-    <div class="form-header" style="display: flex; background-color: blueviolet;">
-      <h2>Category List</h2>
+    <div class="form-header" style="display: flex; background-color: blueviolet;">      
+      <div>
+        <h2>Category List</h2>
+      </div>
+      <div>        
+        <a href="{% url 'slt:category_add' %}">New Category</a>
+      </div>
     </div>   
         
     <table>

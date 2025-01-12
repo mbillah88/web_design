@@ -1,0 +1,168 @@
+{% extends "business_apps/master.html" %}
+
+{% block title %}
+  SLT | Add Product
+{% endblock %}
+
+{% block header %}
+  Add Product
+{% endblock %}
+{% block content %}
+
+<div class="main-content">
+  <div class="add-container">
+    <div class="form-header">
+      <div>
+        <h3>
+          {% if form.instance.pk %}
+            <span style="background-color: rgba(255, 17, 0, 0.822);">Edit Product : {{ form.instance.category_name}}</span>
+          {% else %}
+          <span>Add Product</span>
+          {% endif %}
+        </h3>
+
+      </div>
+      <div>        
+        <a href="{% url 'slt:product' %}">Product List</a>
+      </div>
+
+    </div>
+  <form class="form-container" method="POST" enctype="multipart/form-data">
+
+    <!-- Security token -->
+    {% csrf_token %}
+    <div class="content">      
+      <div>    
+        <label for="id_category_name">Category name:</label>
+        <select name="{{form.category_name}}" required id="id_category_name">          
+          {% for ItemCategory in form.fields.ItemCategory.queryset %} 
+          <option value="{{ ItemCategory.id }}" {% if ItemCategory.id == form.ItemCategory.value %}selected{% endif %}> {{ ItemBrand.category_name }} </option> 
+          {% endfor %}
+        </select> 
+      </div>
+      <div>  
+        <label for="id_brand_name">Brand name:</label>
+        <select name="{{ form.brand_name }}" required id="id_brand_name"></select>
+        {% for ItemBrand in form.fields.ItemBrand.queryset %} 
+        <option value="{{ ItemBrand.id }}" {% if ItemBrand.id == form.ItemBrand.value %}selected{% endif %}> {{ ItemBrand.brand_name }} </option> 
+        {% endfor %}
+      </div>    
+    </div>
+    <div class="content">
+      <div>    
+        <label for="id_item_name">Item name:</label>
+        <input type="text" name="item_name" maxlength="255" required id="id_item_name">
+      </div>
+  
+      <div>      
+          <label for="id_item_model">Item model:</label>
+          <input type="text" name="item_model" maxlength="255" required id="id_item_model"> 
+      </div>  
+      <div>
+        <label for="id_item_description">Item description:</label>
+        <input type="text" name="item_description" maxlength="255" required id="id_item_description">   
+      </div> 
+    </div>
+    <div class="content" >
+      <div>    
+        <label for="id_item_sprice">Item sprice:</label>
+        <input type="text" name="item_sprice" required id="id_item_sprice">
+      </div>  
+      <div>
+        <label for="id_item_pprice">Item pprice:</label>
+        <input type="text" name="item_pprice" required id="id_item_pprice">
+      </div> 
+    </div>
+    <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
+      <label for="id_item_image">Product image:</label>
+      <input id="imageInput" type="file" name="item_image" accept="image/*" required id="id_item_image">
+      {% if form.instance.pk %}
+      <img src="{{STATIC_URL}}{{form.instance.item_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
+      {% else %}
+      <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
+      {% endif %}
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const previewImage = document.getElementById('previewImage');
+        function previewSelectedImage() {
+          const file = imageInput.files[0];
+          if (file) {
+              const reader = new FileReader();
+              reader.readAsDataURL(file);
+              reader.onload = function(e) {
+                previewImage.src = e.target.result;
+              }
+          }
+        }
+        imageInput.addEventListener('change', previewSelectedImage);
+    </script>
+    </div>
+    <div class="content">  
+      {% if form.instance.pk %}
+        <button style="background-color: rgba(243, 15, 156, 0.507);" type="submit" class="btn add-item-btn">Update Category</button>
+      {% else %}
+        <button type="submit" class="btn add-item-btn">Add Category</button>
+      {% endif %}
+    </div> 
+  </form>
+  </div>
+  <form action="/your-name/" method="post">
+    <input type="hidden" name="csrfmiddlewaretoken" value="q1NAqrFi2awQnAxDiyIaH6UCmtGZOR3DpyOGF4IEhCCYN0CipdZx9KcgVevfO2xQ">
+      
+  <div>    
+      <label for="id_item_image">Item image:</label>     
+    <input type="file" name="item_image" accept="image/*" required id="id_item_image">
+</div>
+
+  <div>
+    
+      <label for="id_category_name">Category name:</label>
+    <select name="category_name" required id="id_category_name">
+  <option value="" selected>---------</option>
+
+  <option value="1">Desktop</option>
+
+  <option value="2">Laptop</option>
+
+  <option value="3">Printer</option>
+
+  <option value="4">Camera a</option>
+
+</select>
+    
+    
+</div>
+
+  <div>
+    
+      <label for="id_brand_name">Brand name:</label>
+    
+    
+    
+    <select name="brand_name" required id="id_brand_name">
+  <option value="" selected>---------</option>
+
+  <option value="1">HP</option>
+
+</select>
+    
+    
+</div>
+
+  <div>
+    
+      <label for="id_created_at">Created at:</label>
+    
+    
+    
+    <input type="text" name="created_at" required id="id_created_at">
+    
+    
+      
+    
+</div>
+    <input type="submit" value="Submit">
+</form>
+</div>
+<div>{{form.as_div}}</div>
+{% endblock %}

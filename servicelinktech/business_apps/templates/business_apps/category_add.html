@@ -11,12 +11,22 @@
 
 <div class="main-content">
   <div class="add-container">
-    <h3>{% if form.instance.pk %}
-      Edit
-     {% else %}
-      Add
-     {% endif %} Category :{{ form.instance.pk}}
-    </h3>
+    <div class="form-header">
+      <div>
+        <h3>
+          {% if form.instance.pk %}
+            <span style="background-color: rgba(255, 17, 0, 0.822);">Edit Category : {{ form.instance.category_name}}</span>
+          {% else %}
+          <span>Add Category</span>
+          {% endif %}
+        </h3>
+
+      </div>
+      <div>        
+        <a href="{% url 'slt:category' %}">List Category</a>
+      </div>
+
+    </div>
   <form class="form-container" method="POST" enctype="multipart/form-data">
 
     <!-- Security token -->
@@ -35,7 +45,11 @@
     <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
       <label for="id_cat_image">Cat image:</label>
       <input id="imageInput" type="file" name="cat_image" accept="image/*" required id="id_cat_image">
-      <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
+      {% if form.instance.pk %}
+      <img src="{{STATIC_URL}}{{form.instance.cat_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
+      {% else %}
+      <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
+      {% endif %}
     <script>
         const imageInput = document.getElementById('imageInput');
         const previewImage = document.getElementById('previewImage');
@@ -53,8 +67,12 @@
     </script>
     </div>
     <div class="content">  
-      <button type="submit" class="btn add-item-btn">Add Category</button>
-    </div>  
+      {% if form.instance.pk %}
+        <button style="background-color: rgba(243, 15, 156, 0.507);" type="submit" class="btn add-item-btn">Update Category</button>
+      {% else %}
+        <button type="submit" class="btn add-item-btn">Add Category</button>
+      {% endif %}
+    </div> 
   </form>
   </div>
 </div>

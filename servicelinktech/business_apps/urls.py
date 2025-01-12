@@ -9,8 +9,11 @@ urlpatterns = [
     path('sales/', views.sales, name='sales'),
     path('sales/new_sales/', views.new_sales, name='new_sales'),
     
-    path('item/', views.item, name='item'),
-    path('item/new_brands', views.item_add, name='item_add'),
+    path('product/', views.product, name='product'),
+    path('product/product_add', views.product_add, name='product_add'),
+    path('product/<int:pk>', views.product_details, name='product_details'),
+    path('product/<int:pk>/product_update', views.product_update, name='product_update'),
+    #path('image/<int:pk>/delete/', views.image_delete, name='image_delete'),
     
     path('category', views.category, name='category'),
     path('category/category_add', views.category_add, name='category_add'),
@@ -19,6 +22,8 @@ urlpatterns = [
     #path('image/<int:pk>/delete/', views.image_delete, name='image_delete'),
    
     path('brands', views.brands, name='brands'),
-    path('brands/new_brands', views.new_brands, name='new_brands'),
+    path('brands/new_brand', views.new_brand, name='new_brand'),
+    path('brands/<int:pk>/brand_update', views.brand_update, name='brand_update'),
+    #path('image/<int:pk>/delete/', views.image_delete, name='image_delete'),
     
 ]
