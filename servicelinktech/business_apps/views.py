@@ -101,11 +101,9 @@ def new_brand(request):
         form = ItemBrandForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            messages.success(request, "Data inserted successfully")
             return redirect('slt:brands')
     else:
         form = ItemBrandForm()
-        messages.warning(request, "Data was not inserted")
     return render(request, 'business_apps/brands_new.html', {'form': form})
 def brand_update(request, pk):
     brand = get_object_or_404(ItemBrand, id=pk)
@@ -113,7 +111,6 @@ def brand_update(request, pk):
         form = ItemBrandForm(request.POST, request.FILES, instance=brand)
         if form.is_valid():
             form.save()
-            messages.success(request, "Data Update successfully")
             return redirect('slt:brands')
     else:
         form = ItemBrandForm(instance=brand)

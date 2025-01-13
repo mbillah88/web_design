@@ -18,7 +18,6 @@ urlpatterns = [
 
     #Super Admin Url...
     path("dj-admin/", admin.site.urls),
-
     #Custom Admin  Url...
     path("accounts/", include("django.contrib.auth.urls")), 
 
