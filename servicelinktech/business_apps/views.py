@@ -101,10 +101,10 @@ def new_brand(request):
         form = ItemBrandForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('slt:brands')
+        return redirect('slt:brands')
     else:
         form = ItemBrandForm()
-    return render(request, 'business_apps/brands_new.html', {'form': form})
+        return render(request, 'business_apps/brands_new.html', {'form': form})
 def brand_update(request, pk):
     brand = get_object_or_404(ItemBrand, id=pk)
     if request.method == 'POST':

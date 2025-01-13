@@ -11,7 +11,11 @@ class ItemCategoryForm(forms.ModelForm):
 class ItemBrandForm(forms.ModelForm):
     class Meta:
         model = ItemBrand
-        fields = "__all__"
+        fields = ['brand_name', 'brand_description', 'brand_image', 'category_name']
+        widgets = { 
+            'brand_image': forms.ClearableFileInput(attrs={ 'class': 'form-control-file', 'id': 'imageInput' }),
+       
+         }
       
 class ItemProductForm(forms.ModelForm):
     class Meta:
