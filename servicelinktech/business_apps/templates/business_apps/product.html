@@ -28,19 +28,26 @@
           <th scope="col">Product Brand</th>
           <th scope="col">Product Model</th>
           <th scope="col">Product description</th>
+          <th scope="col">Product Price</th>
           <th scope="col">Action</th>
         </tr>
-        {% for data in cat %}
-        <tr>
-          
-          <td><a href="{% url 'slt:product_details' data.pk %}"></a><img src="{{ data.item_image.url }}" style="height: 100px;"></a></td>
+        {% for data in prod %}
+        <tr>       
+          <td>
+            <a href="{% url 'slt:product_details' data.pk %}">
+              {% if data.item_image %}
+                <img src="{{data.item_image.url}}" style="width:100px; height:auto;">
+              {% endif %}
+            </a>
+          </td>
           <td>{{ data.item_name }}</td>
           <td>{{ data.category_name }}</td>
           <td>{{ data.brand_name }}</td>
           <td>{{ data.item_model }}</td>
           <td>{{ data.item_description }}</td>
+          <td>{{ data.item_sprice }}</td>
           <td>
-            <a href="{% url 'slt:category_update' data.pk %}">Edit</a>
+            <a href="{% url 'slt:product_update' data.pk %}">Edit</a>
             <a href="">Delete</a>
           </td>
         </tr>

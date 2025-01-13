@@ -16,5 +16,14 @@ class ItemBrandForm(forms.ModelForm):
 class ItemProductForm(forms.ModelForm):
     class Meta:
         model = ItemProduct
-        fields = "__all__"
+        fields = [  'item_name', 
+                    'item_model', 
+                    'item_description', 
+                    'item_sprice', 
+                    'item_pprice', 
+                    'item_image',
+                    'category_name', 
+                    'brand_name'
+                    #'created_at'
+                    ]
       

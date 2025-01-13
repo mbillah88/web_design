@@ -34,25 +34,33 @@ def sales(request):
     return HttpResponse('sales_list successfully uploaded')
 
 # Product Item ...
-def product(request):
-  template = loader.get_template('business_apps/product.html')
-  return HttpResponse(template.render())
+@login_required
+def product(request):  
+  prod = ItemProduct.objects.all() 
+  return render(request, 'business_apps/product.html', {'prod': prod})
 def product_details(request, pk):  
-  cat = get_object_or_404(ItemCategory, pk=pk)
+  cat = get_object_or_404(ItemProduct, pk=pk)
   return render(request, 'business_apps/product_details.html', {'cat': cat})
 def product_add(request):
-  if request.method == 'POST':
-    form = ItemProductForm(request.POST, request.FILES)
-    if form.is_valid():
-      form.save()
-      return redirect('slt:product')
-  else:
-      form = ItemProductForm()
-      return render(request, 'business_apps/product_add.html', {'form': form})
+    if request.method == 'POST': 
+        form = ItemProductForm(request.POST, request.FILES) 
+        if form.is_valid(): 
+          form.save() 
+        return redirect('slt:product')
+    else: 
+        form = ItemProductForm() 
+        return render(request, 'business_apps/product_add.html', {'form': form})
 
 def product_update(request, pk):
-  template = loader.get_template('business_apps/product_add.html')
-  return HttpResponse(template.render())
+    cat = get_object_or_404(ItemProduct, id=pk)
+    if request.method == 'POST': 
+        form = ItemProductForm(request.POST, request.FILES, instance=cat) 
+        if form.is_valid(): 
+          form.save() 
+        return redirect('slt:product')
+    else: 
+        form = ItemProductForm(instance=cat) 
+        return render(request, 'business_apps/product_add.html', {'form': form})
   
 # Category ...
 @login_required
