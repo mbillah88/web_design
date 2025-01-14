@@ -21,7 +21,6 @@ class ItemBrand(models.Model):
   brand_name = models.CharField(max_length=255)
   brand_description = models.CharField(max_length=255)
   brand_image = models.ImageField(upload_to='images/brand/')
-  category_name = models.ForeignKey(ItemCategory, on_delete=models.CASCADE, null = True)   
   def __str__(self):         
     return self.brand_name
 

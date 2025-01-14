@@ -246,7 +246,10 @@ main .content{
 .add-container{
     margin: auto;
     max-width: 600px;
-    /*width: 600px;*/
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 .add-item-btn{
     width: -webkit-fill-available;
@@ -255,9 +258,9 @@ main .content{
     background-color: rgba(61, 226, 10, 0.678);
 }
 
-input[type=text], input[type=number], select {
+input[type=text], input[type=number], input[type=datetime-local],select {
     width: 100%;
-    padding: 12px 20px;
+    padding: 6px 10px;
     margin: 8px 0;
     display: inline-block;
     border: 1px solid #dff0bf;

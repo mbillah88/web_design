@@ -38,121 +38,75 @@
             <option value="{{ ItemCategory.id }}" {% if ItemCategory.id == form.ItemCategory.value %}selected{% endif %}> {{ ItemBrand.category_name }} </option> 
             {% endfor %}
         </div>
-        <div>  
+        <div>
           <label for="id_brand_name">Brand name:</label>
           {{ form.brand_name }}
           {% for ItemBrand in form.fields.ItemBrand.queryset %} 
           <option value="{{ ItemBrand.id }}" {% if ItemBrand.id == form.ItemBrand.value %}selected{% endif %}> {{ ItemBrand.brand_name }} </option> 
           {% endfor %}
-        </div>    
+        </div>
+      </div>
+      <div class="content" > 
+        <div> 
+          <label for="id_item_name">Item name:</label>
+          <input type="text" name="item_name" maxlength="255" required id="id_item_name" value="{{ form.instance.item_name }}">     
+        </div>
+        <div>
+          <label for="id_item_model">Item model:</label>
+          <input type="text" name="item_model" maxlength="255" required id="id_item_model" value="{{ form.instance.item_model }}">    
+        </div>
+        <div>
+          <label for="id_item_description">Item description:</label>
+          <input type="text" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}">    
+        </div>
+      </div>
+      <div class="content" style="display: flex; align-items: center; justify-content: center; gap: 2rem;"> 
+        <div>
+          <label for="id_item_sprice">Item sprice:</label>
+          <input type="number" name="item_sprice" step="0.01" required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
+        </div>
+        <div>
+          <label for="id_item_pprice">Item pprice:</label>
+          <input type="number" name="item_pprice" step="0.01" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+        </div>
+      </div>
+      <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
+        <div>
+          <label for="imageInput">Item image:</label>
+          {{form.item_image}}
+          <!--<input id="imageInput" type="file" name="item_image" accept="image/*" required id="id_item_image" value="">-->
+        </div>
+        <div>
+          {% if form.instance.item_image %}
+          <img src="{{STATIC_URL}}{{form.instance.item_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
+          {% else %}
+          <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
+          {% endif %}
+          <script>
+              const imageInput = document.getElementById('imageInput');
+              const previewImage = document.getElementById('previewImage');
+              function previewSelectedImage() {
+                const file = imageInput.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = function(e) {
+                      previewImage.src = e.target.result;
+                    }
+                }
+              }
+              imageInput.addEventListener('change', previewSelectedImage);
+          </script>
+        </div>
       </div>
       <div class="content">
-        <!-- <fieldset class="module aligned "> -->
-          <div class="form-row field-item_name">
-            <div>
-              <div class="flex-container">
-                <label class="required" for="id_item_name">Item name:</label>
-                <input type="text" name="item_name" class="vTextField" maxlength="255" required id="id_item_name" value="{{ form.instance.item_name }}">                
-              </div>
-            </div>
-          </div>
-          <div class="form-row field-item_model">
-            <div>
-              <div class="flex-container">
-                <label class="required" for="id_item_model">Item model:</label>                                      
-                <input type="text" name="item_model" class="vTextField" maxlength="255" required id="id_item_model" value="{{ form.instance.item_model }}">                 
-              </div>
-            </div>
-          </div>
-          <div class="form-row field-item_description">
-            <div>
-              <div class="flex-container">
-                <label class="required" for="id_item_description">Item description:</label>
-                <input type="text" name="item_description" class="vTextField" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}">
-              </div>
-            </div>
-          </div>
-          
+        <label for="id_created_at">Created at:</label>
+        {{form.created_at}}
+         <!--<input type="text" name="created_at" required id="id_created_at"value="{{ form.instance.created_at }}">  -->  
       </div>
-      <div class="content" style="display: flex; align-items: center; justify-content: center; gap: 2rem;">
-        <div class="flex-container">
-          <label class="required" for="id_item_sprice">Sales Price:</label>
-          <input type="number" name="item_sprice" step="0.01" required id="id_item_sprice" value="{{ form.instance.item_sprice }}">
-        </div>
-        <div class="flex-container">
-          <label class="required" for="id_item_pprice">Purchase Price:</label>
-          <input type="number" name="item_pprice" step="0.01" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">
-        </div>
+      <div class="submit-row">
+        <input type="submit">
       </div>
-          
-      <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
-        <label for="id_item_image">Product image:</label>
-        <input id="imageInput" type="file" name="item_image" accept="image/*" required id="id_item_image" value="{{ form.instance.item_image }}">
-        {% if form.instance.item_image %}
-        <img src="{{STATIC_URL}}{{form.instance.item_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
-        {% else %}
-        <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
-        {% endif %}
-      <script>
-          const imageInput = document.getElementById('imageInput');
-          const previewImage = document.getElementById('previewImage');
-          function previewSelectedImage() {
-            const file = imageInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = function(e) {
-                  previewImage.src = e.target.result;
-                }
-            }
-          }
-          imageInput.addEventListener('change', previewSelectedImage);
-      </script>
-      </div>
-      <!--
-          <div class="form-row field-item_image">
-            <div>
-              <div class="flex-container">
-                <label class="required" for="id_item_image">Item image:</label>
-                <input type="file" name="item_image" accept="image/*" required id="id_item_image">
-              </div>
-            </div>
-          </div>
-          <div class="form-row field-category_name">
-            <div>
-              <div class="flex-container">
-                <label class="required" for="id_category_name">Category name:</label>
-                <div class="related-widget-wrapper" data-model-ref="item category">
-                  <select name="category_name" required id="id_category_name">
-                    <option value="" selected>---------</option>
-                    <option value="1">Desktop</option>
-                    <option value="2">Laptop</option>
-                    <option value="3">Printer</option>
-                    <option value="4">Camera a</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="form-row field-brand_name">
-            <div>
-              <div class="flex-container">
-                <label class="required" for="id_brand_name">Brand name:</label>
-                <div class="related-widget-wrapper" data-model-ref="item brand">
-                  <select name="brand_name" required id="id_brand_name">
-                    <option value="" selected>---------</option>
-                    <option value="1">HP</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        -->
-          
-       <!-- </fieldset> -->
-        <div class="submit-row">
-          <input type="submit">
-        </div>
     </form>
   </div>
 </div>

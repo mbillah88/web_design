@@ -27,6 +27,15 @@
       </div>
 
     </div>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
   <form class="form-container" method="POST" enctype="multipart/form-data">
 
     <!-- Security token -->
@@ -49,7 +58,7 @@
        <!--<input id="imageInput" type="file" name="brand_image" accept="image/*" required id="id_brand_image" value="">--> 
       </div>
       <div>
-        {% if form.instance.pk %}
+        {% if form.instance.brand_image %}
         <img src="{{STATIC_URL}}{{form.instance.brand_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
         {% else %}
         <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">

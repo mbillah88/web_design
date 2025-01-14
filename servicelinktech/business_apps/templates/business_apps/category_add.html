@@ -43,13 +43,18 @@
       </div>  
     </div>
     <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
-      <label for="id_cat_image">Cat image:</label>
-      <input id="imageInput" type="file" name="cat_image" accept="image/*" required id="id_cat_image">
-      {% if form.instance.pk %}
-      <img src="{{STATIC_URL}}{{form.instance.cat_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
-      {% else %}
-      <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
-      {% endif %}
+      <div>
+        <label for="id_cat_image">Cat image:</label>
+        {{form.cat_image}}
+        <!--<input id="imageInput" type="file" name="cat_image" accept="image/*" required id="id_cat_image"> -->
+      </div>
+      <div>
+        {% if form.instance.cat_image %}
+        <img src="{{STATIC_URL}}{{form.instance.cat_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
+        {% else %}
+        <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
+        {% endif %}
+      </div>
     <script>
         const imageInput = document.getElementById('imageInput');
         const previewImage = document.getElementById('previewImage');

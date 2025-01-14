@@ -45,22 +45,22 @@ def product_add(request):
     if request.method == 'POST': 
         form = ItemProductForm(request.POST, request.FILES) 
         if form.is_valid(): 
-          form.save() 
-        return redirect('slt:product')
+            form.save() 
+            return redirect('slt:product')
     else: 
         form = ItemProductForm() 
-        return render(request, 'business_apps/product_add.html', {'form': form})
+    return render(request, 'business_apps/product_add.html', {'form': form})
 
 def product_update(request, pk):
     cat = get_object_or_404(ItemProduct, id=pk)
     if request.method == 'POST': 
         form = ItemProductForm(request.POST, request.FILES, instance=cat) 
         if form.is_valid(): 
-          form.save() 
-        return redirect('slt:product')
+            form.save() 
+            return redirect('slt:product')          
     else: 
         form = ItemProductForm(instance=cat) 
-        return render(request, 'business_apps/product_add.html', {'form': form})
+    return render(request, 'business_apps/product_add.html', {'form': form})
   
 # Category ...
 @login_required
@@ -112,6 +112,10 @@ def brand_update(request, pk):
         if form.is_valid():
             form.save()
             return redirect('slt:brands')
+        else:
+            messages.error(request,'username or password not correct')
+           # return redirect('slt:new_brand')
+
     else:
         form = ItemBrandForm(instance=brand)
     return render(request, 'business_apps/brands_new.html', {'form': form})

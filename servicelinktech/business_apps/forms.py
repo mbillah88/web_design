@@ -7,11 +7,14 @@ class ItemCategoryForm(forms.ModelForm):
     class Meta:
         model = ItemCategory
         fields = "__all__"
+        widgets = { 
+            'cat_image': forms.ClearableFileInput(attrs={ 'id': 'imageInput' }),       
+         }
       
 class ItemBrandForm(forms.ModelForm):
     class Meta:
         model = ItemBrand
-        fields = ['brand_name', 'brand_description', 'brand_image', 'category_name']
+        fields = "__all__"
         widgets = { 
             'brand_image': forms.ClearableFileInput(attrs={ 'class': 'form-control-file', 'id': 'imageInput' }),
        
@@ -27,7 +30,12 @@ class ItemProductForm(forms.ModelForm):
                     'item_pprice', 
                     'item_image',
                     'category_name', 
-                    'brand_name'
-                    #'created_at'
+                    'brand_name',
+                    'created_at'
                     ]
+      
+        widgets = { 
+            'item_image': forms.ClearableFileInput(attrs={ 'id': 'imageInput' }),   
+            'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),     
+         }
       
