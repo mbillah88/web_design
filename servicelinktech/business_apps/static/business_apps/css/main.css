@@ -240,8 +240,8 @@ main .content{
 .form-container{    
     gap: 1rem;
     display: flex;
-    flex-flow: column;
-    flex: 1;
+    flex-flow: column;    
+    padding-top: 1rem;
 }
 .add-container{
     margin: auto;
@@ -296,4 +296,30 @@ input[type=text], input[type=number], input[type=datetime-local],select {
   
   tr:nth-child(even) {
     background-color: #dddddd;
+  }
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: -5px;
+    left: 105%;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
   }

@@ -38,4 +38,15 @@ class ItemProductForm(forms.ModelForm):
             'item_image': forms.ClearableFileInput(attrs={ 'id': 'imageInput' }),   
             'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),     
          }
-      
+
+
+class ClientsForm(forms.ModelForm):
+    class Meta:
+        model = Clients
+        fields = "__all__"
+
+
+class SupplierForm(forms.ModelForm):
+    class Meta:
+        model = Supplier
+        fields = "__all__"

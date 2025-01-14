@@ -1,25 +1,30 @@
 {% extends "business_apps/master.html" %}
 
 {% block title %}
-  SLT | Add Category
+  SLT | Product Details
 {% endblock %}
 
 {% block header %}
-  Category {{ cat.category_name}}
+  {{ prod.item_name}}
 {% endblock %}
 {% block content %}
 
 <div class="main-content">
   <div class="add-container">
-    <div class="content">
-      <h1> {{ cat.category_name}} </h1>
-      <h3> {{ cat.category_description}} </h3>
-    </div>
-    <div class="content">
-      <img src="{{ cat.cat_image.url }}" style="height: 100px;">
-    </div>
-    <div class="content">
-      <a href="{% url 'slt:category' %}">Backt ot List</a>
+    <div class="content" style="justify-content: center;">
+      <div class="content">
+        <h1> {{ prod.item_name}} </h1>
+        <h3> {{ prod.category_name}} </h3>
+        <h3> {{ prod.brand_name}} </h3>
+        <img src="{{ prod.item_image.url }}" style="height: 100%; width: 100%;">
+      </div>
+      <div class="content">
+        <h3> {{ prod.item_model}} </h3>
+        <h3> {{ prod.item_sprice}} </h3>
+      </div>
+      <div class="content">
+        <a href="{% url 'slt:product' %}">Backt ot List</a>
+      </div>
     </div>
   </div>
 </div>

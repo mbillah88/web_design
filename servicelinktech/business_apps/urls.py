@@ -26,4 +26,14 @@ urlpatterns = [
     path('brands/<int:pk>/brand_update', views.brand_update, name='brand_update'),
     #path('image/<int:pk>/delete/', views.image_delete, name='image_delete'),
     
+    path('clients', views.clients, name='clients'),
+    path('clients/clients_new', views.clients_new, name='clients_new'),
+    path('clients/<int:pk>/clients_update', views.clients_update, name='clients_update'),
+    #path('image/<int:pk>/delete/', views.image_delete, name='image_delete'),
+
+    path('supplier', views.supplier, name='supplier'),
+    path('supplier/supplier_new', views.supplier_new, name='supplier_new'),
+    path('supplier/<int:pk>/supplier_update', views.supplier_update, name='supplier_update'),
+    #path('image/<int:pk>/delete/', views.image_delete, name='image_delete'),
+
 ]

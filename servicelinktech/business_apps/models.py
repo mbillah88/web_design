@@ -37,3 +37,22 @@ class ItemProduct(models.Model):
   created_at = models.DateTimeField(null = True)   
   def __str__(self):         
     return self.item_name
+
+
+class Clients(models.Model):
+  client_name = models.CharField(max_length=255)
+  client_org = models.CharField(max_length=255)
+  client_desig = models.CharField(max_length=255)
+  client_mobile = models.CharField(max_length=255)
+  client_address = models.CharField(max_length=255)
+  def __str__(self):         
+    return self.client_name
+
+class Supplier(models.Model):
+  supplier_name = models.CharField(max_length=255)
+  supplier_org = models.CharField(max_length=255)
+  supplier_desig = models.CharField(max_length=255)
+  supplier_mobile = models.CharField(max_length=255)
+  supplier_address = models.CharField(max_length=400)
+  def __str__(self):         
+    return self.supplier_name

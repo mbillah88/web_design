@@ -24,7 +24,7 @@
   
         </div>
         <div>        
-          <a href="{% url 'slt:brands' %}">Backt ot List</a>
+          <a href="{% url 'slt:supplier' %}">Backt ot List</a>
         </div>
   
       </div>
@@ -44,11 +44,11 @@
       
       <div class="content">
         <div>
-          <label for="id_category_name">Brand name:</label>
+          <label for="id_category_name">Supplier name:</label>
           <input type="text" name="brand_name" maxlength="255" required id="id_brand_name" value="{{form.instance.brand_name}}">      
         </div>  
         <div>      
-          <label for="id_brand_description">Brand description:</label>
+          <label for="id_brand_description">Supplier Org:</label>
           <input type="text" name="brand_description" maxlength="255" required id="id_brand_description" value="{{form.instance.brand_description}}">
         </div>  
       </div>

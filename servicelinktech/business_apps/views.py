@@ -39,8 +39,8 @@ def product(request):
   prod = ItemProduct.objects.all() 
   return render(request, 'business_apps/product.html', {'prod': prod})
 def product_details(request, pk):  
-  cat = get_object_or_404(ItemProduct, pk=pk)
-  return render(request, 'business_apps/product_details.html', {'cat': cat})
+  prod = get_object_or_404(ItemProduct, pk=pk)
+  return render(request, 'business_apps/product_details.html', {'prod': prod})
 def product_add(request):
     if request.method == 'POST': 
         form = ItemProductForm(request.POST, request.FILES) 
@@ -119,6 +119,62 @@ def brand_update(request, pk):
     else:
         form = ItemBrandForm(instance=brand)
     return render(request, 'business_apps/brands_new.html', {'form': form})
+
+# Clients ....
+def clients(request):
+  client = Clients.objects.all() 
+  return render(request, 'business_apps/clients.html', {'client': client})
+def clients_new(request):
+    if request.method == 'POST':
+        form = ClientsForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+        return redirect('slt:clients')
+    else:
+        form = ClientsForm()
+        return render(request, 'business_apps/clients_new.html', {'form': form})
+def clients_update(request, pk):
+    brand = get_object_or_404(Clients, id=pk)
+    if request.method == 'POST':
+        form = ClientsForm(request.POST, request.FILES, instance=brand)
+        if form.is_valid():
+            form.save()
+            return redirect('slt:brands')
+        else:
+            messages.error(request,'username or password not correct')
+           # return redirect('slt:new_brand')
+
+    else:
+        form = ClientsForm(instance=brand)
+    return render(request, 'business_apps/clients_new.html', {'form': form})
+
+# Supplier ....
+def supplier(request):
+  supplier = Supplier.objects.all() 
+  return render(request, 'business_apps/supplier.html', {'supplier': supplier})
+def supplier_new(request):
+    if request.method == 'POST':
+        form = SupplierForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+        return redirect('slt:supplier')
+    else:
+        form = SupplierForm()
+        return render(request, 'business_apps/supplier_new.html', {'form': form})
+def supplier_update(request, pk):
+    brand = get_object_or_404(Supplier, id=pk)
+    if request.method == 'POST':
+        form = SupplierForm(request.POST, request.FILES, instance=brand)
+        if form.is_valid():
+            form.save()
+            return redirect('slt:supplier')
+        else:
+            messages.error(request,'Not Update')
+           # return redirect('slt:new_brand')
+
+    else:
+        form = Supplier(instance=brand)
+    return render(request, 'business_apps/supplier_new.html', {'form': form})
 
 def success(request):
     return HttpResponse('successfully uploaded')
