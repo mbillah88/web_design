@@ -11,7 +11,7 @@ def imageFilePath(request, filename):
 class ItemCategory(models.Model):
   category_name = models.CharField(max_length=255)
   category_description = models.CharField(max_length=255)
-  cat_image = models.ImageField(upload_to='images/category/')
+  cat_image = models.ImageField(upload_to='images/category/', default='images/default.png')
   #created_at = models.DateTimeField()      
   def __str__(self):         
     return self.category_name
@@ -20,7 +20,7 @@ class ItemCategory(models.Model):
 class ItemBrand(models.Model):
   brand_name = models.CharField(max_length=255)
   brand_description = models.CharField(max_length=255)
-  brand_image = models.ImageField(upload_to='images/brand/')
+  brand_image = models.ImageField(upload_to='images/brand/', default='images/default.png')
   def __str__(self):         
     return self.brand_name
 
@@ -31,7 +31,7 @@ class ItemProduct(models.Model):
   item_description = models.CharField(max_length=255, null = True)
   item_sprice = models.DecimalField(max_digits=10, decimal_places=2, null=True)
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-  item_image = models.ImageField(upload_to='images/product/', blank=True, null=True)
+  item_image = models.ImageField(upload_to='images/product/', blank=True, null=True, default='images/default.png')
   category_name = models.ForeignKey(ItemCategory, on_delete=models.CASCADE, null = True)
   brand_name = models.ForeignKey(ItemBrand, on_delete=models.CASCADE, null = True)
   created_at = models.DateTimeField(null = True)   
