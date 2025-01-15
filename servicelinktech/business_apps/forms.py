@@ -2,6 +2,21 @@
 from django import forms
 from .models import *
 
+# iterable 
+PaymentChoice =( 
+    ("1", "Cash"), 
+    ("2", "Card"), 
+    ("3", "Others"), 
+    ("4", "Due"), 
+) 
+  
+# iterable 
+OrderChoice =( 
+    ("1", "Received"), 
+    ("2", "Pending"), 
+    ("3", "Ordered"), 
+    ("4", "Cancel"), 
+) 
 
 class ItemCategoryForm(forms.ModelForm):
     class Meta:
@@ -36,7 +51,8 @@ class ItemProductForm(forms.ModelForm):
       
         widgets = { 
             'item_image': forms.ClearableFileInput(attrs={ 'id': 'imageInput' }),   
-            'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),     
+            'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),   
+            # 'status' = forms.ChoiceField(choices = OrderChoice),  
          }
 
 class ClientsForm(forms.ModelForm):

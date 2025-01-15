@@ -7,7 +7,7 @@ def imageFilePath(request, filename):
     timeNow = datetime.datetime.now()
     filename = "%s%s" % (timeNow, old_filename)
     return BASE_DIR('uploads/', filename)
-
+  
 class ItemCategory(models.Model):
   category_name = models.CharField(max_length=255)
   category_description = models.CharField(max_length=255)
@@ -27,13 +27,18 @@ class ItemBrand(models.Model):
 
 class ItemProduct(models.Model):
   item_name = models.CharField(max_length=255)
+  category_name = models.ForeignKey(ItemCategory, on_delete=models.CASCADE, null = True)
+  brand_name = models.ForeignKey(ItemBrand, on_delete=models.CASCADE, null = True)
   item_model = models.CharField(max_length=255, null = True)
   item_description = models.CharField(max_length=255, null = True)
+  itme_unit = models.CharField(max_length=255, null = True)
+  itme_sku = models.CharField(max_length=255, null = True)
+  itme_alert_qty = models.CharField(max_length=255, null = True)
+  itme_barcode = models.CharField(max_length=255, null = True)
   item_sprice = models.DecimalField(max_digits=10, decimal_places=2, null=True)
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True)
   item_image = models.ImageField(upload_to='images/product/', blank=True, null=True, default='images/default.png')
-  category_name = models.ForeignKey(ItemCategory, on_delete=models.CASCADE, null = True)
-  brand_name = models.ForeignKey(ItemBrand, on_delete=models.CASCADE, null = True)
+  itme_status = models.CharField(max_length=255, null = True)
   created_at = models.DateTimeField(null = True)   
   def __str__(self):         
     return self.item_name
@@ -56,3 +61,31 @@ class Supplier(models.Model):
   supplier_address = models.CharField(max_length=400)
   def __str__(self):         
     return self.supplier_name
+
+class PurchaseOrder(models.Model):
+  supplier_name = models.ForeignKey(Supplier, on_delete=models.CASCADE, null = True)
+  porder_total = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+  porder_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+  porder_status = models.CharField(max_length=255)
+  porder_note = models.CharField(max_length=255)
+  porder_create_time = models.DateTimeField(null = True)  
+  porder_update_time = models.DateTimeField(null = True)  
+  porder_create_by = models.CharField(max_length=255)
+  porder_update_by = models.CharField(max_length=255)
+
+class PurchaseDetails(models.Model):
+  porder_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
+  item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
+  itme_unit = models.CharField(max_length=255)
+  itme_qty = models.CharField(max_length=255)
+  item_sprice = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+  item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+
+class PurchasePayment(models.Model):
+  order_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
+  payment_amount = models.CharField(max_length=255)
+  payment_status = models.CharField(max_length=255)
+  payment_time = models.DateTimeField(null = True)  
+  payment_update_time = models.DateTimeField(null = True)   
+  payment_create_by = models.CharField(max_length=255)
+  payment_update_by = models.CharField(max_length=255)
