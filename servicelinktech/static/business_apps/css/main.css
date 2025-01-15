@@ -18,7 +18,7 @@
     .containers{
         flex-direction: column;
     }
-    aside#sidebar {
+    .containers > aside#sidebar.nav-side-bar{
         width: 100%;
         height: auto;
         transition: auto;
@@ -26,6 +26,9 @@
     aside > .side-bar{
         margin-top: 0;
         margin-bottom: 0;
+    }
+    main .main-content {
+        flex-wrap: wrap;
     }
     #sid-nav-btn1{
         display: none;
@@ -46,18 +49,20 @@ body{
     display: flex;
     margin: 0 auto;
     width: 100%;
+    min-height: 100dvh; 
+    
+    > main{
+        flex: 1;
+    }
 }
 aside#sidebar{
     display: flex;
     flex-direction: column;
     width: 70px; 
-    height: 100vh; 
     padding: .5rem;
     background-color:  #013d3d; 
     transition: all 330ms ease-in-out;
-    position: sticky;
     top: 0;
-    align-self: start;
 }
 aside#sidebar.nav-side-bar{
     width: 250px;  
@@ -116,12 +121,13 @@ aside:not(.nav-side-bar):hover {
     }
 }
 */
-.side-bar{    
+aside .side-bar{    
   flex: 1 1 auto;
   margin-top: 1rem;
   background-color: darkcyan;
   padding-top: .5rem;
   padding-bottom: .5rem;
+  overflow: hidden;
 }
 .side-nav-body.colaps{    
   display: none;
@@ -160,8 +166,8 @@ a.sidebar-link:hover{
 }
 a.sidebar-link.active{
     background-color: rgba(8, 247, 135, 0.651);
-    border-left: 5px solid #3b7ddd;
-    border-right: 3px solid #70fa64;
+    border-left: 5px solid #f73949;
+    border-right: 3px solid #0e0af0;
     box-shadow: 0 4px 8px 0 rgb(248, 246, 109), 0 6px 20px 0 rgba(253, 252, 252, 0.562);
 }
 a.sidebar-link span{
@@ -174,13 +180,18 @@ a.sidebar-link span{
     rotate: 180deg;
     color: #f81212;
 }
-*/
+aside > div.side-nav-body{
+    display: flex; 
+    flex-flow: column;
+    flex: auto;
+    transition: all 333ms ease-in-out;
+}
 /* Sidebar End*/
 
-main{    
+main {    
    flex: 1;
 }
-.main-container-head{    
+main .main-container-head{    
     display: flex;
     flex-direction: row;
     background-color: midnightblue;
@@ -190,29 +201,101 @@ main{
     justify-content: space-between;
     align-items: center;
     color: cornflowerblue;
+    
     > div{
         display: flex;
-        align-items: center;        
+        align-items: center;     
+        gap: 1rem;   
     }
-    > div > button{
-        display: flex;
-        align-items: center;
-        background: none;
-        border: 1px solid wheat;
-        color: wheat;
-        padding: .1rem .2rem .1rem .2rem;       
-    }
-}/*
-.main-content{
-    margin: 10px;
-    padding: 1rem;
+}
+
+.logout_btn{
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 1px solid wheat;
+    color: wheat;
+    padding: .1rem .2rem .1rem .2rem;       
+}
+main .main-content{
+    margin: .5rem;
+    padding: .5rem;
     display: flex;
     gap: 1rem;
-}*/
-.content{
+}
+main .content{
     border: 1px solid var(--line-color);
     border-radius: 1rem;
     padding: .85em;
-    background-color: beige;
+    background-color: #f2f2;
+    flex: 1;
+}
+.form-header{    
+    display: flex;
+    background-color: blueviolet;
+    padding: .5rem;
+    justify-content: space-between;
+    align-items: center;
+}
+.form-container{    
+    gap: 1rem;
+    display: flex;
+    flex-flow: column;    
+    padding-top: 1rem;
+}
+.add-container{
+    margin: auto;
+    max-width: 600px;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.add-item-btn{
+    width: -webkit-fill-available;
+    border-radius: 1rem;
+    padding: .5rem;
+    background-color: rgba(61, 226, 10, 0.678);
 }
 
+input[type=text], input[type=number], input[type=datetime-local],select {
+    width: 100%;
+    padding: 6px 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #dff0bf;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  input[type=submit]:hover {
+    background-color: #45a049;
+  }
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 80%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    font-size: .8em;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }

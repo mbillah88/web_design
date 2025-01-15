@@ -1,11 +1,11 @@
 {% extends "business_apps/master.html" %}
 
 {% block title %}
-  SLT | Add Brand
+  SLT | Add Clients
 {% endblock %}
 
 {% block header %}
-  Add Brand
+  Add Clients
 {% endblock %}
 {% block content %}
 
@@ -16,15 +16,15 @@
         <div>
           <h3>
             {% if form.instance.pk %}
-              <span style="background-color: rgba(255, 17, 0, 0.822);">Edit Brand : {{ form.instance.brand_name }}</span>
+              <span style="background-color: rgba(255, 17, 0, 0.822);">Edit Clients : {{ form.instance.clients_name }}</span>
             {% else %}
-            <span>Add Brand</span>
+            <span>Add Clients</span>
             {% endif %}
           </h3>
   
         </div>
         <div>        
-          <a href="{% url 'slt:brands' %}">Backt ot List</a>
+          <a href="{% url 'slt:clients' %}">Backt ot List</a>
         </div>
   
       </div>
@@ -40,56 +40,57 @@
     <form class="form-container" method="POST" enctype="multipart/form-data">
   
       <!-- Security token -->
-      {% csrf_token %}
-      
+      {% csrf_token %}      
       <div class="content">
-        <div>
-          <label for="id_category_name">Brand name:</label>
-          <input type="text" name="brand_name" maxlength="255" required id="id_brand_name" value="{{form.instance.brand_name}}">      
-        </div>  
-        <div>      
-          <label for="id_brand_description">Brand description:</label>
-          <input type="text" name="brand_description" maxlength="255" required id="id_brand_description" value="{{form.instance.brand_description}}">
-        </div>  
-      </div>
-      <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
-        <div>
-          <label for="id_brand_image">Brand image:</label>
-          {{form.brand_image}}
-         <!--<input id="imageInput" type="file" name="brand_image" accept="image/*" required id="id_brand_image" value="">--> 
+        <div class="form-row field-client_name">
+          <div>
+            <div class="flex-container">
+              <label class="required" for="id_client_name">Client name:</label>
+              <input type="text" name="client_name" class="vTextField" maxlength="255" required id="id_client_name" value="{{form.instance.client_name}}">
+            </div>
+          </div>
         </div>
-        <div>
-          {% if form.instance.brand_image %}
-          <img src="{{STATIC_URL}}{{form.instance.brand_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
-          {% else %}
-          <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
-          {% endif %}
+        <div class="form-row field-client_org">
+          <div>
+            <div class="flex-container">
+              <label class="required" for="id_client_org">Client org:</label>
+              <input type="text" name="client_org" class="vTextField" maxlength="255" required id="id_client_org" value="{{form.instance.client_org}}">
+            </div>
+          </div>
         </div>
-      <script>
-          const imageInput = document.getElementById('imageInput');
-          const previewImage = document.getElementById('previewImage');
-          function previewSelectedImage() {
-            const file = imageInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = function(e) {
-                  previewImage.src = e.target.result;
-                }
-            }
-          }
-          imageInput.addEventListener('change', previewSelectedImage);
-      </script>
+        <div class="form-row field-client_desig">
+          <div>
+            <div class="flex-container">
+              <label class="required" for="id_client_desig">Client desig:</label>
+              <input type="text" name="client_desig" class="vTextField" maxlength="255" required id="id_client_desig" value="{{form.instance.client_desig}}">
+            </div>
+          </div>
+        </div>
+        <div class="form-row field-client_mobile">
+          <div>
+            <div class="flex-container">
+              <label class="required" for="id_client_mobile">Client mobile:</label>
+              <input type="text" name="client_mobile" class="vTextField" maxlength="255" required id="id_client_mobile" value="{{form.instance.client_mobile}}">
+            </div>
+          </div>
+        </div>
+        <div class="form-row field-client_address">
+          <div>
+            <div class="flex-container">
+              <label class="required" for="id_client_address">Client address:</label>
+              <input type="text" name="client_address" class="vTextField" maxlength="255" required id="id_client_address" value="{{form.instance.client_address}}">
+            </div>
+          </div>
+        </div>
       </div>
       <div class="content">  
         {% if form.instance.pk %}
-          <button style="background-color: rgba(243, 15, 156, 0.507);" type="submit" class="btn add-item-btn">Update Brand</button>
+          <button style="background-color: rgba(243, 15, 156, 0.507);" type="submit" class="btn add-item-btn">Update Clients</button>
         {% else %}
-          <button type="submit" class="btn add-item-btn">Add Brand</button>
+          <button type="submit" class="btn add-item-btn">Add Clients</button>
         {% endif %}
       </div> 
     </form>
-
     </div>
   </div>
 </div>

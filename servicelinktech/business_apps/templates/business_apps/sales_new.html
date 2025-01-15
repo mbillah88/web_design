@@ -1,0 +1,116 @@
+{% extends "business_apps/master.html" %}
+
+{% block title %}
+  SLT | New Sales
+{% endblock %}
+
+{% block header %}
+  New Sales
+{% endblock %}
+{% block content %}
+
+<div class="main-content">
+  <div class="add-container">
+    <div class="content">
+      <div class="form-header">
+        <div>
+          <h34>
+            {% if form.instance.pk %}
+              <span style="background-color: rgba(255, 17, 0, 0.822);">Edit Sales : {{ form.instance.item_name}}</span>
+            {% else %}
+            <span>New Sales</span>
+            {% endif %}
+          </h4>
+
+        </div>
+        <div>        
+          <a href="{% url 'slt:sales' %}">Sales List</a>
+        </div>
+
+      </div>
+      <form class="form-container" enctype="multipart/form-data" method="post">
+        <!-- Security token -->
+        {% csrf_token %}
+        <div class="content" style="display: flex; align-items: center; justify-content: center; gap: 2rem;">      
+          <div>    
+            <label for="id_category_name">Sales name:</label>
+            {{form.category_name}}       
+              {% for ItemCategory in form.fields.ItemCategory.queryset %} 
+              <option value="{{ ItemCategory.id }}" {% if ItemCategory.id == form.ItemCategory.value %}selected{% endif %}> {{ ItemBrand.category_name }} </option> 
+              {% endfor %}
+          </div>
+          <div>
+            <label for="id_brand_name">Brand name:</label>
+            {{ form.brand_name }}
+            {% for ItemBrand in form.fields.ItemBrand.queryset %} 
+            <option value="{{ ItemBrand.id }}" {% if ItemBrand.id == form.ItemBrand.value %}selected{% endif %}> {{ ItemBrand.brand_name }} </option> 
+            {% endfor %}
+          </div>
+        </div>
+        <div class="content" > 
+          <div> 
+            <label for="id_item_name">Item name:</label>
+            <input type="text" name="item_name" maxlength="255" required id="id_item_name" value="{{ form.instance.item_name }}">     
+          </div>
+          <div>
+            <label for="id_item_model">Item model:</label>
+            <input type="text" name="item_model" maxlength="255" required id="id_item_model" value="{{ form.instance.item_model }}">    
+          </div>
+          <div>
+            <label for="id_item_description">Item description:</label>
+            <input type="text" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}">    
+          </div>
+        </div>
+        <div class="content" style="display: flex; align-items: center; justify-content: center; gap: 2rem;"> 
+          <div>
+            <label for="id_item_sprice">Item sprice:</label>
+            <input type="number" name="item_sprice" step="0.01" required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
+          </div>
+          <div>
+            <label for="id_item_pprice">Item pprice:</label>
+            <input type="number" name="item_pprice" step="0.01" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+          </div>
+        </div>
+        <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
+          <div>
+            <label for="imageInput">Item image:</label>
+            {{form.item_image}}
+            <!--<input id="imageInput" type="file" name="item_image" accept="image/*" required id="id_item_image" value="">-->
+          </div>
+          <div>
+            {% if form.instance.item_image %}
+            <img src="{{STATIC_URL}}{{form.instance.item_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
+            {% else %}
+            <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
+            {% endif %}
+            <script>
+                const imageInput = document.getElementById('imageInput');
+                const previewImage = document.getElementById('previewImage');
+                function previewSelectedImage() {
+                  const file = imageInput.files[0];
+                  if (file) {
+                      const reader = new FileReader();
+                      reader.readAsDataURL(file);
+                      reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                      }
+                  }
+                }
+                imageInput.addEventListener('change', previewSelectedImage);
+            </script>
+          </div>
+        </div>
+        <div class="content">
+          <label for="id_created_at">Created at:</label>
+          {{form.created_at}}
+          <!--<input type="text" name="created_at" required id="id_created_at"value="{{ form.instance.created_at }}">  -->  
+        </div>
+        <div class="submit-row">
+          <input type="submit">
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

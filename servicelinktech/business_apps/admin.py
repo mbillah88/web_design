@@ -5,3 +5,6 @@ from .models import *
 admin.site.register(ItemCategory)
 admin.site.register(ItemBrand)
 admin.site.register(ItemProduct)
+admin.site.register(Clients)
+admin.site.register(Supplier)
+

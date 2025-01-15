@@ -39,12 +39,10 @@ class ItemProductForm(forms.ModelForm):
             'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),     
          }
 
-
 class ClientsForm(forms.ModelForm):
     class Meta:
         model = Clients
         fields = "__all__"
-
 
 class SupplierForm(forms.ModelForm):
     class Meta:

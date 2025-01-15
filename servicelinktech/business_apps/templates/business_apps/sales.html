@@ -1,11 +1,11 @@
 {% extends "business_apps/master.html" %}
 
 {% block title %}
-  SLT | Product
+  SLT | Sales List
 {% endblock %}
 
 {% block header %}
-  Product
+Sales List
 {% endblock %}
 
 {% block content %}
@@ -13,16 +13,15 @@
   <div class="content">    
     <div class="form-header" style="display: flex; background-color: blueviolet;">      
       <div>
-        <h3>Product List</h3>
+        <h3>Sales List</h3>
       </div>
       <div>        
-        <a href="{% url 'slt:product_add' %}">New Product</a>
+        <a href="{% url 'slt:sales_new' %}">New Sales</a>
       </div>
     </div>   
         
     <table>
         <tr>
-          <th scope="col">Product Image</th>
           <th scope="col">Product Name</th>
           <th scope="col">Product Category</th>
           <th scope="col">Product Brand</th>

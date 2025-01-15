@@ -1,39 +1,43 @@
 {% extends "business_apps/master.html" %}
 
 {% block title %}
-  SLT | Brand List
+  SLT | Clients List
 {% endblock %}
 
 {% block header %}
-  Brands List
+Clients List
 {% endblock %}
 {% block content %}
 <div class="main-content">
   <div class="content">      
     <div class="form-header" style="display: flex; background-color: blueviolet;">      
       <div>        
-        <h2>Brands List</h2>
+        <h3>Clients List</h3>
       </div>
       <div>        
-        <a href="{% url 'slt:new_brand' %}">New Brand</a>
+        <a href="{% url 'slt:clients_new' %}">New Clients</a>
       </div>
     </div>   
         
     <table>
         <tr>
-          <th scope="col">Brands Image</th>
-          <th scope="col">Brands Name</th>
-          <th scope="col">Brands description</th>
+          <th scope="col">Clients Name</th>
+          <th scope="col">Clients Org</th>
+          <th scope="col">Clients Designation</th>
+          <th scope="col">Clients Address</th>
+          <th scope="col">Clients Mobile</th>
           <th scope="col">Action</th>
         </tr>
-        {% for data in brand %}
+        {% for data in client %}
         <tr>
           
-          <td><img src="{{ data.brand_image.url }}" style="height: 100px;"></td>
-          <td>{{ data.brand_name }}</td>
-          <td>{{ data.brand_description }}</td>
+          <td>{{ data.client_name }}</td>
+          <td>{{ data.client_org }}</td>
+          <td>{{ data.client_desig }}</td>
+          <td>{{ data.client_address }}</td>
+          <td>{{ data.client_mobile }}</td>
           <td>
-            <a href="{% url 'slt:brand_update' data.pk %}">Edit</a>
+            <a href="{% url 'slt:clients_update' data.pk %}">Edit</a>
             <a href="">Delete</a>
           </td>
         </tr>

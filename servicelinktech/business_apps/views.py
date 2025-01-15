@@ -23,15 +23,11 @@ def dashboard(request):
   return render(request, 'business_apps/dashboard.html', context)
   
 @login_required
-def new_sales(request):
-  user = User.objects.all().values() 
-  context = {
-    'user': user,
-  }
-  return render(request, 'business_apps/new_sales.html', context)
+def sales_new(request):
+  return render(request, 'business_apps/sales_new.html')
 
 def sales(request):
-    return HttpResponse('sales_list successfully uploaded')
+  return render(request, 'business_apps/sales.html')
 
 # Product Item ...
 @login_required
@@ -139,9 +135,9 @@ def clients_update(request, pk):
         form = ClientsForm(request.POST, request.FILES, instance=brand)
         if form.is_valid():
             form.save()
-            return redirect('slt:brands')
+            return redirect('slt:clients')
         else:
-            messages.error(request,'username or password not correct')
+            messages.error(request,'Not Update')
            # return redirect('slt:new_brand')
 
     else:
@@ -157,14 +153,14 @@ def supplier_new(request):
         form = SupplierForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-        return redirect('slt:supplier')
+            return redirect('slt:supplier')
     else:
         form = SupplierForm()
         return render(request, 'business_apps/supplier_new.html', {'form': form})
 def supplier_update(request, pk):
-    brand = get_object_or_404(Supplier, id=pk)
+    sup = get_object_or_404(Supplier, id=pk)
     if request.method == 'POST':
-        form = SupplierForm(request.POST, request.FILES, instance=brand)
+        form = SupplierForm(request.POST, request.FILES, instance=sup)
         if form.is_valid():
             form.save()
             return redirect('slt:supplier')
@@ -173,7 +169,7 @@ def supplier_update(request, pk):
            # return redirect('slt:new_brand')
 
     else:
-        form = Supplier(instance=brand)
+        form = SupplierForm(instance=sup)
     return render(request, 'business_apps/supplier_new.html', {'form': form})
 
 def success(request):
