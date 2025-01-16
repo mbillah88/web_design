@@ -22,13 +22,6 @@ def dashboard(request):
   }
   return render(request, 'business_apps/dashboard.html', context)
   
-@login_required
-def sales_new(request):
-  return render(request, 'business_apps/sales_new.html')
-
-def sales(request):
-  return render(request, 'business_apps/sales.html')
-
 # Product Item ...
 @login_required
 def product(request):  
@@ -44,9 +37,9 @@ def product_add(request):
             form.save() 
             return redirect('slt:product')
     else: 
+        messages.success(request, 'Form submission Error')
         form = ItemProductForm() 
     return render(request, 'business_apps/product_add.html', {'form': form})
-
 def product_update(request, pk):
     cat = get_object_or_404(ItemProduct, id=pk)
     if request.method == 'POST': 
@@ -172,5 +165,31 @@ def supplier_update(request, pk):
         form = SupplierForm(instance=sup)
     return render(request, 'business_apps/supplier_new.html', {'form': form})
 
+# Sales ....
+@login_required
+def sales(request):
+  return render(request, 'business_apps/sales.html')
+def sales_new(request):
+  return render(request, 'business_apps/sales_new.html')
+def sales_update(request):
+  return render(request, 'business_apps/sales_new.html')
+
+
+
+# Purchase ....
+@login_required
+def purchase(request):
+  return render(request, 'business_apps/purchase.html')
+def purchase_new(request):
+  return render(request, 'business_apps/purchase_new.html')
+def purchase_update(request):
+  return render(request, 'business_apps/purchase_update.html')
+def purchase_order_process(request):    
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            user = request.user
+            #create_order = PurchaseOrder(user = user)
+            #create_order.save()
+            return render(request, 'business_apps/purchase.html', {'user': user})
 def success(request):
     return HttpResponse('successfully uploaded')

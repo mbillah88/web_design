@@ -28,6 +28,10 @@
         </div>
 
       </div>
+      {% if form.errors %}
+        <p>{{form.errors}}</p>
+      {% endif %}
+    
       <form class="form-container" enctype="multipart/form-data" method="post">
         <!-- Security token -->
         {% csrf_token %}

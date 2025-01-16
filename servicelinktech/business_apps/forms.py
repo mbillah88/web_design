@@ -38,17 +38,7 @@ class ItemBrandForm(forms.ModelForm):
 class ItemProductForm(forms.ModelForm):
     class Meta:
         model = ItemProduct
-        fields = [  'item_name', 
-                    'item_model', 
-                    'item_description', 
-                    'item_sprice', 
-                    'item_pprice', 
-                    'item_image',
-                    'category_name', 
-                    'brand_name',
-                    'created_at'
-                    ]
-      
+        fields = "__all__"
         widgets = { 
             'item_image': forms.ClearableFileInput(attrs={ 'id': 'imageInput' }),   
             'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),   
@@ -64,3 +54,10 @@ class SupplierForm(forms.ModelForm):
     class Meta:
         model = Supplier
         fields = "__all__"
+
+class SupplierForm(forms.ModelForm):
+    class Meta:
+        model = Supplier
+        fields = "__all__"
+
+        #min_value=1, max_value=10, initial=1
