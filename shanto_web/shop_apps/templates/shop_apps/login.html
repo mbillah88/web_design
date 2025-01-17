@@ -1,0 +1,29 @@
+{% extends 'shop_apps/master.html'%}
+
+{% block title%} SST | Login {% endblock %}
+
+{% block content%}
+
+{% if user.is_authenticated %}    
+{% else %}    
+<div class="h-100" style="display: flex;justify-content: center;align-items: center;">
+    <div class="card shadow p-3 mb-5 bg-body rounded">
+        
+        <h2>Login</h2>
+        <hr>
+        <form method="POST" action="{% url 'shop_apps:home' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="text" name="username" class="form-control" placeholder="User Name">
+            </div>
+            <div class="mb-3">
+                <input type="password" name="password" class="form-control" placeholder="Password">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+</div>
+
+{% endif %} 
+{% endblock %}

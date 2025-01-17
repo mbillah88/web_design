@@ -1,0 +1,52 @@
+{% extends "business_apps/master.html" %}
+
+{% block title %}
+  SLT | Supplier List
+{% endblock %}
+
+{% block header %}
+Supplier List
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+  <div class="content">      
+    <div class="form-header" style="display: flex; background-color: blueviolet;">      
+      <div>        
+        <h3>Supplier List</h3>
+      </div>
+      <div>        
+        <a href="{% url 'slt:supplier_new' %}">New Supplier</a>
+      </div>
+    </div>   
+        
+    <table>
+        <tr>
+          <th scope="col">Supplier Name</th>
+          <th scope="col">Supplier Org</th>
+          <th scope="col">Supplier Designation</th>
+          <th scope="col">Supplier Address</th>
+          <th scope="col">Supplier Mobile</th>
+          <th scope="col">Supplier Mobile</th>
+        </tr>
+        {% for data in supplier %}
+        <tr>          
+          <td>{{ data.supplier_name }}</td>
+          <td>{{ data.supplier_org }}</td>
+          <td>{{ data.supplier_desig }}</td>
+          <td>{{ data.supplier_address }}</td>
+          <td>{{ data.supplier_mobile }}</td>
+          <td>
+            <a href="{% url 'slt:supplier_update' data.pk %}">Edit</a>
+            <a href="">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <hr/>
+
+
+  </div>
+</div>
+
+{% endblock %}

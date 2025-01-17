@@ -1,0 +1,133 @@
+
+@media only screen and (max-width: 575px) { 
+  .wrapper{
+    flex-direction: column;
+  }
+   
+  #sidebar.expand{
+    width: 100%;
+    min-width: 100%;
+    z-index: 1000;
+    transition: all .25s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    background-color: #ec315a;
+  }
+  button#toggle-btn{
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 575px) {   
+  #sidebar.expand{
+    width: 230px;
+    min-width: 230px;
+  }
+  button#toggle-btn-nav.navbar-toggler{
+    display: none;
+  }
+}
+
+
+.wrapper{
+  display: flex;
+}
+#nav-header{  
+  transition: all 5s ease-in;
+}
+
+#sidebar{
+  width: 70px;
+  min-width: 70px;
+  z-index: 1000;
+  transition: all .25s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  background-color: #0e223e;
+}
+#collapsibleNavbar a{
+  text-decoration: none ;
+}
+#sidebar a{
+  text-decoration: none ;
+}
+#sidebar li{
+  list-style: none ;
+}
+
+.toggle-btn1{
+  background-color: transparent;
+  cursor: pointer;
+  border: 0;
+  padding: .5rem 1.5rem;
+}
+.sidebar-logo{
+  margin: auto 0;
+}
+.sidebar-logo a{
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 600;
+  transition: all;
+}
+
+#sidebar:not(.expand) .sidebar-logo,
+#sidebar:not(.expand) a.sidebar-link span{
+  display: none;
+}
+.sidebar-nav{
+  padding: 2rem 0;
+  flex: 1 1 auto;
+  border-top: 5px solid #3b7ddd;
+}
+a.sidebar-link{
+  padding: .625rem 1.625rem;
+  color: #ffffff;
+  display: block;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  border-left: 3px solid transparent;
+}
+a.sidebar-link:hover{
+  background-color: rgba(255, 255, 255, 0.75);
+  border-left: 5px solid #3b7ddd;
+  border-right: 3px solid #70fa64;
+}
+
+#sales{
+  background-color: #4d79b6;
+}
+
+.sidebar-item{
+  position: relative;
+}
+#sidebar:not(.expand) .sidebar-item .sidebar-dropdown{
+  position: absolute;
+  top: 0;
+  left: 70px;
+  background-color: #0e223e;
+  padding: 0;
+  min-width: 15rem;
+  display: none;
+}
+
+#sidebar:not(.expand) .sidebar-item:hover .has-dropdown+.sidebar-dropdown{
+  display: block;
+  max-height: 15em;
+  width: 100%;
+  opacity: 1;
+}
+
+#sidebar:not(.expand) #toggle-btn{
+  padding: .5rem .6rem;
+  justify-content: center;
+}
+#sidebar:not(.expand) a.sidebar-link{
+  padding: .625rem 1.250rem;
+}
+.main{
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background-color: transparent;
+}

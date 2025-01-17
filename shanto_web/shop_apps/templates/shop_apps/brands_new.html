@@ -1,0 +1,96 @@
+{% extends "shop_apps/master.html" %}
+
+{% block title %}
+  SLT | Add Brand
+{% endblock %}
+
+{% block header %}
+  Add Brand
+{% endblock %}
+{% block content %}
+
+<div class="main-content">
+  <div class="add-container">
+    <div class="content">
+      <div class="form-header">
+        <div>
+          <h3>
+            {% if form.instance.pk %}
+              <span style="background-color: rgba(255, 17, 0, 0.822);">Edit Brand : {{ form.instance.brand_name }}</span>
+            {% else %}
+            <span>Add Brand</span>
+            {% endif %}
+          </h3>
+  
+        </div>
+        <div>        
+          <a href="{% url 'slt:brands' %}">Backt ot List</a>
+        </div>
+  
+      </div>
+      {% if form.errors %}
+          {% for field in form %}
+              {% for error in field.errors %}
+                  <div class="alert alert-danger">
+                      <strong>{{ error|escape }}</strong>
+                  </div>
+              {% endfor %}
+          {% endfor %}
+      {% endif %}
+    <form class="form-container" method="POST" enctype="multipart/form-data">
+  
+      <!-- Security token -->
+      {% csrf_token %}
+      
+      <div class="content">
+        <div>
+          <label for="id_category_name">Brand name:</label>
+          <input type="text" name="brand_name" maxlength="255" required id="id_brand_name" value="{{form.instance.brand_name}}">      
+        </div>  
+        <div>      
+          <label for="id_brand_description">Brand description:</label>
+          <input type="text" name="brand_description" maxlength="255" required id="id_brand_description" value="{{form.instance.brand_description}}">
+        </div>  
+      </div>
+      <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
+        <div>
+          <label for="id_brand_image">Brand image:</label>
+          {{form.brand_image}}
+         <!--<input id="imageInput" type="file" name="brand_image" accept="image/*" required id="id_brand_image" value="">--> 
+        </div>
+        <div>
+          {% if form.instance.brand_image %}
+          <img src="{{STATIC_URL}}{{form.instance.brand_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
+          {% else %}
+          <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
+          {% endif %}
+        </div>
+      <script>
+          const imageInput = document.getElementById('imageInput');
+          const previewImage = document.getElementById('previewImage');
+          function previewSelectedImage() {
+            const file = imageInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function(e) {
+                  previewImage.src = e.target.result;
+                }
+            }
+          }
+          imageInput.addEventListener('change', previewSelectedImage);
+      </script>
+      </div>
+      <div class="content">  
+        {% if form.instance.pk %}
+          <button style="background-color: rgba(243, 15, 156, 0.507);" type="submit" class="btn add-item-btn">Update Brand</button>
+        {% else %}
+          <button type="submit" class="btn add-item-btn">Add Brand</button>
+        {% endif %}
+      </div> 
+    </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

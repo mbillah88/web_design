@@ -1,0 +1,48 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" type="image/png" href="{% static 'assets/favicon.ico' %}" type="image/x-icon"/>
+    <link rel="stylesheet" href="{% static 'business_apps/css/main.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+</head>
+<body>    
+    <div class="containers">
+        {% include 'business_apps/sidenav.html' %} 
+        <main>   
+            <div class="main-container">        
+                <div class="main-container-head">
+                    <a href="" style="color: whitesmoke;">                        
+                    {% block header %}
+                    {% endblock %}
+                    </a>
+                    
+                    <div>
+                      {% if request.user.is_authenticated %}
+                        Hi {{ request.user.username }}!
+                        <form action="{% url 'shop_apps:logout' %}" method="post">
+                          {% csrf_token %}
+                          <button class="logout_btn" type="submit" style="cursor: pointer;" >                            
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#fff"><path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"/></svg>
+                            <span>Logout</span>
+                          </button>
+                        </form>
+                        {% else %}
+                        You are not is_authenticated
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% block content %}        
+               
+                {% endblock %}
+            </div> 
+        </main>
+    </div>
+    <script src="{% static 'business_apps/js/main.js' %}"></script>
+
+</body>
+</html>

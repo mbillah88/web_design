@@ -1,0 +1,99 @@
+{% extends "business_apps/master.html" %}
+
+{% block title %}
+  SLT | Add Supplier
+{% endblock %}
+
+{% block header %}
+  Add Supplier
+{% endblock %}
+{% block content %}
+
+<div class="main-content">
+  <div class="add-container">
+    <div class="content">
+      <div class="form-header">
+        <div>
+          <h3>
+            {% if form.instance.pk %}
+              <span style="background-color: rgba(255, 17, 0, 0.822);">Edit Supplier : {{ form.instance.supplier_name }}</span>
+            {% else %}
+            <span>Add Supplier</span>
+            {% endif %}
+          </h3>
+  
+        </div>
+        <div>        
+          <a href="{% url 'slt:supplier' %}">Backt ot List</a>
+        </div>
+  
+      </div>
+      {% if form.errors %}
+          {% for field in form %}
+              {% for error in field.errors %}
+                  <div class="alert alert-danger">
+                      <strong>{{ error|escape }}</strong>
+                  </div>
+              {% endfor %}
+          {% endfor %}
+      {% endif %}
+    <form class="form-container" method="POST" enctype="multipart/form-data">
+  
+      <!-- Security token -->
+      {% csrf_token %}
+      
+      <div class="content">
+        <div class="form-row field-supplier_name">
+          <div>
+            <div class="flex-container">
+              <label class="required" for="id_supplier_name">Supplier name:</label>
+              <input type="text" name="supplier_name" class="vTextField" maxlength="255" required id="id_supplier_name" value="{{form.instance.supplier_name}}">
+            </div>
+          </div>
+        </div>
+        <div class="form-row field-supplier_org">
+          <div>
+            <div class="flex-container">
+              <label class="required" for="id_supplier_org">Supplier org:</label>
+              <input type="text" name="supplier_org" class="vTextField" maxlength="255" required id="id_supplier_org" value="{{form.instance.supplier_org}}">
+            </div>
+          </div>
+        </div>
+        <div class="form-row field-supplier_desig">
+          <div>
+            <div class="flex-container">
+              <label class="required" for="id_supplier_desig">Supplier desig:</label>
+              <input type="text" name="supplier_desig" class="vTextField" maxlength="255" required id="id_supplier_desig" value="{{form.instance.supplier_desig}}">
+            </div>
+          </div>
+        </div>
+        <div class="form-row field-supplier_mobile">
+          <div>
+            <div class="flex-container">
+              <label class="required" for="id_supplier_mobile">Supplier mobile:</label>
+              <input type="text" name="supplier_mobile" class="vTextField" maxlength="255" required id="id_supplier_mobile" value="{{form.instance.supplier_mobile}}">
+            </div>
+          </div>
+        </div>
+        <div class="form-row field-supplier_address">
+          <div>
+            <div class="flex-container">
+              <label class="required" for="id_supplier_address">Supplier address:</label>
+              <input type="text" name="supplier_address" class="vTextField" maxlength="400" required id="id_supplier_address" value="{{form.instance.supplier_address}}">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="content">  
+        {% if form.instance.pk %}
+          <button style="background-color: rgba(243, 15, 156, 0.507);" type="submit" class="btn add-item-btn">Update Supplier</button>
+        {% else %}
+          <button type="submit" class="btn add-item-btn">Add Supplier</button>
+        {% endif %}
+      </div> 
+    </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

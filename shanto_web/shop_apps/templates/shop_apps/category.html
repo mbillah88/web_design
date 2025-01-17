@@ -1,0 +1,48 @@
+{% extends "shop_apps/master.html" %}
+
+{% block title %}
+  SLT | Category List
+{% endblock %}
+
+{% block header %}
+  Category List
+{% endblock %}
+{% block content %}
+<div class="main-content">
+  <div class="content">    
+    <div class="form-header" style="display: flex; background-color: blueviolet;">      
+      <div>
+        <h3>Category List</h3>
+      </div>
+      <div>        
+        <a href="{% url 'slt:category_add' %}">New Category</a>
+      </div>
+    </div>   
+        
+    <table>
+        <tr>
+          <th scope="col">Caegory Image</th>
+          <th scope="col">Caegory Name</th>
+          <th scope="col">Caegory description</th>
+          <th scope="col">Action</th>
+        </tr>
+        {% for data in cat %}
+        <tr>
+          
+          <td><a href="{% url 'slt:category_details' data.pk %}"></a><img src="{{ data.cat_image.url }}" style="height: 100px;"></a></td>
+          <td><a href="{% url 'slt:category_details' data.pk %}">{{ data.category_name }}</a></td>
+          <td><a href="{% url 'slt:category_details' data.pk %}">{{ data.category_description }}</a></td>
+          <td>
+            <a href="{% url 'slt:category_update' data.pk %}">Edit</a>
+            <a href="">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <hr/>
+
+
+  </div>
+</div>
+
+{% endblock %}
