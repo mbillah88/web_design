@@ -1,61 +1,44 @@
 {% extends "shop_apps/master.html" %}
 
 {% block title %}
-  SST | Product
+  SST | Products
 {% endblock %}
 
 {% block header %}
-  Product
+  Products
 {% endblock %}
 
 {% block content %}
 <div class="main-content">
   <div class="content">    
-    <div class="form-header" style="display: flex; background-color: blueviolet;">      
+    <div class="form-header" style="display: flex; background-color: rgb(197, 161, 231);">      
       <div>
-        <h3>Product List</h3>
-      </div>
-      <div>        
-        <a href="{% url 'shop_apps:product_add' %}">New Product</a>
+        <h3>Products</h3>
       </div>
     </div>   
-        
-    <table>
-        <tr>
-          <th scope="col">Product Image</th>
-          <th scope="col">Product Name</th>
-          <th scope="col">Product Category</th>
-          <th scope="col">Product Brand</th>
-          <th scope="col">Product Model</th>
-          <th scope="col">Product description</th>
-          <th scope="col">Product Price</th>
-          <th scope="col">Action</th>
-        </tr>
+   
+    <div class="container px-4 px-lg-5 mt-5">
+      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
         {% for data in prod %}
-        <tr>       
-          <td>
-            <a href="{% url 'shop_apps:product_details' data.pk %}">
-              {% if data.item_image %}
-                <img src="{{data.item_image.url}}" style="width:100px; height:auto;">
-              {% endif %}
-            </a>
-          </td>
-          <td>{{ data.item_name }}</td>
-          <td>{{ data.category_name }}</td>
-          <td>{{ data.brand_name }}</td>
-          <td>{{ data.item_model }}</td>
-          <td>{{ data.item_description }}</td>
-          <td>{{ data.item_sprice }}</td>
-          <td>
-            <a href="{% url 'shop_apps:product_update' data.pk %}">Edit</a>
-            <a href="">Delete</a>
-          </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <hr/>
+        <div class="col mb-5">
+          <div class="card h-100 bg-dark">           
+            <img src="{{data.item_image.url}}" class="card-img-top" alt="Product Image" height="200px" width="200px">        
+            <div class="card-body p-4" style="color: aliceblue; text-align: center;">
+              <h5 class="card-title">{{ data.item_name }}</h5>
+              <p class="card-text">{{ data.brand_name }}</p>
+              <h4>{{ data.item_sprice }}</h4>
+            </div>
+            <div class="card-footer p-4 pt-0 border-top-0">
+              <div class="text-center">
+                <a href="{% url 'shop_apps:store_product' %}" class="btn btn-outline-dark mt-auto bg-primary">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>        
+        {% endfor %} 
 
-
+      </div>
+    </div>   
   </div>
 </div>
 

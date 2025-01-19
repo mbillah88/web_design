@@ -1,6 +1,6 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top">
     <div class="container-fluid">
         <a class="navbar-brand" href="{% url 'shop_apps:home' %}">
           <img src="{% static 'shop_apps/images/sst_banner.png' %}" alt="SST Logo" width="240" height="50">
@@ -14,7 +14,7 @@
             <a class="nav-link active" aria-current="page" href="{% url 'shop_apps:home' %}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'shop_apps:product' %}">Product</a>
+            <a class="nav-link" href="{% url 'shop_apps:store_product' %}">Product</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Blog</a>
@@ -50,7 +50,7 @@
                 <ul class="dropdown-menu dropdown-menu-end">
                   <li><button class="dropdown-item" type="button">Action</button></li>
                   <li><button class="dropdown-item" type="button">
-                    <a href="{% url 'business_apps:business' %}">Dashboard</a>
+                    <a href="{% url 'slt:business' %}">Dashboard</a>
                   </button></li>
                   <li>                    
                   <form method="POST" action="{% url 'shop_apps:logout' %}">
@@ -70,3 +70,6 @@
       </div>
     </div>
 </nav>
+<br>
+<br>
+<br>

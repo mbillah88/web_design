@@ -5,7 +5,7 @@
 <head>
     <title>{% block title %}{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon" type="image/png" href="{% static 'assets/favicon.ico' %}" type="image/x-icon"/>
+    <link rel="shortcut icon" type="image/png" href="{% static 'business_apps/img/favicon.ico' %}" type="image/x-icon"/>
     <link rel="stylesheet" href="{% static 'business_apps/css/main.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
 </head>
@@ -23,6 +23,7 @@
                     <div>
                       {% if request.user.is_authenticated %}
                         Hi {{ request.user.username }}!
+                        <a href="/" style="color: aliceblue;">View Site!</a>
                         <form action="{% url 'shop_apps:logout' %}" method="post">
                           {% csrf_token %}
                           <button class="logout_btn" type="submit" style="cursor: pointer;" >                            

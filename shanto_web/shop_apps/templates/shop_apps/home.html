@@ -5,13 +5,13 @@
 
 {% block content%}
 
-    <div class="card mb-3" style="max-width: 100%;">
+    <div class="card mb-3 pt-3" style="max-width: 100%;">
         <div class="row g-0">
           <div class="col-md-4">
             <img src="{% static 'shop_apps/images/images.jpg' %}" class="img-fluid rounded-start h-100" alt="...">
           </div>
           <div class="col-md-8">
-            <div class="card-body">
+            <div class="card-body bg-primary">
               <h5 class="card-title">SS Technology</h5>
               <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
               <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
@@ -19,14 +19,27 @@
           </div>
         </div>
     </div>
-    <div class="container">
-        <div class="card" style="width: 18rem;">
-            <img src="{% static 'shop_apps/images/images.jpg' %}" class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
+
+    <div class="container px-4 px-lg-5 mt-5">
+      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+        {% for data in prod %}
+        <div class="col mb-5">
+          <div class="card h-100 bg-dark">           
+            <img src="{{data.item_image.url}}" class="card-img-top" alt="Product Image" height="200px" width="200px">        
+            <div class="card-body p-4" style="color: aliceblue; text-align: center;">
+              <h5 class="card-title">{{ data.item_name }}</h5>
+              <p class="card-text">{{ data.brand_name }}</p>
+              <h4>{{ data.item_sprice }}</h4>
             </div>
-        </div>
+            <div class="card-footer p-4 pt-0 border-top-0">
+              <div class="text-center">
+                <a href="{% url 'shop_apps:store_product_details' data.pk %}" class="btn btn-outline-dark mt-auto bg-primary">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>        
+        {% endfor %} 
+
+      </div>
     </div>
 {% endblock %}
