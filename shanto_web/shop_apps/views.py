@@ -38,9 +38,9 @@ def logout_user(request):
 
 
 # Product Item ...
-def store_product(request):  
+def product(request):  
   prod = ItemProduct.objects.all() 
   return render(request, 'shop_apps/product.html', {'prod': prod})
-def store_product_details(request, pk):  
+def product_details(request, pk):  
   prod = get_object_or_404(ItemProduct, pk=pk)
   return render(request, 'shop_apps/product_details.html', {'prod': prod})
