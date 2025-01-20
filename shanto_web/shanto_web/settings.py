@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -105,11 +106,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = "static/"
-STATIC_ROOT = "static"
+STATIC_URL = '/static/' 
+MEDIA_URL = '/media/' 
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 
 #LOGIN_URL ='login/'
 #LOGIN_REDIRECT_URL = "/slt/"  # new
