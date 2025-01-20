@@ -19,6 +19,7 @@ def dashboard(request):
   user = User.objects.all().values() 
   context = {
     'user': user,
+    'count': ItemProduct.objects.count(),
   }
   return render(request, 'business_apps/dashboard.html', context)
   
