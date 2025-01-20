@@ -166,8 +166,8 @@ a.sidebar-link:hover{
 }
 a.sidebar-link.active{
     background-color: rgba(8, 247, 135, 0.651);
-    border-left: 5px solid #3b7ddd;
-    border-right: 3px solid #70fa64;
+    border-left: 5px solid #f73949;
+    border-right: 3px solid #0e0af0;
     box-shadow: 0 4px 8px 0 rgb(248, 246, 109), 0 6px 20px 0 rgba(253, 252, 252, 0.562);
 }
 a.sidebar-link span{
@@ -286,40 +286,16 @@ input[type=text], input[type=number], input[type=datetime-local],select {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
+    font-size: 80%;
   }
   
   td, th {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
+    font-size: .8em;
   }
   
   tr:nth-child(even) {
     background-color: #dddddd;
-  }
-
-  .tooltip {
-    position: relative;
-    display: inline-block;
-    border-bottom: 1px dotted black;
-  }
-  
-  .tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 1;
-    top: -5px;
-    left: 105%;
-  }
-  
-  .tooltip:hover .tooltiptext {
-    visibility: visible;
   }

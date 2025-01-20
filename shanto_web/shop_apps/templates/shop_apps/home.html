@@ -1,0 +1,66 @@
+{% extends 'shop_apps/master.html'%}
+{% load static %}
+
+{% block title%} SST | Home {% endblock %}
+
+{% block content%}
+<div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active" data-bs-interval="10000">
+      <img src="{% static 'shop_apps/images/sst_banner.png' %}" style="height: 300px;" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item" data-bs-interval="2000">
+      <img src="{% static 'shop_apps/images/images.jpg' %}" style="height: 300px;" class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'shop_apps/images/download.jpg' %}" style="height: 300px;" class="d-block w-100" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+<br>
+    <div class="card mb-3 pt-3" style="max-width: 100%;">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="{% static 'shop_apps/images/images.jpg' %}" class="img-fluid rounded-start h-100" alt="SST Image">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body bg-primary">
+              <h5 class="card-title">SS Technology</h5>
+              <p class="card-text">quality product supplyer</p>
+              <p class="card-text"><small class="text-muted">Jahaj Company Mor, Ranpgur</small></p>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="container px-4 px-lg-5 mt-5">
+      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+        {% for data in prod %}
+        <div class="col mb-5">
+          <div class="card h-100 bg-dark">           
+            <img src="{{data.item_image.url}}" class="card-img-top" alt="Product Image" height="200px" width="200px">        
+            <div class="card-body p-4" style="color: aliceblue; text-align: center;">
+              <h5 class="card-title">{{ data.item_name }}</h5>
+              <p class="card-text">{{ data.brand_name }}</p>
+              <h4>{{ data.item_sprice }}</h4>
+            </div>
+            <div class="card-footer p-4 pt-0 border-top-0">
+              <div class="text-center">
+                <a href="{% url 'shop_apps:product_details' data.pk %}" class="btn btn-outline-dark mt-auto bg-primary">Details</a>
+              </div>
+            </div>
+          </div>
+        </div>        
+        {% endfor %} 
+
+      </div>
+    </div>
+{% endblock %}

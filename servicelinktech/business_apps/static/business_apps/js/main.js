@@ -97,11 +97,11 @@ for (var i = 0; i < btns.length; i++) {
 // Add Body Behavior............
 function myFunction(x) {
    if (x.matches) { // If media query matches
-     document.body.style.backgroundColor = "yellow";
+     //document.body.style.backgroundColor = "yellow";
      document.querySelector("#sidebar").classList.add("nav-side-bar");
      document.querySelector(".side-nav-body").classList.add("colaps");
    } else {
-     document.body.style.backgroundColor = "dark";
+    // document.body.style.backgroundColor = "dark";
      document.querySelector(".side-nav-body").classList.remove("colaps");
     // document.querySelector("#sidebar").classList.add("nav-side-bar");
    }

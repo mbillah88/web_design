@@ -1,0 +1,87 @@
+{% extends "business_apps/master.html" %}
+
+{% block title %}
+  SLT | Add Category
+{% endblock %}
+
+{% block header %}
+  Add Category
+{% endblock %}
+{% block content %}
+
+<div class="main-content">
+  <div class="add-container">
+    <div class="content">
+      <div class="form-header">
+        <div>
+          <h3>
+            {% if form.instance.pk %}
+              <span style="background-color: rgba(255, 17, 0, 0.822);">Edit Category : {{ form.instance.category_name}}</span>
+            {% else %}
+            <span>Add Category</span>
+            {% endif %}
+          </h3>
+  
+        </div>
+        <div>        
+          <a href="{% url 'slt:category' %}">List Category</a>
+        </div>
+  
+      </div>
+      <form class="form-container" method="POST" enctype="multipart/form-data">
+  
+        <!-- Security token -->
+        {% csrf_token %}
+        
+        <div class="content">
+          <div>
+            <label for="id_category_name">Category name:</label>
+            <input type="text" name="category_name" maxlength="255" required id="id_category_name" value="{{form.instance.category_name}}">      
+          </div>  
+          <div>      
+            <label for="id_category_description">Category description:</label>
+            <input type="text" name="category_description" maxlength="255" required id="id_category_description" value="{{form.instance.category_description}}">
+          </div>  
+        </div>
+        <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
+          <div>
+            <label for="id_cat_image">Cat image:</label>
+            {{form.cat_image}}
+            <!--<input id="imageInput" type="file" name="cat_image" accept="image/*" required id="id_cat_image"> -->
+          </div>
+          <div>
+            {% if form.instance.cat_image %}
+            <img src="{{STATIC_URL}}{{form.instance.cat_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
+            {% else %}
+            <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
+            {% endif %}
+          </div>
+        <script>
+            const imageInput = document.getElementById('imageInput');
+            const previewImage = document.getElementById('previewImage');
+            function previewSelectedImage() {
+              const file = imageInput.files[0];
+              if (file) {
+                  const reader = new FileReader();
+                  reader.readAsDataURL(file);
+                  reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                  }
+              }
+            }
+            imageInput.addEventListener('change', previewSelectedImage);
+        </script>
+        </div>
+        <div class="content">  
+          {% if form.instance.pk %}
+            <button style="background-color: rgba(243, 15, 156, 0.507);" type="submit" class="btn add-item-btn">Update Category</button>
+          {% else %}
+            <button type="submit" class="btn add-item-btn">Add Category</button>
+          {% endif %}
+        </div> 
+      </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
