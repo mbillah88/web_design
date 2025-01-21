@@ -26,33 +26,54 @@
   </button>
 </div>
 <br>
-    <div class="card mb-3 pt-3" style="max-width: 100%;">
+    <div class="card mb-3" style="max-width: 100%;">
         <div class="row g-0">
           <div class="col-md-4">
             <img src="{% static 'shop_apps/images/images.jpg' %}" class="img-fluid rounded-start h-100" alt="SST Image">
           </div>
           <div class="col-md-8">
-            <div class="card-body bg-primary">
-              <h5 class="card-title">SS Technology</h5>
+            <div class="card-body bg-primary">              
+              <h5 class="card-title">{{context.prod.item_sprice}} SS Technology</h5>
               <p class="card-text">quality product supplyer</p>
               <p class="card-text"><small class="text-muted">Jahaj Company Mor, Ranpgur</small></p>
             </div>
           </div>
         </div>
     </div>
-
     <div class="container px-4 px-lg-5 mt-5">
-      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
-        {% for data in prod %}
+      <div class="containter bg-light p-2 shadow">
+        <h4>Category</h4>
+      </div>
+      <div class="row gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 pt-3 justify-content-center">
+        {% for data in context.cat %}
+        <div class="col mb-5">
+          <div class="card h-100 " style="background: #133900;">           
+            <img src="{{data.cat_image.url}}" class="card-img-top" alt="Product Image" height="100px" width="100px">        
+            <div class="p-2" style="color: aliceblue; text-align: center;">
+              <h5 class="card-title">{{ data.category_name }}</h5>
+              <h4>Item : {{ context.count }}</h4>
+            </div>
+          </div>
+        </div>        
+        {% endfor %} 
+
+      </div>
+    </div>
+    <div class="container px-4 px-lg-5 mt-5">
+      <div class="containter bg-light p-2 shadow">
+        <h4>Product</h4>
+      </div>
+      <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 pt-3 justify-content-center">
+        {% for data in context.prod %}
         <div class="col mb-5">
           <div class="card h-100 bg-dark">           
             <img src="{{data.item_image.url}}" class="card-img-top" alt="Product Image" height="200px" width="200px">        
-            <div class="card-body p-4" style="color: aliceblue; text-align: center;">
+            <div class="p-2" style="color: aliceblue; text-align: center;">
               <h5 class="card-title">{{ data.item_name }}</h5>
               <p class="card-text">{{ data.brand_name }}</p>
               <h4>{{ data.item_sprice }}</h4>
             </div>
-            <div class="card-footer p-4 pt-0 border-top-0">
+            <div class="card-footer pt-0 border-top-0">
               <div class="text-center">
                 <a href="{% url 'shop_apps:product_details' data.pk %}" class="btn btn-outline-dark mt-auto bg-primary">Details</a>
               </div>

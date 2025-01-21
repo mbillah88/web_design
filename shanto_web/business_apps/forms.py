@@ -45,7 +45,7 @@ class ItemProductForm(forms.ModelForm):
         widgets = { 
             'item_image': forms.ClearableFileInput(attrs={ 'id': 'imageInput' }),   
             'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),   
-            # 'status' = forms.ChoiceField(choices = OrderChoice),  
+            #'itme_unit': forms.ChoiceField(choices = OrderChoice),  
          }
 
 class ClientsForm(forms.ModelForm):
