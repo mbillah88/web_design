@@ -66,10 +66,13 @@
           </div>
         </div>
         <div class="content">
-          <div style="display: flex; align-items: center; justify-content: center; gap: 2rem;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 2rem;">            
             <div>
               <label for="id_itme_unit">Itme unit:</label>
-              <input type="text" name="itme_unit" maxlength="255" id="id_itme_unit" value="{{ form.instance.itme_unit }}">
+              {{ form.itme_unit }}
+              {% for ItemUnit in form.fields.ItemUnit.queryset %} 
+              <option value="{{ ItemUnit.id }}" {% if ItemUnit.id == form.ItemUnit.value %}selected{% endif %}> {{ ItemUnit.unit_name }} </option> 
+              {% endfor %}
             </div>
             <div>
               <label for="id_itme_sku">Itme sku:</label>
@@ -97,9 +100,11 @@
             <input type="number" name="item_pprice" step="0.01" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
           </div>
         </div>
-        <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
+        <div class="content" style="display: flex; flex-direction: column; align-items: center; justify-content: center;"> 
           <div>
             <label for="imageInput">Item image:</label>
+          </div>
+          <div>
             {{form.item_image}}
             <!--<input id="imageInput" type="file" name="item_image" accept="image/*" required id="id_item_image" value="">-->
           </div>

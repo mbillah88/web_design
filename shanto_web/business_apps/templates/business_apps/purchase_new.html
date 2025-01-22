@@ -10,7 +10,7 @@
 {% block content %}
 
 <div class="main-content">
-  <div class="add-container">
+  <div class="add-container" style="max-width: 960px;">
     <div class="content">
       <div class="form-header">
         <div>
@@ -21,7 +21,6 @@
             <span>New Purchase</span>
             {% endif %}
           </h3>
-
         </div>
         <div>        
           <a href="{% url 'slt:purchase' %}">Purchase List</a>
@@ -32,18 +31,36 @@
         <!-- Security token -->
         {% csrf_token %}
         <div class="content" style="display: flex; align-items: center; justify-content: center; gap: 2rem;">      
-          <div>    
-            <label for="id_category_name">Category name:</label>
-            {{form.category_name}}       
-              {% for ItemCategory in form.fields.ItemCategory.queryset %} 
-              <option value="{{ ItemCategory.id }}" {% if ItemCategory.id == form.ItemCategory.value %}selected{% endif %}> {{ ItemBrand.category_name }} </option> 
-              {% endfor %}
+          <div>
+            <label for="supplier_id">Supplier name:</label>
+            {{ form.supplier_id }}
+            {% for Supplier in form.fields.Supplier.queryset %} 
+            <option value="{{ Supplier.id }}" {% if Supplier.id == form.Supplier.value %}selected{% endif %}> {{ Supplier.supplier_name }} </option> 
+            {% endfor %}
+            {% url 'slt:add_supplier_new' as url %}
+
+            <a onclick="window.open('{{ url }}', 'popup', 'location=0,width=750,height=650,left=500,top=55'); return false;" class="btn btn-primary btn-sm">pLus+</a>
+            <a class="related-widget-wrapper-link change-related" id="change_id_supplier_id"
+              data-href-template="/dj-admin/business_apps/supplier/__fk__/change/?_to_field=id&amp;_popup=1"
+              data-popup="yes"
+              title="Change selected supplier"><img src="/static/admin/img/icon-changelink.svg" alt="Change">
+            </a>
+            <a class="related-widget-wrapper-link add-related" id="add_id_supplier_id"
+              data-popup="yes"
+              href="{% url 'slt:add_supplier_new' %}"
+              title="Add another supplier"><img src="/static/admin/img/icon-addlink.svg" alt="Add">
+            </a>
+            <a class="related-widget-wrapper-link view-related" id="view_id_supplier_id"
+              data-href-template="/dj-admin/business_apps/supplier/__fk__/change/?_to_field=id"
+              title="View selected supplier"><img src="/static/admin/img/icon-viewlink.svg" alt="View">
+            </a>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>
           </div>
           <div>
             <label for="id_brand_name">Brand name:</label>
-            {{ form.brand_name }}
-            {% for ItemBrand in form.fields.ItemBrand.queryset %} 
-            <option value="{{ ItemBrand.id }}" {% if ItemBrand.id == form.ItemBrand.value %}selected{% endif %}> {{ ItemBrand.brand_name }} </option> 
+            {{ form.porder_status }}
+            {% for PurchaseOrder in form.fields.PurchaseOrder.queryset %} 
+            <option value="{{ PurchaseOrder.id }}" {% if PurchaseOrder.id == form.PurchaseOrder.value %}selected{% endif %}> {{ PurchaseOrder.porder_status }} </option> 
             {% endfor %}
           </div>
         </div>
@@ -109,244 +126,6 @@
           <input type="submit">
         </div>
       </form>
-
-    </div>
-    <div class="content">
-      <div class="form-row field-supplier_id">
-        <div>
-          <div class="flex-container">
-            <label class="required" for="id_supplier_id">Supplier id:</label>
-                        
-                            <div class="related-widget-wrapper" data-model-ref="supplier">
-<select name="supplier_id" required id="id_supplier_id">
-<option value="" selected>---------</option>
-
-<option value="1">Supplier</option>
-
-</select>
-
-<a class="related-widget-wrapper-link change-related" id="change_id_supplier_id"
-    data-href-template="/dj-admin/business_apps/supplier/__fk__/change/?_to_field=id&amp;_popup=1"
-    data-popup="yes"
-    title="Change selected supplier"><img src="/static/admin/img/icon-changelink.svg" alt="Change"></a><a class="related-widget-wrapper-link add-related" id="add_id_supplier_id"
-    data-popup="yes"
-    href="/dj-admin/business_apps/supplier/add/?_to_field=id&amp;_popup=1"
-    title="Add another supplier"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a><a class="related-widget-wrapper-link view-related" id="view_id_supplier_id"
-     data-href-template="/dj-admin/business_apps/supplier/__fk__/change/?_to_field=id"
-     title="View selected supplier"><img src="/static/admin/img/icon-viewlink.svg" alt="View"></a>
-
-</div>
-                        
-                    
-                </div>
-            
-        </div>
-    
-    
-</div>
-
-<div class="form-row field-porder_total">
-    
-    
-        <div>
-            
-                <div class="flex-container">
-                    
-                        <label class="required" for="id_porder_total">Porder total:</label>
-                        
-                            <input type="number" name="porder_total" step="0.01" required id="id_porder_total">
-                        
-                    
-                </div>
-            
-        </div>
-    
-    
-</div>
-
-<div class="form-row field-porder_discount">
-    
-    
-        <div>
-            
-                <div class="flex-container">
-                    
-                        <label class="required" for="id_porder_discount">Porder discount:</label>
-                        
-                            <input type="number" name="porder_discount" step="0.01" required id="id_porder_discount">
-                        
-                    
-                </div>
-            
-        </div>
-    
-    
-</div>
-
-<div class="form-row field-porder_status">
-    
-    
-        <div>
-            
-                <div class="flex-container">
-                    
-                        <label class="required" for="id_porder_status">Porder status:</label>
-                        
-                            <input type="text" name="porder_status" class="vTextField" maxlength="255" required id="id_porder_status">
-                        
-                    
-                </div>
-            
-        </div>
-    
-    
-</div>
-
-<div class="form-row field-porder_note">
-    
-    
-        <div>
-            
-                <div class="flex-container">
-                    
-                        <label class="required" for="id_porder_note">Porder note:</label>
-                        
-                            <input type="text" name="porder_note" class="vTextField" maxlength="255" required id="id_porder_note">
-                        
-                    
-                </div>
-            
-        </div>
-    
-    
-</div>
-
-<div class="form-row field-porder_create_time">
-    
-    
-        <div>
-            
-                <div class="flex-container">
-                    
-                        <label class="required">Porder create time:</label>
-                        
-                            <p class="datetime">
-Date: <input type="text" name="porder_create_time_0" class="vDateField" size="10" required id="id_porder_create_time_0">
-
-<br>
-Time: <input type="text" name="porder_create_time_1" class="vTimeField" size="8" required id="id_porder_create_time_1">
-
-
-</p>
-                        
-                    
-                </div>
-            
-        </div>
-    
-    
-</div>
-
-<div class="form-row field-porder_update_time">
-    
-    
-        <div>
-            
-                <div class="flex-container">
-                    
-                        <label class="required">Porder update time:</label>
-                        
-                            <p class="datetime">
-Date: <input type="text" name="porder_update_time_0" class="vDateField" size="10" required id="id_porder_update_time_0">
-
-<br>
-Time: <input type="text" name="porder_update_time_1" class="vTimeField" size="8" required id="id_porder_update_time_1">
-
-
-</p>
-                        
-                    
-                </div>
-            
-        </div>
-    
-    
-</div>
-
-<div class="form-row field-porder_create_by">
-    
-    
-        <div>
-            
-                <div class="flex-container">
-                    
-                        <label class="required" for="id_porder_create_by">Porder create by:</label>
-                        
-                            <div class="related-widget-wrapper" data-model-ref="user">
-<select name="porder_create_by" required id="id_porder_create_by">
-<option value="" selected>---------</option>
-
-<option value="1">admin</option>
-
-</select>
-
-<a class="related-widget-wrapper-link change-related" id="change_id_porder_create_by"
-    data-href-template="/dj-admin/auth/user/__fk__/change/?_to_field=id&amp;_popup=1"
-    data-popup="yes"
-    title="Change selected user"><img src="/static/admin/img/icon-changelink.svg" alt="Change"></a><a class="related-widget-wrapper-link add-related" id="add_id_porder_create_by"
-    data-popup="yes"
-    href="/dj-admin/auth/user/add/?_to_field=id&amp;_popup=1"
-    title="Add another user"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a><a class="related-widget-wrapper-link view-related" id="view_id_porder_create_by"
-     data-href-template="/dj-admin/auth/user/__fk__/change/?_to_field=id"
-     title="View selected user"><img src="/static/admin/img/icon-viewlink.svg" alt="View"></a>
-
-</div>
-                        
-                    
-                </div>
-            
-        </div>
-    
-    
-</div>
-
-<div class="form-row field-porder_update_by">
-    
-    
-        <div>
-            
-                <div class="flex-container">
-                    
-                        <label class="required" for="id_porder_update_by">Porder update by:</label>
-                        
-                            <div class="related-widget-wrapper" data-model-ref="user">
-<select name="porder_update_by" required id="id_porder_update_by">
-<option value="" selected>---------</option>
-
-<option value="1">admin</option>
-
-</select>
-
-<a class="related-widget-wrapper-link change-related" id="change_id_porder_update_by"
-    data-href-template="/dj-admin/auth/user/__fk__/change/?_to_field=id&amp;_popup=1"
-    data-popup="yes"
-    title="Change selected user"><img src="/static/admin/img/icon-changelink.svg" alt="Change"></a><a class="related-widget-wrapper-link add-related" id="add_id_porder_update_by"
-    data-popup="yes"
-    href="/dj-admin/auth/user/add/?_to_field=id&amp;_popup=1"
-    title="Add another user"><img src="/static/admin/img/icon-addlink.svg" alt="Add"></a><a class="related-widget-wrapper-link view-related" id="view_id_porder_update_by"
-     data-href-template="/dj-admin/auth/user/__fk__/change/?_to_field=id"
-     title="View selected user"><img src="/static/admin/img/icon-viewlink.svg" alt="View"></a>
-
-</div>
-                        
-                    
-                </div>
-            
-        </div>
-    
-    
-</div>
-
     </div>
   </div>
 </div>

@@ -4,15 +4,21 @@ from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout 
 from django.contrib import messages
 #from .models import *
-from business_apps.models import ItemProduct
+from business_apps.models import *
 #from shop_apps.forms import *
-
+def view_one(request): 
+    data_one = ItemProduct.objects.all() 
+    return data_one 
+def view_two(request): 
+    data_two = ItemCategory.objects.all()
+    return data_two
 # Create your views here.
 def homes(request):
         prod = ItemProduct.objects.all()
         return render(request, "shop_apps/home.html", {'prod': prod})
 
-def home(request):     
+def home(request):   
+    
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
@@ -26,8 +32,15 @@ def home(request):
             messages.success(request,"Ooooff Login Error!")
             return redirect('shop_apps:login')
     else:
-        prod = ItemProduct.objects.all()
-        return render(request, "shop_apps/home.html", {'prod': prod})
+       # prod = ItemProduct.objects.all()
+        prod = view_one(request) 
+        cat = view_two(request) 
+        context = { 
+            'prod': prod, 
+            'cat': cat, 
+            'count': ItemProduct.objects.count(),
+        }  
+        return render(request, "shop_apps/home.html", {'context': context})
 
 def login_user(request):
     return render(request, "shop_apps/login.html", {})

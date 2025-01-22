@@ -11,7 +11,7 @@
 {% block content %}
 <div class="main-content">
   <div class="content">    
-    <div class="form-header" style="display: flex; background-color: blueviolet;">      
+    <div class="form-header" style="display: flex;">      
       <div>
         <h3>Product List</h3>
       </div>
@@ -36,7 +36,7 @@
           <td>
             <a href="{% url 'slt:product_details' data.pk %}">
               {% if data.item_image %}
-                <img src="{{data.item_image.url}}" style="width:100px; height:auto;">
+                <img src="{{data.item_image.url}}" style="width:50px; height:auto;">
               {% endif %}
             </a>
           </td>

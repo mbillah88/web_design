@@ -7,6 +7,17 @@ from django.http import HttpResponse
 from django.template import loader
 from .forms import *
 from. models import *
+from dal import autocomplete
+
+class AuthorAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Filter out results according to the user or other parameters.
+        qs = Supplier.objects.all()
+
+        if self.q:
+            qs = qs.filter(supplier_name=self.q)
+
+        return qs
 
 # Create your views here.
 @login_required
@@ -151,6 +162,19 @@ def supplier_new(request):
     else:
         form = SupplierForm()
         return render(request, 'business_apps/supplier_new.html', {'form': form})
+def add_supplier_new(request):
+    if request.method == 'POST':
+        form = SupplierForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('slt:purchase_new')
+        else:
+            form = SupplierForm()
+            return render(request, 'business_apps/add_supplier_new.html', {'form': form})
+
+    else:
+        form = SupplierForm()
+        return render(request, 'business_apps/add_supplier_new.html', {'form': form})
 def supplier_update(request, pk):
     sup = get_object_or_404(Supplier, id=pk)
     if request.method == 'POST':
@@ -160,7 +184,7 @@ def supplier_update(request, pk):
             return redirect('slt:supplier')
         else:
             messages.error(request,'Not Update')
-           # return redirect('slt:new_brand')
+            return redirect('slt:new_brand')
 
     else:
         form = SupplierForm(instance=sup)
@@ -182,7 +206,14 @@ def sales_update(request):
 def purchase(request):
   return render(request, 'business_apps/purchase.html')
 def purchase_new(request):
-  return render(request, 'business_apps/purchase_new.html')
+    if request.method == 'POST':
+        form = PurchaseOrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('slt:purchase')
+    else:
+        form = PurchaseOrderForm()
+        return render(request, 'business_apps/purchase_new.html', {'form': form})
 def purchase_update(request):
   return render(request, 'business_apps/purchase_update.html')
 def purchase_order_process(request):    

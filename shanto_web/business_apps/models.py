@@ -10,6 +10,14 @@ def imageFilePath(request, filename):
     filename = "%s%s" % (timeNow, old_filename)
     return BASE_DIR('uploads/', filename)
   
+# iterable 
+OrderChoice =( 
+    ("1", "Received"), 
+    ("2", "Pending"), 
+    ("3", "Ordered"), 
+    ("4", "Cancel"), 
+) 
+
 class ItemCategory(models.Model):
   category_name = models.CharField(max_length=255)
   category_description = models.CharField(max_length=255, default='')
@@ -25,13 +33,19 @@ class ItemBrand(models.Model):
   def __str__(self):         
     return self.brand_name
 
+class ItemUnit(models.Model):
+  unit_name = models.CharField(max_length=20)
+  unit_description = models.CharField(max_length=100, default='Default')
+  def __str__(self):         
+    return self.unit_name
+
 class ItemProduct(models.Model):
   item_name = models.CharField(max_length=255)
   category_name = models.ForeignKey(ItemCategory, on_delete=models.CASCADE, null = True)
   brand_name = models.ForeignKey(ItemBrand, on_delete=models.CASCADE, null = True)
   item_model = models.CharField(max_length=255, null = True, default='')
   item_description = models.CharField(max_length=255, null = True, default='')
-  itme_unit = models.CharField(max_length=255, null = True, blank =True)
+  itme_unit = models.ForeignKey(ItemUnit, on_delete=models.CASCADE, null = True)
   itme_sku = models.CharField(max_length=255, null = True, blank =True, default='')
   itme_alert_qty = models.CharField(max_length=255, null = True, blank =True, default=0)
   itme_barcode = models.CharField(max_length=255, null = True, blank =True, default='')
@@ -65,7 +79,7 @@ class PurchaseOrder(models.Model):
   supplier_id = models.ForeignKey(Supplier, on_delete=models.CASCADE, null = True)
   porder_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   porder_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
-  porder_status = models.CharField(max_length=255, default='')
+  porder_status = models.CharField(max_length=1,choices=OrderChoice, default=3)
   porder_note = models.CharField(max_length=255, default='')
   porder_create_time = models.DateTimeField(auto_now_add=True,null = True)  
   porder_update_time = models.DateTimeField(auto_now=True,null = True)  
