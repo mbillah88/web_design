@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "shop_apps",
     "business_apps",
+    "dal",
+    "dal_select2",
 ]
 
 MIDDLEWARE = [

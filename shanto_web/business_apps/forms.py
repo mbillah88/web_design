@@ -1,6 +1,7 @@
 # forms.py
 from django import forms
 from .models import *
+from dal import autocomplete 
 
 # iterable 
 PaymentChoice =( 
@@ -40,22 +41,16 @@ class ItemProductForm(forms.ModelForm):
         model = ItemProduct
         fields = "__all__"
 
-        readonly_fields = ('created_at')
-
         widgets = { 
             'item_image': forms.ClearableFileInput(attrs={ 'id': 'imageInput' }),   
             'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),   
-            #'itme_unit': forms.ChoiceField(choices = OrderChoice),  
-         }
+            #'itme_unit': forms.ChoiceField(choices = OrderChoice),          
+            'supplier_id': autocomplete.ModelSelect2(url='{{slt:add_supplier_new}}')
+        }
 
 class ClientsForm(forms.ModelForm):
     class Meta:
         model = Clients
-        fields = "__all__"
-
-class SupplierForm(forms.ModelForm):
-    class Meta:
-        model = Supplier
         fields = "__all__"
 
 class SupplierForm(forms.ModelForm):

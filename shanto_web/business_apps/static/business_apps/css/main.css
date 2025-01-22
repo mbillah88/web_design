@@ -20,13 +20,26 @@
     }
     .containers > aside#sidebar.nav-side-bar{
         width: 100%;
-        height: auto;
-        transition: auto;
     }
     aside > .side-bar{
         margin-top: 0;
         margin-bottom: 0;
     }
+    
+aside > div.side-nav-body{
+    display: grid;
+    grid-template-rows: 0fr;
+    background-color: #3683f79d; 
+    transition: all 330ms ease-in-out;
+
+    > div{
+        overflow: hidden;
+    }
+}
+
+.side-nav-body.colaps{    
+    grid-template-rows: 1fr;
+  }
     main > .main-content {
         flex-wrap: wrap;
         padding: 2px;
@@ -111,13 +124,13 @@ aside:not(.nav-side-bar) .nav-header,
 aside:not(.nav-side-bar) .side-bar {
     justify-content: center;
 }
-aside:not(.nav-side-bar)  .nav-header >img,
-aside:not(.nav-side-bar) .side-bar a.sidebar-link span,
-aside:not(.nav-side-bar) .side-bar a.sidebar-link svg:last-child{
+aside:not(.nav-side-bar)  .nav-header >img{
     display: none;
 }
-aside:not(.nav-side-bar) .side-bar a.sidebar-link{
+aside:not(.nav-side-bar) .side-bar a.sidebar-link{ 
     gap: 0;
+    flex-direction: column;    
+    font-size: .5rem;
 }
 /*
 aside:not(.nav-side-bar):hover { 
@@ -136,9 +149,6 @@ aside .side-bar{
   padding-top: .5rem;
   padding-bottom: .5rem;
   overflow: hidden;
-}
-.side-nav-body.colaps{    
-  display: none;
 }
 .side-item .sub-item{
     display: grid;
@@ -188,12 +198,6 @@ a.sidebar-link span{
     rotate: 180deg;
     color: #f81212;
 }
-aside > div.side-nav-body{
-    display: flex; 
-    flex-flow: column;
-    flex: auto;
-    transition: all 333ms ease-in-out;
-}
 /* Sidebar End*/
 
 main {    
@@ -202,7 +206,7 @@ main {
 main .main-container-head{    
     display: flex;
     flex-direction: row;
-    background-color: midnightblue;
+    background-color: #013d3d;
     padding: .5rem .5rem .5rem 1.5rem;
     height: 50px;
     align-content: center;
@@ -235,13 +239,13 @@ main .content{
     border: 1px solid var(--line-color);
     border-radius: 1rem;
     padding: .85em;
-    background-color: #f2f2;
+    background-color: #008b8b75;
     flex: 1;    
     width: 100%;
 }
 .form-header{    
     display: flex;
-    background-color: blueviolet;
+    background-color: #ffffff69;
     padding: .5rem;
     justify-content: space-between;
     align-items: center;
@@ -269,8 +273,9 @@ main .content{
 
 input[type=text], input[type=number], input[type=datetime-local],select {
     width: 100%;
-    padding: 6px 10px;
-    margin: 8px 0;
+    width: 100%;
+    padding: 6px 6px;
+    margin: 6px 0;
     display: inline-block;
     border: 1px solid #dff0bf;
     border-radius: 4px;

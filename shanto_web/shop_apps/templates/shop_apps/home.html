@@ -44,9 +44,9 @@
       <div class="containter bg-light p-2 shadow">
         <h4>Category</h4>
       </div>
-      <div class="row gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 pt-3 justify-content-center">
+      <div class="row gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 pt-3 justify-content-center" style="padding: (var(--bs-gutter-x)* .5);">
         {% for data in context.cat %}
-        <div class="col mb-5">
+        <div class="col mb-5 shadow">
           <div class="card h-100 " style="background: #133900;">           
             <img src="{{data.cat_image.url}}" class="card-img-top" alt="Product Image" height="100px" width="100px">        
             <div class="p-2" style="color: aliceblue; text-align: center;">

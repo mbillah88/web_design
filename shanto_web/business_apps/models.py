@@ -10,6 +10,14 @@ def imageFilePath(request, filename):
     filename = "%s%s" % (timeNow, old_filename)
     return BASE_DIR('uploads/', filename)
   
+# iterable 
+OrderChoice =( 
+    ("1", "Received"), 
+    ("2", "Pending"), 
+    ("3", "Ordered"), 
+    ("4", "Cancel"), 
+) 
+
 class ItemCategory(models.Model):
   category_name = models.CharField(max_length=255)
   category_description = models.CharField(max_length=255, default='')
@@ -71,7 +79,7 @@ class PurchaseOrder(models.Model):
   supplier_id = models.ForeignKey(Supplier, on_delete=models.CASCADE, null = True)
   porder_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   porder_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
-  porder_status = models.CharField(max_length=255, default='')
+  porder_status = models.CharField(max_length=1,choices=OrderChoice, default=3)
   porder_note = models.CharField(max_length=255, default='')
   porder_create_time = models.DateTimeField(auto_now_add=True,null = True)  
   porder_update_time = models.DateTimeField(auto_now=True,null = True)  
