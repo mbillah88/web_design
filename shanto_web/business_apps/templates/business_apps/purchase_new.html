@@ -1,4 +1,5 @@
 {% extends "business_apps/master.html" %}
+{% load i18n %}
 
 {% block title %}
   SLT | New Purchase
@@ -7,8 +8,21 @@
 {% block header %}
   New Purchase
 {% endblock %}
-{% block content %}
 
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+{% url 'slt:purchase' as urls %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{urls}}">Purchase</a></li>
+    <li class="breadcrumb-item active" aria-current="page">New Purchase</li>
+  </ul>
+</div>
+{% endblock %}
+
+    
+{% block content %}
 <div class="main-content">
   <div class="add-container" style="max-width: 960px;">
     <div class="content">
@@ -30,38 +44,41 @@
       <form class="form-container" enctype="multipart/form-data" method="post">
         <!-- Security token -->
         {% csrf_token %}
-        <div class="content" style="display: flex; align-items: center; justify-content: center; gap: 2rem;">      
-          <div>
-            <label for="supplier_id">Supplier name:</label>
-            {{ form.supplier_id }}
-            {% for Supplier in form.fields.Supplier.queryset %} 
-            <option value="{{ Supplier.id }}" {% if Supplier.id == form.Supplier.value %}selected{% endif %}> {{ Supplier.supplier_name }} </option> 
-            {% endfor %}
-            {% url 'slt:add_supplier_new' as url %}
+        <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: 2rem;">      
+          <div class="">
+            <div style="flex: 3;">
+              <label for="supplier_id">Supplier name:</label>
+              <div style="display: flex; gap: .5rem;">
+                {{ form.supplier_id }}
+                {% for Supplier in form.fields.Supplier.queryset %} 
+                <option value="{{ Supplier.id }}" {% if Supplier.id == form.Supplier.value %}selected{% endif %}> {{ Supplier.supplier_name }} </option> 
+                {% endfor %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <label for="id_brand_name">Order Type:</label>
+              {{ form.porder_status }}
+              {% for PurchaseOrder in form.fields.PurchaseOrder.queryset %} 
+              <option value="{{ PurchaseOrder.id }}" {% if PurchaseOrder.id == form.PurchaseOrder.value %}selected{% endif %}> {{ PurchaseOrder.porder_status }} </option> 
+              {% endfor %}
+            </div>
 
-            <a onclick="window.open('{{ url }}', 'popup', 'location=0,width=750,height=650,left=500,top=55'); return false;" class="btn btn-primary btn-sm">pLus+</a>
-            <a class="related-widget-wrapper-link change-related" id="change_id_supplier_id"
-              data-href-template="/dj-admin/business_apps/supplier/__fk__/change/?_to_field=id&amp;_popup=1"
-              data-popup="yes"
-              title="Change selected supplier"><img src="/static/admin/img/icon-changelink.svg" alt="Change">
-            </a>
-            <a class="related-widget-wrapper-link add-related" id="add_id_supplier_id"
-              data-popup="yes"
-              href="{% url 'slt:add_supplier_new' %}"
-              title="Add another supplier"><img src="/static/admin/img/icon-addlink.svg" alt="Add">
-            </a>
-            <a class="related-widget-wrapper-link view-related" id="view_id_supplier_id"
-              data-href-template="/dj-admin/business_apps/supplier/__fk__/change/?_to_field=id"
-              title="View selected supplier"><img src="/static/admin/img/icon-viewlink.svg" alt="View">
-            </a>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>
           </div>
-          <div>
-            <label for="id_brand_name">Brand name:</label>
-            {{ form.porder_status }}
-            {% for PurchaseOrder in form.fields.PurchaseOrder.queryset %} 
-            <option value="{{ PurchaseOrder.id }}" {% if PurchaseOrder.id == form.PurchaseOrder.value %}selected{% endif %}> {{ PurchaseOrder.porder_status }} </option> 
-            {% endfor %}
+            
+          <div class="" > 
+            <div> 
+              <label for="id_item_name">Item name:</label>
+              <input type="text" name="item_name" maxlength="255" required id="id_item_name" value="{{ form.instance.item_name }}">     
+            </div>
+            <div>
+              <label for="id_item_model">Item model:</label>
+              <input type="text" name="item_model" maxlength="255" required id="id_item_model" value="{{ form.instance.item_model }}">    
+            </div>
+            <div>
+              <label for="id_item_description">Item description:</label>
+              <input type="text" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}">    
+            </div>
           </div>
         </div>
         <div class="content" > 

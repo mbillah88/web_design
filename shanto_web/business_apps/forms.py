@@ -1,7 +1,8 @@
 # forms.py
 from django import forms
 from .models import *
-from dal import autocomplete 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 # iterable 
 PaymentChoice =( 
@@ -45,7 +46,6 @@ class ItemProductForm(forms.ModelForm):
             'item_image': forms.ClearableFileInput(attrs={ 'id': 'imageInput' }),   
             'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),   
             #'itme_unit': forms.ChoiceField(choices = OrderChoice),          
-            'supplier_id': autocomplete.ModelSelect2(url='{{slt:add_supplier_new}}')
         }
 
 class ClientsForm(forms.ModelForm):
@@ -73,4 +73,14 @@ class PurchasePaymentForm(forms.ModelForm):
         model = PurchasePayment
         fields = "__all__"
 
+# Settings Tools .........
+class ItemUnitForm(forms.ModelForm):    
+    class Meta:
+        model = ItemUnit
+        fields = "__all__"
+
+
+    helper = FormHelper()
+    helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+    helper.form_method = 'POST'
         #min_value=1, max_value=10, initial=1

@@ -7,17 +7,6 @@ from django.http import HttpResponse
 from django.template import loader
 from .forms import *
 from. models import *
-from dal import autocomplete
-
-class AuthorAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        # Filter out results according to the user or other parameters.
-        qs = Supplier.objects.all()
-
-        if self.q:
-            qs = qs.filter(supplier_name=self.q)
-
-        return qs
 
 # Create your views here.
 @login_required
@@ -170,11 +159,11 @@ def add_supplier_new(request):
             return redirect('slt:purchase_new')
         else:
             form = SupplierForm()
-            return render(request, 'business_apps/add_supplier_new.html', {'form': form})
+            return render(request, 'business_apps/supplier_new_instance.html', {'form': form})
 
     else:
         form = SupplierForm()
-        return render(request, 'business_apps/add_supplier_new.html', {'form': form})
+    return render(request, 'business_apps/supplier_new_instance.html', {'form': form})
 def supplier_update(request, pk):
     sup = get_object_or_404(Supplier, id=pk)
     if request.method == 'POST':
@@ -223,5 +212,43 @@ def purchase_order_process(request):
             #create_order = PurchaseOrder(user = user)
             #create_order.save()
             return render(request, 'business_apps/purchase.html', {'user': user})
+
+# Tools_Unit_View...
+@login_required
+def settings(request):
+    return render(request, 'business_apps/settings.html', {})
+
+@login_required
+def tools_unit(request):
+    if request.method == 'POST':
+        form = ItemUnitForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('slt:tools_unit')
+    else:
+        form = ItemUnitForm()
+    forms = ItemUnit.objects.all().values()
+    context = {
+        'form' : form,
+        'forms' : forms,
+    }
+    return render(request, 'business_apps/tools_unit.html', context)
+@login_required
+def tools_unit_update(request, pk):
+    unit = get_object_or_404(ItemUnit, id=pk)
+    if request.method == 'POST':
+        form = ItemUnitForm(request.POST, instance=unit)
+        if form.is_valid():
+            form.save()
+            return redirect('slt:tools_unit')
+    else:
+        form = ItemUnitForm(instance=unit)
+        forms = ItemUnit.objects.all().values()
+        context = {
+            'form' : form,
+            'forms' : forms,
+        }
+    return render(request, 'business_apps/tools_unit.html', context)
+
 def success(request):
     return HttpResponse('successfully uploaded')

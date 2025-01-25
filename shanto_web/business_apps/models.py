@@ -33,6 +33,7 @@ class ItemBrand(models.Model):
   def __str__(self):         
     return self.brand_name
 
+# Setting Tools .........
 class ItemUnit(models.Model):
   unit_name = models.CharField(max_length=20)
   unit_description = models.CharField(max_length=100, default='Default')

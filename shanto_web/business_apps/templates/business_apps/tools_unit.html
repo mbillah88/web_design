@@ -1,0 +1,81 @@
+{% extends "business_apps/master.html" %}
+{% load i18n %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}
+  SLT | Item Unit
+{% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+{% url 'slt:settings' as urls %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{urls}}">Settings</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Item Unit</li>
+  </ul>
+</div>
+{% endblock %}
+
+{% block header %}
+  Item Unit
+{% endblock %}
+
+{% block content %}
+
+<div class="main-content" style="flex-direction: column;">
+  <div class="add-container" style="max-width: 960px;">
+    <div class="content" style="display: flex; flex-direction: column; align-content: center; gap: 1rem; flex-wrap: wrap;">
+      <div class="form-header">
+        <div>
+            {% if form.instance.pk %}
+              <span style="font-size: 1.3rem; font-weight: bolder; background-color: rgba(255, 17, 0, 0.822);">Edit Unit : {{ form.instance.unit_name}}</span>
+            {% else %}
+            <span style="font-size: 1.3rem; font-weight: bolder;">Add Unit</span>
+            {% endif %}
+        </div>
+        <div>
+          {% if form.instance.pk %}
+          <a href="{% url 'slt:tools_unit' %}">Add Unit</a>          
+          {% endif %}
+        </div>
+      </div>       
+      <div class="content pt-3">     
+            {% crispy form %}
+      </div>
+    </div>
+  </div>
+  <div class="add-container" style="max-width: 960px;">
+    <div class="content" style="display: flex; flex-direction: column; align-content: center; gap: 1rem; flex-wrap: wrap;">
+      <div class="form-header">
+        <div>
+            <span style="font-size: 1.3rem; font-weight: bolder;">Unit List</span>        
+        </div>
+      </div>       
+      <div class="content pt-3">    
+        <table class="table table-success table-striped">
+          <tr>
+            <th>#</th>
+            <th>Unit Name</th>
+            <th>Unit Discription</th>
+            <th>Action</th>
+          </tr>
+          {% for data in forms %} 
+          <tr>
+            <td>{{data.id}}</td>
+            <td>{{data.unit_name}}</td>
+            <td>{{data.unit_description}}</td>
+            <td>
+              <a href="{% url 'slt:tools_unit_update' data.id %}">Edit</a>
+              <a href="">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </table> 
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

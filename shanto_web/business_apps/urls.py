@@ -42,4 +42,9 @@ urlpatterns = [
     path('purchase/purchase_new', views.purchase_new, name='purchase_new'),
     path('purchase/<int:pk>/purchase_update', views.purchase_update, name='purchase_update'),
     
+    # Settings Tools .... 
+    path('settings/', views.settings, name='settings'),
+    path('settings/tools_unit', views.tools_unit, name='tools_unit'),
+    path('settings/<int:pk>/tools_unit_update', views.tools_unit_update, name='tools_unit_update'),
+   
 ]
