@@ -83,13 +83,38 @@
             </div>
           </div>
         </div>     
-        <div class="content d-flex" style="align-items: center;">
-          <div >
-            <label >Search : </label>
-          </div>
-          <div style="flex: 2;">
+        <div class="content d-flex" style="text-align: center; flex-flow: column-reverse;;">          
+          <div>
             <input type="text" placeholder="Search Product/Serial/Barcode" value="{{ form.instance.created_at }}">
-          </div>          
+          </div> 
+          <div class="content" style="display: flex;align-items: center;gap: 1rem;justify-content: space-evenly;"> 
+            <div class="d-flex" style="gap: 2rem;">
+              <div>
+                <label for="id_item_sprice">Expired:</label>
+                <input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
+              </div>
+              <div>
+                <label for="id_item_pprice">S Price</label>
+                <input type="text" name="item_pprice" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+              </div>
+              <div>
+                <label for="id_item_sprice">Unit:</label>
+                <input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
+              </div>
+              <div>
+                <label for="id_item_pprice">Price</label>
+                <input type="text" name="item_pprice" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+              </div>
+              <div>
+                <label for="id_item_sprice">Qty</label>
+                <input type="number" name="item_sprice" min="1" required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
+              </div>
+            </div>
+            
+            <div>
+              <input type="submit">
+            </div>
+          </div>       
         </div>
         <div class="content">
           <span style="font-size: 1.3rem; font-weight: bolder;">Product Item</span>
@@ -121,36 +146,6 @@
                   <!-- Add more product rows here -->
               </tbody>
           </table>
-        </div>
-        <div class="content" style="display: flex; align-items: center; justify-content: center; gap: .2rem;"> 
-          <div>
-            <label for="id_item_sprice">Item Code:</label>
-            <input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
-          </div>
-          <div>
-            <label for="id_item_pprice">Item Name:</label>
-            <input type="text" name="item_pprice" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
-          </div>
-          <div>
-            <label for="id_item_sprice">Item Unit:</label>
-            <input type="text" name="item_sprice" required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
-          </div>
-          <div>
-            <label for="id_item_pprice">Quantity</label>
-            <input type="number" name="item_pprice" min="1" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
-          </div><div>
-            <label for="id_item_sprice">Item Price:</label>
-            <input type="number" name="item_sprice" step="0.01" required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
-          </div>
-          <div>
-            <label for="id_item_pprice">Total Price:</label>
-            <input type="number" name="item_pprice" step="0.01" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
-          </div>
-          <div style="display: flex; flex-direction: row; align-items: center; gap: .2rem;">            
-            <input type="button" value="-" id="minus-button" for="quantity">
-            <input type="number" id="quantity" value="1" min="0">
-            <input type="button" value="+" id="plus-button" for="quantity">
-          </div>
         </div>
         <div class="submit-row">
           <input type="submit">
