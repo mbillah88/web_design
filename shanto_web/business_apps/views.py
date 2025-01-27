@@ -202,16 +202,17 @@ def purchase_new(request):
             return redirect('slt:purchase')
     else:
         form = PurchaseOrderForm()
-        return render(request, 'business_apps/purchase_new.html', {'form': form})
+        context = {
+            'form' : form,
+        }
+        return render(request, 'business_apps/purchase_new.html', context)
+
 def purchase_update(request):
   return render(request, 'business_apps/purchase_update.html')
 def purchase_order_process(request):    
-    if request.method == 'POST':
-        if request.user.is_authenticated:
-            user = request.user
-            #create_order = PurchaseOrder(user = user)
-            #create_order.save()
-            return render(request, 'business_apps/purchase.html', {'user': user})
+    form = PurchaseOrderItemForm()
+    products = ItemProduct.objects.all()
+    return render(request, 'business_apps/purchase_new_order.html', {'form': form, 'products': products})
 
 # Tools_Unit_View...
 @login_required

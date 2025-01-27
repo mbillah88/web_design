@@ -28,13 +28,11 @@
     <div class="content">
       <div class="form-header">
         <div>
-          <h3>
             {% if form.instance.pk %}
-              <span style="background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : {{ form.instance.item_name}}</span>
+              <span style="font-size: 1.3rem; font-weight: bolder; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : {{ form.instance.item_name}}</span>
             {% else %}
-            <span>New Purchase</span>
+            <span style="font-size: 1.3rem; font-weight: bolder;">New Purchase</span>
             {% endif %}
-          </h3>
         </div>
         <div>        
           <a href="{% url 'slt:purchase' %}">Purchase List</a>
@@ -44,20 +42,24 @@
       <form class="form-container" enctype="multipart/form-data" method="post">
         <!-- Security token -->
         {% csrf_token %}
-        <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: 2rem;">      
-          <div class="">
+        <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: .5rem;">      
+          <div class="d-flex w-100 gap-3" >
             <div style="flex: 3;">
-              <label for="supplier_id">Supplier name:</label>
+              <label for="supplier_id">Supplier:</label>
               <div style="display: flex; gap: .5rem;">
                 {{ form.supplier_id }}
                 {% for Supplier in form.fields.Supplier.queryset %} 
-                <option value="{{ Supplier.id }}" {% if Supplier.id == form.Supplier.value %}selected{% endif %}> {{ Supplier.supplier_name }} </option> 
+                <option  value="{{ Supplier.id }}" {% if Supplier.id == form.Supplier.value %}selected{% endif %}> {{ Supplier.supplier_name }} </option> 
                 {% endfor %}
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>
+                {% url 'slt:add_supplier_new' as url %}
+                <a href="{{url}}">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>                
+                </a>
+                
               </div>
             </div>
             <div style="flex: 1;">
-              <label for="id_brand_name">Order Type:</label>
+              <label for="id_brand_name">O Type:</label>
               {{ form.porder_status }}
               {% for PurchaseOrder in form.fields.PurchaseOrder.queryset %} 
               <option value="{{ PurchaseOrder.id }}" {% if PurchaseOrder.id == form.PurchaseOrder.value %}selected{% endif %}> {{ PurchaseOrder.porder_status }} </option> 
@@ -66,78 +68,89 @@
 
           </div>
             
-          <div class="" > 
+          <div class="d-flex w-100 gap-3" > 
             <div> 
-              <label for="id_item_name">Item name:</label>
-              <input type="text" name="item_name" maxlength="255" required id="id_item_name" value="{{ form.instance.item_name }}">     
+              <label for="id_item_name">Supplier Address:</label>
+              <input type="text" name="supplier_name" maxlength="255" required id="id_supplier_name" value="{{ Supplier.supplier_name }}">     
             </div>
             <div>
-              <label for="id_item_model">Item model:</label>
+              <label for="id_item_model">Supplier Mobile:</label>
               <input type="text" name="item_model" maxlength="255" required id="id_item_model" value="{{ form.instance.item_model }}">    
             </div>
             <div>
-              <label for="id_item_description">Item description:</label>
-              <input type="text" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}">    
+              <label for="id_item_description">POrder Date:</label>
+              <input type="datetime-local" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}">    
             </div>
           </div>
+        </div>     
+        <div class="content d-flex" style="align-items: center;">
+          <div >
+            <label >Search : </label>
+          </div>
+          <div style="flex: 2;">
+            <input type="text" placeholder="Search Product/Serial/Barcode" value="{{ form.instance.created_at }}">
+          </div>          
         </div>
-        <div class="content" > 
-          <div> 
-            <label for="id_item_name">Item name:</label>
-            <input type="text" name="item_name" maxlength="255" required id="id_item_name" value="{{ form.instance.item_name }}">     
-          </div>
-          <div>
-            <label for="id_item_model">Item model:</label>
-            <input type="text" name="item_model" maxlength="255" required id="id_item_model" value="{{ form.instance.item_model }}">    
-          </div>
-          <div>
-            <label for="id_item_description">Item description:</label>
-            <input type="text" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}">    
-          </div>
+        <div class="content">
+          <span style="font-size: 1.3rem; font-weight: bolder;">Product Item</span>
+          <table id="purchaseOrderTable">
+              <thead>
+                  <tr>
+                      <th>Product Code</th>
+                      <th>Product Name</th>
+                      <th>Quantity</th>
+                      <th>Unit Price</th>
+                      <th>Total Price</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>SKU123</td>
+                      <td>T-Shirt, Blue</td>
+                      <td>10</td>
+                      <td>$15.00</td>
+                      <td>$150.00</td>
+                  </tr>
+                  <tr>
+                      <td>SKU456</td>
+                      <td>Jeans, Denim</td>
+                      <td>8</td>
+                      <td>$30.00</td>
+                      <td>$150.00</td>
+                  </tr>
+                  <!-- Add more product rows here -->
+              </tbody>
+          </table>
         </div>
-        <div class="content" style="display: flex; align-items: center; justify-content: center; gap: 2rem;"> 
+        <div class="content" style="display: flex; align-items: center; justify-content: center; gap: .2rem;"> 
           <div>
-            <label for="id_item_sprice">Item sprice:</label>
+            <label for="id_item_sprice">Item Code:</label>
+            <input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
+          </div>
+          <div>
+            <label for="id_item_pprice">Item Name:</label>
+            <input type="text" name="item_pprice" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+          </div>
+          <div>
+            <label for="id_item_sprice">Item Unit:</label>
+            <input type="text" name="item_sprice" required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
+          </div>
+          <div>
+            <label for="id_item_pprice">Quantity</label>
+            <input type="number" name="item_pprice" min="1" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+          </div><div>
+            <label for="id_item_sprice">Item Price:</label>
             <input type="number" name="item_sprice" step="0.01" required id="id_item_sprice" value="{{ form.instance.item_sprice }}">    
           </div>
           <div>
-            <label for="id_item_pprice">Item pprice:</label>
+            <label for="id_item_pprice">Total Price:</label>
             <input type="number" name="item_pprice" step="0.01" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
           </div>
-        </div>
-        <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
-          <div>
-            <label for="imageInput">Item image:</label>
-            {{form.item_image}}
-            <!--<input id="imageInput" type="file" name="item_image" accept="image/*" required id="id_item_image" value="">-->
+          <div style="display: flex; flex-direction: row; align-items: center; gap: .2rem;">            
+            <input type="button" value="-" id="minus-button" for="quantity">
+            <input type="number" id="quantity" value="1" min="0">
+            <input type="button" value="+" id="plus-button" for="quantity">
           </div>
-          <div>
-            {% if form.instance.item_image %}
-            <img src="{{STATIC_URL}}{{form.instance.item_image.url}}" id="previewImage" alt="Preview Image" style="width: 200px; height: 200px;">
-            {% else %}
-            <img id="previewImage" alt="Preview Image" style="width: 200px; height: 200px; border: 1px solid wheat;">
-            {% endif %}
-            <script>
-                const imageInput = document.getElementById('imageInput');
-                const previewImage = document.getElementById('previewImage');
-                function previewSelectedImage() {
-                  const file = imageInput.files[0];
-                  if (file) {
-                      const reader = new FileReader();
-                      reader.readAsDataURL(file);
-                      reader.onload = function(e) {
-                        previewImage.src = e.target.result;
-                      }
-                  }
-                }
-                imageInput.addEventListener('change', previewSelectedImage);
-            </script>
-          </div>
-        </div>
-        <div class="content">
-          <label for="id_created_at">Created at:</label>
-          {{form.created_at}}
-          <!--<input type="text" name="created_at" required id="id_created_at"value="{{ form.instance.created_at }}">  -->  
         </div>
         <div class="submit-row">
           <input type="submit">
@@ -146,4 +159,22 @@
     </div>
   </div>
 </div>
+
+<!-- Be sure to put the links in the right position to avoid dependency issue.-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function () {
+        $('select').selectize({
+            sortField: 'text'
+        });        
+        $('.selectize-control').addClass("w-100")
+    });
+
+  // to clear the selected value.
+   $('form').find('.selectized').each(function(index, element) { element.selectize && element.selectize.clear() })
+
+ </script>
+
 {% endblock %}

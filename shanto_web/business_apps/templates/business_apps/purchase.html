@@ -24,10 +24,11 @@ Purchase List
   <div class="content">    
     <div class="form-header" style="display: flex;">      
       <div>
-        <h3>Today's Purchase Order</h3>
+        <span style="font-size: 1.3rem; font-weight: bolder;">Today's Purchase Order</span>
       </div>
       <div>        
         <a href="{% url 'slt:purchase_new' %}">New Purchase</a>
+        <a href="{% url 'slt:purchase_order_process' %}">New Order</a>
       </div>
     </div>   
         

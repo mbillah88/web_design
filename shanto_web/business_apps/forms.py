@@ -68,6 +68,10 @@ class PurchaseOrderItemForm(forms.ModelForm):
         model = PurchaseOrderItem
         fields = "__all__"
 
+    helper = FormHelper()
+    helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))
+    helper.form_method = 'POST'
+    
 class PurchasePaymentForm(forms.ModelForm):
     class Meta:
         model = PurchasePayment
@@ -81,6 +85,6 @@ class ItemUnitForm(forms.ModelForm):
 
 
     helper = FormHelper()
-    helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+    helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))
     helper.form_method = 'POST'
         #min_value=1, max_value=10, initial=1

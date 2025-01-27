@@ -88,7 +88,7 @@ class PurchaseOrder(models.Model):
   porder_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='o_create_update')
   
   def __str__(self):
-    return f'PurchaseOrder - {str(self.id)}'
+    return f'PurchaseOrder {self.id} by {self.supplier_id}'
 
 class PurchaseOrderItem(models.Model):
   porder_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
@@ -99,7 +99,7 @@ class PurchaseOrderItem(models.Model):
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
 
   def __str__(self):
-    return f'PurchaseDetails - {str(self.id)}'
+    return f"{self.itme_qty} x {self.ItemProduct.item_name}"
 
 class PurchasePayment(models.Model):
   order_id = models.ForeignKey(PurchaseOrderItem, on_delete=models.CASCADE, null = True)

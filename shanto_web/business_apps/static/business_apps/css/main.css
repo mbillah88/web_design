@@ -247,7 +247,7 @@ main .content{
 .form-header{    
     display: flex;
     background-color: #ffffff69;
-    padding: .5rem;
+    padding: .1rem .5rem .1rem .5rem;
     justify-content: space-between;
     align-items: center;
 }

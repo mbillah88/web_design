@@ -40,6 +40,7 @@ urlpatterns = [
     
     path('purchase/', views.purchase, name='purchase'),
     path('purchase/purchase_new', views.purchase_new, name='purchase_new'),
+    path('purchase/purchase_new_order', views.purchase_order_process, name='purchase_order_process'),
     path('purchase/<int:pk>/purchase_update', views.purchase_update, name='purchase_update'),
     
     # Settings Tools .... 
