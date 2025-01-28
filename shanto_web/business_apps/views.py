@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from .forms import *
 from. models import *
@@ -253,3 +253,26 @@ def tools_unit_update(request, pk):
 
 def success(request):
     return HttpResponse('successfully uploaded')
+
+def product_ajax(request):
+    product = ItemProduct.objects.all()
+    data = [
+        {"id": item.id, 
+        "name": item.item_name, 
+        "description": item.item_description,
+        "description": item.item_description,  
+        "price": str(item.item_sprice)} 
+        for item in product]
+    return JsonResponse(data, safe=False)
+
+def product_search(request):
+    query = request.GET.get('query', '')
+    items = ItemProduct.objects.filter(item_name__icontains=query)
+    data = [{"id": item.id, "name": item.item_name, "description": item.item_description, "price": str(item.item_sprice)} for item in items]
+    return JsonResponse(data, safe=False)
+
+
+def item_detail(request, pk):
+    item = get_object_or_404(ItemProduct, pk=pk)
+    data = [{"id": item.id, "name": item.item_name, "description": item.item_description, "price": str(item.item_sprice)} for item in items]
+    return JsonResponse(data)

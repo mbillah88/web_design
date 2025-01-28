@@ -85,7 +85,7 @@
         </div>     
         <div class="content d-flex" style="text-align: center; flex-flow: column-reverse;;">          
           <div>
-            <input type="text" placeholder="Search Product/Serial/Barcode" value="{{ form.instance.created_at }}">
+            <input id="search_product" type="text" placeholder="Search Product/Serial/Barcode" value="{{ form.instance.created_at }}">
           </div> 
           <div class="content" style="display: flex;align-items: center;gap: 1rem;justify-content: space-evenly;"> 
             <div class="d-flex" style="gap: 2rem;">
@@ -120,29 +120,12 @@
           <span style="font-size: 1.3rem; font-weight: bolder;">Product Item</span>
           <table id="purchaseOrderTable">
               <thead>
-                  <tr>
-                      <th>Product Code</th>
-                      <th>Product Name</th>
-                      <th>Quantity</th>
-                      <th>Unit Price</th>
-                      <th>Total Price</th>
-                  </tr>
+                <th>Check</th>
+                <th>Check</th>
+                <th>Check</th>
+                <th>Check</th>
               </thead>
               <tbody>
-                  <tr>
-                      <td>SKU123</td>
-                      <td>T-Shirt, Blue</td>
-                      <td>10</td>
-                      <td>$15.00</td>
-                      <td>$150.00</td>
-                  </tr>
-                  <tr>
-                      <td>SKU456</td>
-                      <td>Jeans, Denim</td>
-                      <td>8</td>
-                      <td>$30.00</td>
-                      <td>$150.00</td>
-                  </tr>
                   <!-- Add more product rows here -->
               </tbody>
           </table>
@@ -155,10 +138,6 @@
   </div>
 </div>
 
-<!-- Be sure to put the links in the right position to avoid dependency issue.-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-
 <script>
     $(document).ready(function () {
         $('select').selectize({
@@ -169,7 +148,106 @@
 
   // to clear the selected value.
    $('form').find('.selectized').each(function(index, element) { element.selectize && element.selectize.clear() })
+  
+ </script>
+ <script>
+  
+  $(document).ready(function () {
+        $.ajax({
+          type: 'GET',
+          url : "{% url 'slt:product_ajax' %}",
+          success: function(data){
+            var tableBody = $("#purchaseOrderTable tbody");
+                    tableBody.empty();
+                    data.forEach(function(item) {
+                        tableBody.append(
+                            "<tr><td>" + item.id + "</td><td>"  + item.name + "</td><td>" + item.description + "</td><td>" + item.price + "</td></tr>"
+                        );
+                    });
+          },
+
+          error: function(response){
+            alert("An Error")
+          }
+        })
+    });
 
  </script>
+<script>
+  $(document).ready(function() {
+      $("#search_product").on("input", function() {
+          var query = $(this).val();
+          $.ajax({
+              url: "{% url 'slt:product_search' %}",
+              method: "GET",
+              data: { query: query },
+              success: function(data) {
+                  var tableBody = $("#purchaseOrderTable tbody");
+                  tableBody.empty();
+                  data.forEach(function(item) {
+
+                      tableBody.append(
+                          "<tr><td>" + item.id + "</td><td>" + item.name + "</td><td>" + item.description + "</td><td>" + item.price + "</td></tr>"
+                      );
+                  });
+              },
+              error: function(error) {
+                  console.log("Error:", error);
+              }
+          });
+      });
+  });  
+</script>
+<h1>Search Items</h1>
+<input type="text" id="search-input" placeholder="Search for items">
+<ul id="search-results"></ul>
+<input type="text" id="item-id" placeholder="Item ID" readonly>
+<input type="text" id="item-name" placeholder="Item Name" readonly>
+<input type="text" id="item-description" placeholder="Item Description" readonly>
+<input type="text" id="item-price" placeholder="Item Price" readonly>
+
+<script>
+    $(document).ready(function() {
+        $("#search-input").on("input", function() {
+            var query = $(this).val();
+            $.ajax({
+                url: "{% url 'slt:product_search' %}",
+                method: "GET",
+                data: { query: query },
+                success: function(data) {
+                    var searchResults = $("#search-results");
+                    searchResults.empty();
+                    data.forEach(function(item) {
+                        searchResults.append(
+                            "<li data-id='" + item.id + "'>" + item.name + "</li>"
+                        );
+                    });
+                },
+                error: function(error) {
+                    console.log("Error:", error);
+                }
+            });
+        });
+
+        $("#search-results").on("click", "li", function() {
+            var itemId = $(this).data("id");
+            $.ajax({
+                url : 'slt:prodcut/'+ itemId + '/',
+                method: "GET",
+                success: function(data) {
+                    $("#item-id").val(data.id);
+                    $("#item-name").val(data.name);
+                    $("#item-description").val(data.description);
+                    $("#item-price").val(data.price);
+                },
+                error: function(error) {
+                    console.log("Error:", error);
+                }
+            });
+        });
+    });
+</script>
+<!-- Be sure to put the links in the right position to avoid dependency issue.-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
 
 {% endblock %}
