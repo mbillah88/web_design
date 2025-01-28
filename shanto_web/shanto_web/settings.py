@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "business_apps",
     "crispy_forms",
     "crispy_bootstrap5",
+    "rest_framework",
     "checks",
 ]
 

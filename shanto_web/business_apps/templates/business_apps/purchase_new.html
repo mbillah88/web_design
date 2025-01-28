@@ -148,10 +148,9 @@
 
   // to clear the selected value.
    $('form').find('.selectized').each(function(index, element) { element.selectize && element.selectize.clear() })
-  
+
  </script>
- <script>
-  
+ <script>  
   $(document).ready(function () {
         $.ajax({
           type: 'GET',
@@ -171,7 +170,6 @@
           }
         })
     });
-
  </script>
 <script>
   $(document).ready(function() {
@@ -198,54 +196,71 @@
       });
   });  
 </script>
-<h1>Search Items</h1>
-<input type="text" id="search-input" placeholder="Search for items">
-<ul id="search-results"></ul>
-<input type="text" id="item-id" placeholder="Item ID" readonly>
-<input type="text" id="item-name" placeholder="Item Name" readonly>
-<input type="text" id="item-description" placeholder="Item Description" readonly>
-<input type="text" id="item-price" placeholder="Item Price" readonly>
-
 <script>
-    $(document).ready(function() {
-        $("#search-input").on("input", function() {
-            var query = $(this).val();
-            $.ajax({
-                url: "{% url 'slt:product_search' %}",
-                method: "GET",
-                data: { query: query },
-                success: function(data) {
-                    var searchResults = $("#search-results");
-                    searchResults.empty();
-                    data.forEach(function(item) {
-                        searchResults.append(
-                            "<li data-id='" + item.id + "'>" + item.name + "</li>"
-                        );
-                    });
-                },
-                error: function(error) {
-                    console.log("Error:", error);
-                }
-            });
-        });
-
-        $("#search-results").on("click", "li", function() {
-            var itemId = $(this).data("id");
-            $.ajax({
-                url : 'slt:prodcut/'+ itemId + '/',
-                method: "GET",
-                success: function(data) {
-                    $("#item-id").val(data.id);
-                    $("#item-name").val(data.name);
-                    $("#item-description").val(data.description);
-                    $("#item-price").val(data.price);
-                },
-                error: function(error) {
-                    console.log("Error:", error);
-                }
-            });
-        });
+  $(document).ready(function() {
+      $("#search-input").on("input", function() {
+          var query = $(this).val();
+          $.ajax({
+              url: "{% url 'slt:product_search' %}",
+              method: "GET",
+              data: { query: query },
+              success: function(data) {
+                  var searchResults = $("#search-results");
+                  searchResults.empty();
+                  data.forEach(function(item) {
+                      searchResults.append(
+                          "<li data-id='" + item.id + "'>" + item.name + "</li>"
+                      );
+                  });
+              },
+              error: function(error) {
+                  console.log("Error:", error);
+              }
+          });
+      });
+      
     });
+</script>
+<script>
+  var e = document.getElementById("id_supplier_id");
+    function onChange() {
+      var value = e.value;
+      var text = e.options[e.selectedIndex].text;
+      console.log(value, text);
+        $("#item-id").val(value);
+        $("#item-description").val(text);
+        if (/^[0-9]+$/.test(value)) {
+            console.log('Input is a number.');
+            fetchData(value)
+        } else if (/^[a-zA-Z]+$/.test(value)) {
+          fetchData(value)
+            console.log('Input is a letter.');
+        } else {
+            console.log('Input ID is neither a pure number nor a pure letter.');
+        }
+    }
+    e.onchange = onChange;
+    onChange();
+</script>
+<script>
+  function fetchData(pk) {
+      fetch('./MyModelDetail/'+pk)
+          .then(response => response.json())
+          .then(data => {
+              console.log(data); // Handle the fetched data
+                  $("#item-id").val(data.id);
+                  $("#id_supplier_name").val(data.name);
+                  $("#item-description").val(data.mobile);
+                  $("#id_item_description").val(data.address);
+          })
+          .catch(error => {
+              console.error('Error:', error);
+          });
+  }
+
+  // Example: Fetch data for item with primary key 1
+  fetchData(1);
+
 </script>
 <!-- Be sure to put the links in the right position to avoid dependency issue.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>

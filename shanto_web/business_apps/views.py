@@ -7,6 +7,10 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from .forms import *
 from. models import *
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import MyModelSerializer
 
 # Create your views here.
 @login_required
@@ -273,6 +277,28 @@ def product_search(request):
 
 
 def item_detail(request, pk):
-    item = get_object_or_404(ItemProduct, pk=pk)
-    data = [{"id": item.id, "name": item.item_name, "description": item.item_description, "price": str(item.item_sprice)} for item in items]
-    return JsonResponse(data)
+    #item = get_object_or_404(ItemProduct, pk=pk)
+    item = ItemProduct.objects.get(pk=pk)
+    data = [{"id": item.id, "name": item.item_name, "description": item.item_description, "price": str(item.item_sprice)} for item_id in items]
+    return JsonResponse(data, safe=False)
+
+
+def my_model_detail(request, pk):
+    try:
+        item = Supplier.objects.get(pk=pk)
+        data = {
+            'name': item.supplier_name,
+            'description': item.supplier_mobile,
+        }
+        return JsonResponse(data)
+    except Supplier.DoesNotExist:
+        return JsonResponse({'error': 'Not found'}, status=404)
+
+class MyModelDetail(APIView):
+    def get(self, request, pk):
+        try:
+            item = Supplier.objects.get(pk=pk)
+            serializer = MyModelSerializer(item)
+            return Response(serializer.data)
+        except MyModel.DoesNotExist:
+            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)

@@ -13,6 +13,7 @@ urlpatterns = [
     path('product/product_ajax/', views.product_ajax, name='product_ajax'),
     path('product/product_search/', views.product_search, name='product_search'),
     path('product/<int:pk>/', views.item_detail, name='item_detail'),
+    #path('api/my_model/<int:pk>/', views.MyModelDetail.as_view(), name='my_model_detail'),
     
     path('category', views.category, name='category'),
     path('category/category_add', views.category_add, name='category_add'),
@@ -44,6 +45,7 @@ urlpatterns = [
     path('purchase/purchase_new', views.purchase_new, name='purchase_new'),
     path('purchase/purchase_new_order', views.purchase_order_process, name='purchase_order_process'),
     path('purchase/<int:pk>/purchase_update', views.purchase_update, name='purchase_update'),
+    path('purchase/MyModelDetail/<int:pk>/', views.my_model_detail, name='my_model_detail'),
     
     # Settings Tools .... 
     path('settings/', views.settings, name='settings'),
