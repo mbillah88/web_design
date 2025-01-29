@@ -24,7 +24,7 @@
 {% block content %}
 <div class="main-content">
   <div class="content">       
-    <nav class="navbar navbar-expand navbar-light bg-light shadow">
+    <nav class="navbar navbar-expand">
       <div class="container-fluid">
         <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
           <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Product List</span>
@@ -44,13 +44,16 @@
               </ul>
             </div>
             <div class="d-flex">             
-              <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;" class="form-control me-2" onkeyup="searchTable()" placeholder="Search for names...">
+              <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;"onkeyup="searchTable()" placeholder="Search for names...">
             </div>
         </div>
       </div>
     </nav>
-    <hr/>
-
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;">
     <div class="content">
       <table id="productTable" class="table table-success table-striped">
           <tr>
@@ -92,14 +95,15 @@
 </div>
 <script>
   function searchTable() {
-  var input, filter, table, tr, td, i, txtValue;
+    console.log("check");
   input = document.getElementById("searchInput");
   filter = input.value.toUpperCase();
   table = document.getElementById("productTable");
   tr = table.getElementsByTagName("tr");
 
+  console.log("check");
   for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[1/2];
+    td = tr[i].getElementsByTagName("td")[1];
     if (td) {
       txtValue = td.textContent || td.innerText;
       if (txtValue.toUpperCase().indexOf(filter) > -1) {
