@@ -1,4 +1,5 @@
 {% extends "business_apps/master.html" %}
+{% load static %}
 {% load i18n %}
 
 {% block title %}
@@ -22,53 +23,93 @@
     
 {% block content %}
 <div class="main-content">
-  <div class="content">    
-    <div class="form-header" style="display: flex;">      
-      <div>
-        <span style="font-size: 1.3rem; font-weight: bolder;">Product List</span>
+  <div class="content">       
+    <nav class="navbar navbar-expand navbar-light bg-light shadow">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Product List</span>
+          <a class="nav-link" href="{% url 'slt:product_add' %}">Add</a>
+        </div>
+        <div class="btn-group" style="gap: 2rem;align-items: center;">
+            <div>
+              <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Category
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><button class="dropdown-item" type="button">Action</button></li>
+                <li><button class="dropdown-item" type="button">
+                  <a href="{% url 'slt:business' %}">Dashboard</a>
+                </button>
+              </li>
+              </ul>
+            </div>
+            <div class="d-flex">             
+              <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;" class="form-control me-2" onkeyup="searchTable()" placeholder="Search for names...">
+            </div>
+        </div>
       </div>
-      <div>        
-        <a href="{% url 'slt:product_add' %}">New Product</a>
-      </div>
-    </div>   
-        
-    <table>
-        <tr>
-          <th scope="col">Product Image</th>
-          <th scope="col">Product Name</th>
-          <th scope="col">Product Category</th>
-          <th scope="col">Product Brand</th>
-          <th scope="col">Product Model</th>
-          <th scope="col">Product description</th>
-          <th scope="col">Product Price</th>
-          <th scope="col">Action</th>
-        </tr>
-        {% for data in prod %}
-        <tr>       
-          <td>
-            <a href="{% url 'slt:product_details' data.pk %}">
-              {% if data.item_image %}
-                <img src="{{data.item_image.url}}" style="width:50px; height:auto;">
-              {% endif %}
-            </a>
-          </td>
-          <td>{{ data.item_name }}</td>
-          <td>{{ data.category_name }}</td>
-          <td>{{ data.brand_name }}</td>
-          <td>{{ data.item_model }}</td>
-          <td>{{ data.item_description }}</td>
-          <td>{{ data.item_sprice }}</td>
-          <td>
-            <a href="{% url 'slt:product_update' data.pk %}">Edit</a>
-            <a href="">Delete</a>
-          </td>
-        </tr>
-        {% endfor %}
-    </table>
+    </nav>
     <hr/>
 
+    <div class="content">
+      <table id="productTable" class="table table-success table-striped">
+          <tr>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Category</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Model</th>
+            <th scope="col">description</th>
+            <th scope="col">Price</th>
+            <th scope="col">Action</th>
+          </tr>
+          {% for data in prod %}
+          <tr style="font-size: .81em;">       
+            <td>
+              <a href="{% url 'slt:product_details' data.pk %}">
+                {% if data.item_image %}
+                  <img src="{{data.item_image.url}}" style="width:50px; height:auto;">
+                {% endif %}
+              </a>
+            </td>
+            <td>{{ data.item_name }}</td>
+            <td>{{ data.category_name }}</td>
+            <td>{{ data.brand_name }}</td>
+            <td>{{ data.item_model }}</td>
+            <td>{{ data.item_description }}</td>
+            <td>{{ data.item_sprice }}</td>
+            <td>
+              <a href="{% url 'slt:product_update' data.pk %}">Edit</a>
+              <a href="">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+      </table>
+
+    </div> 
 
   </div>
 </div>
+<script>
+  function searchTable() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("searchInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("productTable");
+  tr = table.getElementsByTagName("tr");
 
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[1/2];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+
+</script>
 {% endblock %}

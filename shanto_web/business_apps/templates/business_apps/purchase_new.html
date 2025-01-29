@@ -84,7 +84,11 @@
           </div>
         </div>     
         <div class="content d-flex" style="text-align: center; flex-flow: column-reverse;;">          
-          <div>
+          <div style="width: 50%; margin: 0 auto;">
+            {{prod.id}}
+              {% for prod in prod %} 
+              <option  value="{{ prod.id }}" {% if product.id == prod.value %}selected{% endif %}> {{ prod.item_name }} </option> 
+              {% endfor %}
             <input id="search_product" type="text" placeholder="Search Product/Serial/Barcode" value="{{ form.instance.created_at }}">
           </div> 
           <div class="content" style="display: flex;align-items: center;gap: 1rem;justify-content: space-evenly;"> 
