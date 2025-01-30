@@ -199,15 +199,17 @@ def sales_update(request):
 def purchase(request):
   return render(request, 'business_apps/purchase.html')
 def purchase_new(request):
+    products = ItemProduct.objects.all()
     if request.method == 'POST':
         form = PurchaseOrderForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('slt:purchase')
     else:
-        form = PurchaseOrderForm()
+        form = PurchaseOrderForm()  # Query all instances
         context = {
             'form' : form,
+            'products' : products,
         }
         return render(request, 'business_apps/purchase_new.html', context)
 
@@ -238,6 +240,7 @@ def tools_unit(request):
         'forms' : forms,
     }
     return render(request, 'business_apps/tools_unit.html', context)
+
 @login_required
 def tools_unit_update(request, pk):
     unit = get_object_or_404(ItemUnit, id=pk)
@@ -283,22 +286,28 @@ def item_detail(request, pk):
     return JsonResponse(data, safe=False)
 
 
-def my_model_detail(request, pk):
-    try:
-        item = Supplier.objects.get(pk=pk)
-        data = {
-            'name': item.supplier_name,
-            'description': item.supplier_mobile,
-        }
-        return JsonResponse(data)
-    except Supplier.DoesNotExist:
-        return JsonResponse({'error': 'Not found'}, status=404)
+@login_required
+def supplier_detail(request, pk):    
+    if request.user.is_authenticated:
+        try:
+            item = Supplier.objects.get(pk=pk)
+            data = {
+                'address': item.supplier_address,
+                'mobile': item.supplier_mobile,
+            }
+            return JsonResponse(data)
+        except Supplier.DoesNotExist:
+            return JsonResponse({'error': 'Supplier Not found'}, status=404)
+    else:
+        return JsonResponse({'is_authenticated': False})
+    
 
+# django-rest-framework...
 class MyModelDetail(APIView):
     def get(self, request, pk):
         try:
             item = Supplier.objects.get(pk=pk)
             serializer = MyModelSerializer(item)
             return Response(serializer.data)
-        except MyModel.DoesNotExist:
+        except Supplier.DoesNotExist:
             return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)

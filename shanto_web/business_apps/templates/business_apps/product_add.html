@@ -36,16 +36,16 @@
           <div>    
             <label for="id_category_name">Category name:</label>
             {{form.category_name}}       
-              {% for ItemCategory in form.fields.ItemCategory.queryset %} 
+             <!--   {% for ItemCategory in form.fields.ItemCategory.queryset %} 
               <option value="{{ ItemCategory.id }}" {% if ItemCategory.id == form.ItemCategory.value %}selected{% endif %}> {{ ItemBrand.category_name }} </option> 
-              {% endfor %}
+              {% endfor %} -->
           </div>
           <div>
             <label for="id_brand_name">Brand name:</label>
             {{ form.brand_name }}
-            {% for ItemBrand in form.fields.ItemBrand.queryset %} 
+             <!-- {% for ItemBrand in form.fields.ItemBrand.queryset %} 
             <option value="{{ ItemBrand.id }}" {% if ItemBrand.id == form.ItemBrand.value %}selected{% endif %}> {{ ItemBrand.brand_name }} </option> 
-            {% endfor %}
+            {% endfor %} -->
           </div>
         </div>
         <div class="content" > 

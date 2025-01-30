@@ -44,9 +44,14 @@ class ItemProductForm(forms.ModelForm):
 
         widgets = { 
             'item_image': forms.ClearableFileInput(attrs={ 'id': 'imageInput' }),   
-            'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),   
-            #'itme_unit': forms.ChoiceField(choices = OrderChoice),          
+            'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),           
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category_name'].empty_label = "Select Category"
+        self.fields['brand_name'].empty_label = "Select Brand"
+        self.fields['itme_unit'].empty_label = "Select Unit"
 
 class ClientsForm(forms.ModelForm):
     class Meta:
@@ -56,12 +61,16 @@ class ClientsForm(forms.ModelForm):
 class SupplierForm(forms.ModelForm):
     class Meta:
         model = Supplier
-        fields = "__all__"
-        
+        fields = "__all__" 
+
 class PurchaseOrderForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrder
         fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['supplier_id'].empty_label = "Select Supplier"
 
 class PurchaseOrderItemForm(forms.ModelForm):
     class Meta:
