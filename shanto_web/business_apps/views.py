@@ -10,7 +10,7 @@ from. models import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import MyModelSerializer
+from .serializers import *
 
 # Create your views here.
 @login_required
@@ -272,19 +272,54 @@ def product_ajax(request):
         for item in product]
     return JsonResponse(data, safe=False)
 
-def product_search(request):
+def product_search(request,pk):
+    product = get_object_or_404(ItemProduct, id=pk)
+    #product = ItemProduct.objects.all(pk=id)
+    serialized_data = [{'field': item.field} for item in data]
+    data = {
+        "id": product.id, 
+        "brand": product.brand_name, 
+        "name": product.item_name, 
+        "description": product.item_description,
+        "price": str(product.item_sprice)} 
+    return JsonResponse(data, safe=False)
+
+
+def product_search1(request):
     query = request.GET.get('query', '')
     items = ItemProduct.objects.filter(item_name__icontains=query)
-    data = [{"id": item.id, "name": item.item_name, "description": item.item_description, "price": str(item.item_sprice)} for item in items]
+    data = {"id": item.id, "name": item.item_name, "description": item.item_description, "price": str(item.item_sprice)}
     return JsonResponse(data, safe=False)
-
 
 def item_detail(request, pk):
-    #item = get_object_or_404(ItemProduct, pk=pk)
-    item = ItemProduct.objects.get(pk=pk)
-    data = [{"id": item.id, "name": item.item_name, "description": item.item_description, "price": str(item.item_sprice)} for item_id in items]
-    return JsonResponse(data, safe=False)
-
+    if request.user.is_authenticated:
+        try:
+            form = ItemProductForm()
+            item = ItemProduct.objects.get(pk=pk)
+            form = ItemProductForm(instance=item)
+            data = {
+                'id': item.id,
+                'item_name': item.item_name,
+                'category_name': item.category_name,
+                'brand_name': item.brand_name,
+                'item_model': item.item_model,
+                'item_description': item.item_description,
+                'itme_unit': item.itme_unit,
+                'itme_sku': item.itme_sku,
+                'itme_alert_qty': item.itme_alert_qty,
+                'itme_barcode': item.itme_barcode,
+                'item_sprice': item.item_sprice,
+                'item_pprice': item.item_pprice,
+                'itme_barcode': item.itme_barcode,
+                'item_image': item.item_image,
+                'itme_status': item.itme_status,
+                'created_at': item.created_at,
+            }
+            return JsonResponse(data)
+        except ItemProduct.DoesNotExist:
+            return JsonResponse({'error': 'Itme Not found'}, status=404)
+    else:
+        return JsonResponse({'is_authenticated': False})
 
 @login_required
 def supplier_detail(request, pk):    
@@ -300,14 +335,10 @@ def supplier_detail(request, pk):
             return JsonResponse({'error': 'Supplier Not found'}, status=404)
     else:
         return JsonResponse({'is_authenticated': False})
-    
 
-# django-rest-framework...
-class MyModelDetail(APIView):
+class ItemListView(APIView):
+    #product = get_object_or_404(ItemProduct, id=pk)
     def get(self, request, pk):
-        try:
-            item = Supplier.objects.get(pk=pk)
-            serializer = MyModelSerializer(item)
-            return Response(serializer.data)
-        except Supplier.DoesNotExist:
-            return Response({'error': 'Not found'}, status=status.HTTP_404_NOT_FOUND)
+        item = ItemProduct.objects.get(id=pk)
+        serializer = ItemProductSerializer(item)
+        return Response(serializer.data)

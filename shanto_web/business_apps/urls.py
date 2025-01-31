@@ -46,7 +46,7 @@ urlpatterns = [
     path('purchase/purchase_new_order', views.purchase_order_process, name='purchase_order_process'),
     path('purchase/<int:pk>/purchase_update', views.purchase_update, name='purchase_update'),
     path('purchase/supplier/<int:pk>/', views.supplier_detail, name='supplier_detail'),
-    path('purchase/product/<int:pk>', views.item_detail, name='item_detail'),
+    path('purchase/product_search/<int:pk>', views.ItemListView.as_view(), name='ItemListView'),
     
     # Settings Tools .... 
     path('settings/', views.settings, name='settings'),

@@ -82,13 +82,11 @@
           </div>
         </div>     
         <div class="content d-flex" style="gap: 1.3rem;text-align: center; flex-flow: column-reverse;;">          
-          <div style="width: 50%; margin: 0 auto;">
-            <select name="mySelect" id="mySelect">
-              <option value="" hidden>Select your option</option>
-              {% for item in products %}
-              <option value="{{ item.id }}">{{ item.item_name }}</option>
-              {% endfor %}
-            </select>                
+          <div style="width: 50%; margin: 0 auto;"><select name="mySelect" id="mySelect">
+            {% for item in products %}
+                <option value="{{ item.id }}">{{ item.item_name }}</option>
+            {% endfor %}
+        </select>                
           </div>                
           <div class="content" style="display: flex;align-items: center;gap: 1rem;justify-content: space-evenly;"> 
             <div class="d-flex" style="gap: 2rem;">
@@ -97,8 +95,8 @@
                 <input type="text" name="item_expi"required id="id_item_expi" value="{{ form.instance.item_sprice }}">    
               </div>
               <div>
-                <label for="id_item_sprice">S Price</label>
-                <input type="text" name="item_sprice" required id="id_item_sprice" value="{{ form.instance.item_pprice }}">    
+                <label for="id_item_pprice">S Price</label>
+                <input type="text" name="item_pprice" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
               </div>
               <div>
                 <label for="id_item_unit">Unit:</label>
@@ -124,12 +122,10 @@
           <span style="font-size: 1.3rem; font-weight: bolder;">5</span>
           <table id="purchaseOrderTable">
               <thead>
-                <th style="width: 10%;">Item Code</th>
-                <th style="width: 50%;">Item Name</th>
-                <th>Unit</th>
-                <th>Price</th>
-                <th>Qty</th>
-                <th>Action</th>
+                <th>Check</th>
+                <th>Check</th>
+                <th>Check</th>
+                <th>Check</th>
               </thead>
               <tbody>
                   <!-- Add more product rows here -->
@@ -140,7 +136,7 @@
           <div style="flex: 1;align-items: center;">
             <div>
               <span >Notes:</span>
-              <textarea class="p-2" id="w3review" name="w3review" rows="3" cols="50" placeholder="Write your Purchase note here..."></textarea>          
+              <textarea class="p-2" id="w3review" name="w3review" rows="3" cols="50">At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.</textarea>          
             </div>
             <div class="d-flex" style="align-items: center;" >
               <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Discount (%):</label></div>
@@ -150,9 +146,9 @@
               <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Pay Type:</label></div>
               <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;">
                 <select name="" id="">
-                  <option value="1">Cash</option>
-                  <option value="2">Card</option>
-                  <option value="3">Others</option>
+                  <option value="">Cash</option>
+                  <option value="">Card</option>
+                  <option value="">Others</option>
                 </select>
               </div>              
             </div>
@@ -206,18 +202,29 @@
 
 </script>
 <script>
-  function fetchData(pk) {
-    console.log("FETCH DATA"+pk);
-            //const pk = document.getElementById('data-id').value;
-            fetch(`./supplier/${pk}`)
-                .then(response => response.json())
-                .then(data => {
-                  console.log(data);
-                    document.getElementById('supplier_address').value = data.address;  // Adjust field name as needed                    
-                    document.getElementById('supplier_mobile').value = data.mobile; 
-                  })
-                .catch(error => console.error('Error fetching data:', error));
-        }
+  $(document).ready(function() {
+      $("#search-input").on("input", function() {
+          var query = $(this).val();
+          $.ajax({
+              url: "{% url 'slt:product_search' %}",
+              method: "GET",
+              data: { query: query },
+              success: function(data) {
+                  var searchResults = $("#search-results");
+                  searchResults.empty();
+                  data.forEach(function(item) {
+                      searchResults.append(
+                          "<li data-id='" + item.id + "'>" + item.name + "</li>"
+                      );
+                  });
+              },
+              error: function(error) {
+                  console.log("Error:", error);
+              }
+          });
+      });
+      
+    });
 </script>
 <script>
   var e = document.getElementById("id_supplier_id");
@@ -240,38 +247,52 @@
     e.onchange = onChange;
     onChange();
 </script>
-<!--Item Name Search Filed -->
-<script> 
-document.getElementById('mySelect').onchange = function(){
+<script>
+  function pdata(pk){
+          $.ajax({
+              url: "./product_search/ + pk",
+              method: "GET",
+              data: { query: query },
+              success: function(data) {
+                  data.forEach(function(item) {
+                    console.log(item);
+                  });
+              },
+              error: function(error) {
+                  console.log("Error:", error);
+              }
+          });
+  }
+</script>
+<script>
+  document.getElementById('mySelect').onchange = function(){
       var value = this.value;
       var text = this.options[e.selectedIndex].text;
       console.log(value, text);
-      if (/^[0-9]+$/.test(value)) {
-            console.log('Input is a number.');
-            fetchProductData(value)
-        } else if (/^[a-zA-Z]+$/.test(value)) {
-          fetchProductData(value)
-            console.log('Input is a letter.');
-        } else {
-            console.log('Input ID is neither a pure number nor a pure letter.');
-        }
-  };
-</script> 
-
-<script>
-  function fetchProductData(pk) {
-    $.ajax({
-      url: './product_search/' + pk ,
-      method: 'GET',
-      success: function(response) {
-        document.getElementById('id_item_expi').value = response.category_name.category_name;
-        document.getElementById('id_item_sprice').value = response.item_sprice;
-        document.getElementById('id_item_unit').value = response.itme_unit.unit_name;
-        document.getElementById('id_item_pprice').value = response.item_pprice;
-        document.getElementById('id_item_qty').value = 1;
+      if(value != null){
+        //fetchProductData(value);
+        fetchProductData(value);
+      }else{
+        console.log("No Value");
       }
-    });
-  } 
+  };
+</script>
+<script>
+  function fetchData(pk) {
+    console.log(pk);
+            //const pk = document.getElementById('data-id').value;
+            fetch(`./product_search/${pk}`)
+                .then(response => response.json())
+                .then(data => {
+                  console.log(data);
+                    document.getElementById('id_item_unit').value = data.id;  // Adjust field name as needed
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Call fetchData function when the button is clicked
+        //document.getElementById('fetchButton').addEventListener('click', fetchData);
+    
 </script>
 <!-- Be sure to put the links in the right position to avoid dependency issue.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
