@@ -115,23 +115,24 @@
             </div>
             
             <div>
-              <input type="submit">
+              <input type="button" class="sub_btn" onclick="addItemToCart()" value="Add Item">
             </div>
           </div>       
         </div>
         <div class="content">
           <span style="font-size: 1.3rem; font-weight: bolder;">Product Item</span>
-          <span style="font-size: 1.3rem; font-weight: bolder;">5</span>
+          <span id="rowCount" style="font-size: 1.3rem; font-weight: bolder;">0</span>
           <table id="purchaseOrderTable">
-              <thead>
+              <thead style="background-color: aquamarine;">
                 <th style="width: 10%;">Item Code</th>
                 <th style="width: 50%;">Item Name</th>
                 <th>Unit</th>
                 <th>Price</th>
                 <th>Qty</th>
+                <th>Total</th>
                 <th>Action</th>
               </thead>
-              <tbody>
+              <tbody style="background-color: rgb(181, 184, 183);">
                   <!-- Add more product rows here -->
               </tbody>
           </table>
@@ -148,7 +149,7 @@
             </div>
             <div class="d-flex" style="align-items: center;" >
               <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Pay Type:</label></div>
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;">
+              <div style="flex: 50%; text-align: center; flex: 50%; padding-right: 1rem;">
                 <select name="" id="">
                   <option value="1">Cash</option>
                   <option value="2">Card</option>
@@ -159,8 +160,8 @@
           </div>
           <div class="d-flex flex-column">
             <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Item Total:</label></div>
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_tprice">Item Total:</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_tprice" value="{{ form.instance.item_sprice }}"></div>              
             </div>
             <div class="d-flex" style="align-items: center;" >
               <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Discount (Amt):</label></div>
@@ -190,7 +191,6 @@
       </form>
     </div>
   </div>
-  
 </div>
 <!-- Supplier Select Options Searchable-->
 <script>
@@ -205,6 +205,7 @@
    $('form').find('.selectized').each(function(index, element) { element.selectize && element.selectize.clear() })
 
 </script>
+<!--Supplier Search and Add -->
 <script>
   function fetchData(pk) {
     console.log("FETCH DATA"+pk);
@@ -257,7 +258,6 @@ document.getElementById('mySelect').onchange = function(){
         }
   };
 </script> 
-
 <script>
   function fetchProductData(pk) {
     $.ajax({
@@ -272,6 +272,110 @@ document.getElementById('mySelect').onchange = function(){
       }
     });
   } 
+</script>
+<!--Cart Item add Table row -->
+<script>
+  function addItemToCart() {
+    // Get input values
+      var item = document.getElementById("mySelect");
+      var item_code = item.value;
+      var item_name = item.options[item.selectedIndex].text;
+      var item_unit = document.getElementById('id_item_unit').value;
+      var item_qty = document.getElementById('id_item_qty').value;
+      var item_price = document.getElementById('id_item_pprice').value;
+
+    // Calculate Qty * Price values
+      var price = parseFloat(item_price);
+      var quantity = parseInt(item_qty);
+      var item_total = 0;
+      item_total += price * quantity;
+    
+    // Validate input
+    if (item_code === '' || item_qty === '' || item_price === '') {
+        alert('Please fill in all fields');
+        return;
+    }
+    // Check if item already exists in the cart
+    var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
+      var itemExists = false;
+      for (var i = 0, row; row = table.rows[i]; i++) {
+        if (row.cells[0].innerHTML === item_code) {
+          //row.cells[1].innerHTML = parseInt(row.cells[1].innerHTML) + parseInt(itemQuantity);
+          itemExists = true;
+          alert('Item '+ item_code + 'Already Exists.');
+          break;
+        }
+      }
+    // If item does not exist, create a new row
+    if (!itemExists) {
+    // Create a new row for the table
+    var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
+    var newRow = table.insertRow(table.rows.length);
+
+    // Insert cells for the row
+    var cell1 = newRow.insertCell(0);
+    var cell2 = newRow.insertCell(1);
+    var cell3 = newRow.insertCell(2);
+    var cell4 = newRow.insertCell(3);
+    var cell5 = newRow.insertCell(4);
+    var cell6 = newRow.insertCell(5);
+    var cell7 = newRow.insertCell(6);
+
+    // Add values to the cells
+    cell1.innerHTML = item_code;
+    cell2.innerHTML = item_name;
+    cell3.innerHTML = item_unit;
+    cell4.innerHTML = item_price;
+    cell5.innerHTML = item_qty;
+    cell6.innerHTML = item_total.toFixed(2);
+    cell7.innerHTML = '<button style="width: 50%; color: red;" onclick="removeRow(this)">X</button>';
+
+    }
+    // Clear the input fields    
+    var selectize = $('#mySelect')[0].selectize;
+    selectize.clear();
+    document.getElementById('id_item_expi').value='';
+    document.getElementById('id_item_sprice').value='';
+    document.getElementById('id_item_unit').value='';
+    document.getElementById('id_item_qty').value='';
+    document.getElementById('id_item_pprice').value='';
+
+      // Calculate data field.......... Reloads  
+    document.getElementById('id_item_tprice').value = calculateSum();
+    document.getElementById("rowCount").innerText = countRows();
+}
+</script>
+<!--Table row Sum -->
+<script>  
+  function countRows() {
+    rowCount = 0;
+    var table = document.getElementById("purchaseOrderTable");
+    rowCount = table.rows.length - 1; // Exclude the header row
+    return rowCount;
+    //document.getElementById("rowCount").innerText = rowCount;
+  }
+  function calculateSum() {
+      var table = document.getElementById("purchaseOrderTable");
+      var totalSum = 0;
+        for (var i = 1, row; row = table.rows[i]; i++) {
+          var value = parseFloat(row.cells[5].innerText);
+          totalSum += value;
+      }
+      return totalSum;
+  }
+</script>
+<!--Remove Cart Item frome Table row -->
+<script>
+  function removeRow(button) {
+      // Get the parent row of the button
+      var row = button.parentNode.parentNode;
+      // Remove the row from the table
+      row.parentNode.removeChild(row);
+    
+      // Calculate data field.......... Reloads     
+    document.getElementById('id_item_tprice').value = calculateSum();
+    document.getElementById("rowCount").innerText = countRows();
+  }
 </script>
 <!-- Be sure to put the links in the right position to avoid dependency issue.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
