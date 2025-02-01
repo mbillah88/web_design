@@ -84,7 +84,7 @@
         <div class="content d-flex" style="gap: 1.3rem;text-align: center; flex-flow: column-reverse;;">          
           <div style="width: 50%; margin: 0 auto;">
             <select name="mySelect" id="mySelect">
-              <option value="" hidden>Select your option</option>
+              <option value="" hidden>Select your Product...</option>
               {% for item in products %}
               <option value="{{ item.id }}">{{ item.item_name }}</option>
               {% endfor %}
@@ -114,8 +114,8 @@
               </div>
             </div>
             
-            <div>
-              <input type="button" class="sub_btn" onclick="addItemToCart()" value="Add Item">
+            <div class="bg-light p-2">
+              <input type="button" class="btn btn-outline-danger" onclick="addItemToCart()" value="Add Item">
             </div>
           </div>       
         </div>
@@ -123,7 +123,7 @@
           <span style="font-size: 1.3rem; font-weight: bolder;">Product Item</span>
           <span id="rowCount" style="font-size: 1.3rem; font-weight: bolder;">0</span>
           <table id="purchaseOrderTable">
-              <thead style="background-color: aquamarine;">
+              <thead style="background-color: #008b8b75">
                 <th style="width: 10%;">Item Code</th>
                 <th style="width: 50%;">Item Name</th>
                 <th>Unit</th>
@@ -138,18 +138,14 @@
           </table>
         </div>        
         <div class="content d-flex"> 
-          <div style="flex: 1;align-items: center;">
+          <div style="flex: 1;display: flex;flex-direction: column;justify-content: space-evenly;">
             <div>
               <span >Notes:</span>
-              <textarea class="p-2" id="w3review" name="w3review" rows="3" cols="50" placeholder="Write your Purchase note here..."></textarea>          
+              <textarea  class="form-control col-xs-12" id="w3review" name="w3review" rows="3" cols="50" placeholder="Write your Purchase note here..."></textarea>          
             </div>
             <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Discount (%):</label></div>
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
-            </div>
-            <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Pay Type:</label></div>
-              <div style="flex: 50%; text-align: center; flex: 50%; padding-right: 1rem;">
+              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="id_item_sprice">Pay Type:</label></div>
+              <div style="flex: 50%; text-align: center; flex: 50%; color: #000; font-weight: 600;">
                 <select name="" id="">
                   <option value="1">Cash</option>
                   <option value="2">Card</option>
@@ -158,31 +154,34 @@
               </div>              
             </div>
           </div>
-          <div class="d-flex flex-column">
-            <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_tprice">Item Total:</label></div>
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_tprice" value="{{ form.instance.item_sprice }}"></div>              
+          <div style="flex: 1;align-items: center;">
+            <div class="d-flex flex-column">
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_tprice">Item Total:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="item_sprice"required id="id_item_tprice" value="{{ form.instance.item_sprice }}" disabled></div>              
+              </div>
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_amt">Discount (Amt):</label></div>
+                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="disc_amt"required id="id_disc_amt" value="{{ form.instance.item_sprice }}"></div>              
+              </div>
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.item_sprice }}"></div>              
+              </div>
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_total">Payable Total:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.item_sprice }}" disabled></div>              
+              </div>
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_paid_total">Payment:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="paid_total"required id="id_paid_total" value="{{ form.instance.item_sprice }}"></div>              
+              </div>
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_due_amt">Due Amount:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="due_amt"required id="id_due_amt" value="{{ form.instance.item_sprice }}" disabled></div>              
+              </div>
             </div>
-            <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Discount (Amt):</label></div>
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
-            </div>
-            <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Discount (%):</label></div>
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
-            </div>
-            <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Payable Total:</label></div>
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
-            </div>
-            <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Payment:</label></div>
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
-            </div>
-            <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Due Amount:</label></div>
-              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
-            </div>
+
           </div>
         </div> 
         <div class="submit-row">
@@ -192,7 +191,7 @@
     </div>
   </div>
 </div>
-<!-- Supplier Select Options Searchable-->
+<!--Serializer Select Options Searchable-->
 <script>
     $(document).ready(function () {
         $('select').selectize({
@@ -302,7 +301,7 @@ document.getElementById('mySelect').onchange = function(){
         if (row.cells[0].innerHTML === item_code) {
           //row.cells[1].innerHTML = parseInt(row.cells[1].innerHTML) + parseInt(itemQuantity);
           itemExists = true;
-          alert('Item '+ item_code + 'Already Exists.');
+          alert('Item '+ item_code + ' Already Exists.');
           break;
         }
       }
@@ -341,8 +340,11 @@ document.getElementById('mySelect').onchange = function(){
     document.getElementById('id_item_pprice').value='';
 
       // Calculate data field.......... Reloads  
-    document.getElementById('id_item_tprice').value = calculateSum();
+    var total = calculateSum().toFixed(2);
+    document.getElementById('id_item_tprice').value = total;
     document.getElementById("rowCount").innerText = countRows();
+    
+    invoiceCalculate(total);
 }
 </script>
 <!--Table row Sum -->
@@ -373,9 +375,69 @@ document.getElementById('mySelect').onchange = function(){
       row.parentNode.removeChild(row);
     
       // Calculate data field.......... Reloads     
-    document.getElementById('id_item_tprice').value = calculateSum();
+    var total = calculateSum().toFixed(2);
+    document.getElementById('id_item_tprice').value = total;
     document.getElementById("rowCount").innerText = countRows();
+    
+    invoiceCalculate(total);
   }
+</script>
+// Calculate Discount and Payment field... 
+<script>
+    function invoiceCalculate(total_amt){
+      this.total_amt = total_amt; 
+      var disc_amt = 0;
+      var disc_perc = 0;
+      var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
+      var paid_amt = 0; 
+      var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
+      document.getElementById('id_item_tprice').value = total_amt;
+      document.getElementById('id_disc_amt').value = disc_amt;
+      document.getElementById('id_disc_perc').value = disc_perc;
+      document.getElementById('id_pay_total').value = payable_amt;
+      document.getElementById('id_paid_total').value = paid_amt;
+      document.getElementById('id_due_amt').value = due_amt;
+    }
+    
+    function invoiceDiscCalculate(disc_amt){
+      if (disc_amt === '') {
+        $(this).val(0);
+      }
+      this.disc_amt = disc_amt; 
+      var total_amt = document.getElementById('id_item_tprice').value;
+      var paid_amt = document.getElementById('id_paid_total').value;
+      var payable_amt = parseFloat(total_amt-disc_amt);
+      var due_amt = parseFloat(payable_amt-paid_amt); 
+      document.getElementById('id_pay_total').value = payable_amt;
+      document.getElementById('id_due_amt').value = due_amt;
+      console.log(payable_amt);
+    }
+    
+    function invoiceDueCalculate(paid_amt){
+      if (paid_amt === '') {
+        $(this).val(0);
+      }
+      this.paid_amt = paid_amt; 
+      var payable_amt = document.getElementById('id_pay_total').value;
+      var paid_amt = document.getElementById('id_paid_total').value;
+      var due_amt = parseFloat(payable_amt-paid_amt); 
+      document.getElementById('id_due_amt').value = due_amt;
+      console.log(payable_amt);
+    }
+</script>
+<script>  
+  $(document).ready(function() {  
+    $("#id_disc_amt").on("input", function() {
+      var value = $(this).val();
+      invoiceDiscCalculate(value);
+    }); 
+  });
+  $(document).ready(function() {  
+    $("#id_paid_total").on("input", function() {
+      var value = $(this).val();
+      invoiceDueCalculate(value);
+    }); 
+  });
 </script>
 <!-- Be sure to put the links in the right position to avoid dependency issue.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>

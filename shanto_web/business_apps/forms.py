@@ -49,10 +49,10 @@ class ItemProductForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['item_name'].empty_label = "Select Item"
-        self.fields['category_name'].empty_label = "Select Category"
-        self.fields['brand_name'].empty_label = "Select Brand"
-        self.fields['itme_unit'].empty_label = "Select Unit"
+        self.fields['item_name'].empty_label = "Select Item..."
+        self.fields['category_name'].empty_label = "Select Category..."
+        self.fields['brand_name'].empty_label = "Select Brand..."
+        self.fields['itme_unit'].empty_label = "Select Unit..."
 
 class ClientsForm(forms.ModelForm):
     class Meta:
@@ -71,7 +71,7 @@ class PurchaseOrderForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['supplier_id'].empty_label = "Select Supplier"
+        self.fields['supplier_id'].empty_label = "Select Supplier..."
 
 class PurchaseOrderItemForm(forms.ModelForm):
     class Meta:
