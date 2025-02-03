@@ -69,10 +69,10 @@ class Clients(models.Model):
 
 class Supplier(models.Model):
   supplier_name = models.CharField(max_length=255)
-  supplier_org = models.CharField(max_length=100, default='')
-  supplier_desig = models.CharField(max_length=100, default='')
+  supplier_org = models.CharField(max_length=100, default='Slef')
+  supplier_desig = models.CharField(max_length=100, default='Slef')
   supplier_mobile = models.CharField(max_length=20, default='')
-  supplier_address = models.CharField(max_length=400, default='')
+  supplier_address = models.CharField(max_length=400, default='Slef')
   def __str__(self):         
     return self.supplier_name
 
@@ -81,7 +81,7 @@ class PurchaseOrder(models.Model):
   porder_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   porder_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   porder_status = models.CharField(max_length=1,choices=OrderChoice, default=3)
-  porder_note = models.CharField(max_length=255, default='')
+  porder_note = models.CharField(max_length=500, default='')
   porder_create_time = models.DateTimeField(auto_now_add=True,null = True)  
   porder_update_time = models.DateTimeField(auto_now=True,null = True)  
   porder_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='o_create_user')
@@ -93,12 +93,11 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderItem(models.Model):
   porder_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
   item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
-  itme_unit = models.CharField(max_length=255, default='')
   itme_qty = models.PositiveBigIntegerField(default=1)
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
 
-  def __str__(self):
-    return f"{self.itme_qty} x {self.ItemProduct.item_name}"
+  def get_total_price(self):
+    return self.itme_qty * self.porder_id.item_pprice
 
 class PurchasePayment(models.Model):
   order_id = models.ForeignKey(PurchaseOrderItem, on_delete=models.CASCADE, null = True)

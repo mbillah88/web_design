@@ -42,21 +42,14 @@ Purchase List
           <th scope="col">Product Price</th>
           <th scope="col">Action</th>
         </tr>
-        {% for data in prod %}
+        {% for data in porder %}
         <tr>       
-          <td>
-            <a href="{% url 'slt:product_details' data.pk %}">
-              {% if data.item_image %}
-                <img src="{{data.item_image.url}}" style="width:100px; height:auto;">
-              {% endif %}
-            </a>
-          </td>
-          <td>{{ data.item_name }}</td>
-          <td>{{ data.category_name }}</td>
-          <td>{{ data.brand_name }}</td>
-          <td>{{ data.item_model }}</td>
-          <td>{{ data.item_description }}</td>
-          <td>{{ data.item_sprice }}</td>
+          <td>{{ data.supplier_id }}</td>
+          <td>{{ data.porder_total }}</td>
+          <td>{{ data.porder_discount }}</td>
+          <td>{{ data.porder_note }}</td>
+          <td>{{ data.porder_create_time }}</td>
+          <td>{{ data.porder_create_by }}</td>
           <td>
             <a href="{% url 'slt:purchase_update' data.pk %}">Edit</a>
             <a href="">Delete</a>

@@ -5,12 +5,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
+from django.forms import modelformset_factory
 from .forms import *
 from. models import *
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import *
+import json
 
 # Create your views here.
 @login_required
@@ -197,21 +199,46 @@ def sales_update(request):
 # Purchase ....
 @login_required
 def purchase(request):
-  return render(request, 'business_apps/purchase.html')
+    porder = PurchaseOrder.objects.all()
+    products = PurchaseOrderItem.objects.all()
+    
+    return render(request, 'business_apps/purchase.html', {
+        'porder' : porder,
+        'products' : products
+    })
 def purchase_new(request):
-    products = ItemProduct.objects.all()
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=2)
+    products = ItemProduct.objects.all() 
+
     if request.method == 'POST':
-        form = PurchaseOrderForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('slt:purchase')
+        customer_form = PurchaseOrderForm(request.POST)
+        formset = CartItemFormSet(request.POST, queryset=PurchaseOrderItem.objects.none())
+        table_data = json.loads(request.POST['purchaseOrderTable'])
+
+        if customer_form.is_valid() and formset.is_valid():
+            order = customer_form.save(commit=False)
+            order.porder_create_by = request.user
+            order.save()
+            #cart_items = formset.save(commit=False)
+            for item in table_data:
+                PurchaseOrderItem.objects.create(
+                    porder_id = order,
+                    item_id=item['product_name'],
+                    itme_qty=item['quantity'],
+                    item_pprice=item['price']
+                )
+            #for item in cart_items:
+            #    item.porder_id = order
+            #    item.save()
+            return redirect('slt:purchase')  # Redirect to a success page or another view
+
     else:
-        form = PurchaseOrderForm()  # Query all instances
-        context = {
-            'form' : form,
-            'products' : products,
-        }
-        return render(request, 'business_apps/purchase_new.html', context)
+        customer_form = PurchaseOrderForm()
+        formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
+
+    return render(request, 'business_apps/purchase_new.html', {'form' : customer_form,
+            'formset' : formset,
+            'products' : products})
 
 def purchase_update(request):
   return render(request, 'business_apps/purchase_update.html')

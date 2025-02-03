@@ -67,7 +67,7 @@ class SupplierForm(forms.ModelForm):
 class PurchaseOrderForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrder
-        fields = "__all__"
+        fields = ['supplier_id','porder_total','porder_discount','porder_status','porder_note']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -76,12 +76,12 @@ class PurchaseOrderForm(forms.ModelForm):
 class PurchaseOrderItemForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrderItem
-        fields = "__all__"
+        fields = ['item_id','itme_qty','item_pprice']
 
     helper = FormHelper()
     helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))
     helper.form_method = 'POST'
-    
+
 class PurchasePaymentForm(forms.ModelForm):
     class Meta:
         model = PurchasePayment

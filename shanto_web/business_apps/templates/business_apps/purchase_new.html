@@ -45,7 +45,7 @@
         <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: .5rem;">      
           <div class="d-flex w-100 gap-3" >
             <div style="flex: 3;">
-              <label for="supplier_id">Supplier:</label>
+              <label for="id_supplier_id">Supplier:</label>
               <div style="display: flex; gap: .5rem;">
                 {{ form.supplier_id }}
                <!--{% for Supplier in form.fields.Supplier.queryset %} 
@@ -59,7 +59,7 @@
               </div>
             </div>
             <div style="flex: 1;">
-              <label for="id_brand_name">O Type:</label>
+              <label for="id_porder_status">O Type:</label>
               {{ form.porder_status }}
               {% for PurchaseOrder in form.fields.PurchaseOrder.queryset %} 
               <option value="{{ PurchaseOrder.id }}" {% if PurchaseOrder.id == form.PurchaseOrder.value %}selected{% endif %}> {{ PurchaseOrder.porder_status }} </option> 
@@ -69,11 +69,11 @@
           <div class="d-flex w-100 gap-3" > 
             <div> 
               <label for="supplier_address">Supplier Address:</label>
-              <input type="text" name="supplier_address" maxlength="255" required id="supplier_address">     
+              <input type="text" name="supplier_address" maxlength="255" required id="supplier_address" readonly>     
             </div>
             <div>
               <label for="supplier_mobile">Supplier Mobile:</label>
-              <input type="text" name="supplier_mobile" maxlength="255" required id="supplier_mobile">    
+              <input type="text" name="supplier_mobile" maxlength="255" required id="supplier_mobile" readonly>    
             </div>
             <div>
               <label for="id_item_description">POrder Date:</label>
@@ -94,38 +94,47 @@
             <div class="d-flex" style="gap: 2rem;">
               <div>
                 <label for="id_item_expi">Expired:</label>
-                <input type="text" name="item_expi"required id="id_item_expi" value="{{ form.instance.item_sprice }}">    
+                <input type="text" name="item_expi" id="id_item_expi" value="{{ form.instance.item_sprice }}">    
               </div>
               <div>
                 <label for="id_item_sprice">S Price</label>
-                <input type="text" name="item_sprice" required id="id_item_sprice" value="{{ form.instance.item_pprice }}">    
+                <input type="text" name="item_sprice" id="id_item_sprice" value="{{ form.instance.item_pprice }}">    
               </div>
               <div>
                 <label for="id_item_unit">Unit:</label>
-                <input type="text" name="item_unit"required id="id_item_unit" value="{{ form.instance.item_sprice }}">    
+                <input type="text" name="item_unit" id="id_item_unit" value="{{ form.instance.item_sprice }}">    
               </div>
               <div>
                 <label for="id_item_pprice">Price</label>
-                <input type="text" name="item_pprice" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+                <input type="text" name="item_pprice"  id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
               </div>
               <div>
                 <label for="id_item_qty">Qty</label>
-                <input type="number" name="item_qty" min="1" required id="id_item_qty">    
+                <input type="number" name="item_qty" min="1" id="id_item_qty">    
               </div>
             </div>
             
             <div class="bg-light p-2">
-              <input type="button" class="btn btn-outline-danger" onclick="addItemToCart()" value="Add Item">
+              <input id="addItemToCart" type="button" class="btn btn-outline-danger" value="Add Item">
             </div>
           </div>       
         </div>
         <div class="content">
           <span style="font-size: 1.3rem; font-weight: bolder;">Product Item</span>
-          <span id="rowCount" style="font-size: 1.3rem; font-weight: bolder;">0</span>
+          <span id="rowCount" style="font-size: 1.3rem; font-weight: bolder;">0</span>          
+          <!-- Render the management form fields manually in a hidden row -->
+          <table style="display: none;">
+            <tr>
+                <td><input type="hidden" name="{{ formset.management_form.prefix }}-TOTAL_FORMS" value="{{ formset.management_form.TOTAL_FORMS.value }}"></td>
+                <td><input type="hidden" name="{{ formset.management_form.prefix }}-INITIAL_FORMS" value="{{ formset.management_form.INITIAL_FORMS.value }}"></td>
+                <td><input type="hidden" name="{{ formset.management_form.prefix }}-MIN_NUM_FORMS" value="{{ formset.management_form.MIN_NUM_FORMS.value }}"></td>
+                <td><input type="hidden" name="{{ formset.management_form.prefix }}-MAX_NUM_FORMS" value="{{ formset.management_form.MAX_NUM_FORMS.value }}"></td>
+            </tr>
+        </table>
           <table id="purchaseOrderTable">
               <thead style="background-color: #008b8b75">
                 <th style="width: 10%;">Item Code</th>
-                <th style="width: 50%;">Item Name</th>
+                <th style="width: 30%;">Item Name</th>
                 <th>Unit</th>
                 <th>Price</th>
                 <th>Qty</th>
@@ -141,12 +150,12 @@
           <div style="flex: 1;display: flex;flex-direction: column;justify-content: space-evenly;">
             <div>
               <span >Notes:</span>
-              <textarea  class="form-control col-xs-12" id="w3review" name="w3review" rows="3" cols="50" placeholder="Write your Purchase note here..."></textarea>          
+              <textarea  class="form-control col-xs-12" id="it_text_area" name="text_area" rows="3" cols="50" placeholder="Write your Purchase note here..."></textarea>          
             </div>
             <div class="d-flex" style="align-items: center;" >
               <div style="flex: 50%; text-align: end; flex: 50%;"><label for="id_item_sprice">Pay Type:</label></div>
               <div style="flex: 50%; text-align: center; flex: 50%; color: #000; font-weight: 600;">
-                <select name="" id="">
+                <select name="pay_type" id="pay_type_id">
                   <option value="1">Cash</option>
                   <option value="2">Card</option>
                   <option value="3">Others</option>
@@ -158,38 +167,39 @@
             <div class="d-flex flex-column">
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_tprice">Item Total:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="item_sprice"required id="id_item_tprice" value="{{ form.instance.item_sprice }}" disabled></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="item_sprice" required id="id_item_tprice" value="" readonly></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_amt">Discount (Amt):</label></div>
-                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="disc_amt"required id="id_disc_amt" value="{{ form.instance.item_sprice }}"></div>              
+                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_amt"required id="id_disc_amt" value="{{ form.instance.item_sprice }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.item_sprice }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.item_sprice }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_total">Payable Total:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.item_sprice }}" disabled></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.item_sprice }}" readonly></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_paid_total">Payment:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="paid_total"required id="id_paid_total" value="{{ form.instance.item_sprice }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="paid_total"required id="id_paid_total" value="{{ form.instance.item_sprice }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_due_amt">Due Amount:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="due_amt"required id="id_due_amt" value="{{ form.instance.item_sprice }}" disabled></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="due_amt"required id="id_due_amt" value="{{ form.instance.item_sprice }}" readonly></div>              
               </div>
             </div>
 
           </div>
         </div> 
         <div class="submit-row">
-          <input type="submit">
+          <input id="form_submit_id" type="submit">
         </div>
       </form>
     </div>
   </div>
+  
 </div>
 <!--Serializer Select Options Searchable-->
 <script>
@@ -382,7 +392,7 @@ document.getElementById('mySelect').onchange = function(){
     invoiceCalculate(total);
   }
 </script>
-// Calculate Discount and Payment field... 
+<!--// Calculate Discount and Payment field... -->
 <script>
     function invoiceCalculate(total_amt){
       this.total_amt = total_amt; 
@@ -410,7 +420,6 @@ document.getElementById('mySelect').onchange = function(){
       var due_amt = parseFloat(payable_amt-paid_amt); 
       document.getElementById('id_pay_total').value = payable_amt;
       document.getElementById('id_due_amt').value = due_amt;
-      console.log(payable_amt);
     }
     
     function invoiceDueCalculate(paid_amt){
@@ -422,7 +431,6 @@ document.getElementById('mySelect').onchange = function(){
       var paid_amt = document.getElementById('id_paid_total').value;
       var due_amt = parseFloat(payable_amt-paid_amt); 
       document.getElementById('id_due_amt').value = due_amt;
-      console.log(payable_amt);
     }
 </script>
 <script>  
@@ -439,6 +447,121 @@ document.getElementById('mySelect').onchange = function(){
     }); 
   });
 </script>
+<script>
+  function moveToNextField_if(event, nextFieldID) {
+    if (event.key === "Enter") {
+      let paid = parseFloat(document.getElementById('id_paid_total').value);
+      let payable = parseFloat(document.getElementById('id_pay_total').value);
+      if (paid > payable) {
+        alert("Error: Paid amount is greater than the payable amount.");
+      } else {
+        document.getElementById(nextFieldID).focus();
+      }
+
+      event.preventDefault();
+    }
+  }
+</script>
+
+<script>
+  document.getElementById('addItemToCart').addEventListener('click', function() {
+    const table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
+    // Get input values
+      var item = document.getElementById("mySelect");
+      var item_code = item.value;
+      var item_name = item.options[item.selectedIndex].text;
+      var item_unit = document.getElementById('id_item_unit').value;
+      var item_qty = document.getElementById('id_item_qty').value;
+      var item_price = document.getElementById('id_item_pprice').value;
+
+    // Calculate Qty * Price values
+      var price = parseFloat(item_price);
+      var quantity = parseInt(item_qty);
+      var item_total = 0;
+      item_total += price * quantity;
+    
+    // Validate input
+    if (item_code === '' || item_qty === '' || item_price === '') {
+        alert('Please fill in all fields');
+        return;
+    }
+    // Check if item already exists in the cart
+    //var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
+      var itemExists = false;
+      for (var i = 0, row; row = table.rows[i]; i++) {
+        if (row.cells[0].innerHTML === item_code) {
+          console.log(item_code);
+          //row.cells[1].innerHTML = parseInt(row.cells[1].innerHTML) + parseInt(itemQuantity);
+          itemExists = true;
+          alert('Item '+ item_code + ' Already Exists.');
+          break;
+        }
+      }
+    // If item does not exist, create a new row
+    if (!itemExists) {
+    // Create a new row for the table
+      const newRow = table.insertRow();
+      
+      // Get total form count and update it
+      const totalForms = document.querySelector('input[name="form-TOTAL_FORMS"]');
+      const formCount = parseInt(totalForms.value);
+      totalForms.value = formCount + 1;
+      
+      // Create new cells with input fields
+      const cell1 = newRow.insertCell(0);
+      const cell2 = newRow.insertCell(1);
+      const cell3 = newRow.insertCell(2);
+      const cell4 = newRow.insertCell(3);
+      const cell5 = newRow.insertCell(4);
+      const cell6 = newRow.insertCell(5);
+      const cell7 = newRow.insertCell(6);
+      
+      cell1.innerHTML = `<input type="number" name="form-${formCount}-item_code" value="${item_code}" required >`;        
+      cell2.innerHTML = `<input type="text" name="form-${formCount}-item_name" value="${item_name}" required >`;
+      cell3.innerHTML = `<input type="text" name="form-${formCount}-item_unit" value="${item_unit}" required>`;
+      cell4.innerHTML = `<input type="number" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
+      cell5.innerHTML = `<input type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
+      cell6.innerHTML = `<input type="text" name="form-${formCount}-item_total" value="${item_total}" required>`;
+      cell7.innerHTML = '<button type="button" class="removeRow">Remove</button>';
+
+      // Add event listener for remove button
+      cell7.querySelector('.removeRow').addEventListener('click', function() {
+      table.removeChild(newRow);
+      totalForms.value = formCount;  // Decrement the form count
+    });
+
+    }
+    
+    // Clear the input fields    
+    var selectize = $('#mySelect')[0].selectize;
+    selectize.clear();
+    document.getElementById('id_item_expi').value='';
+    document.getElementById('id_item_sprice').value='';
+    document.getElementById('id_item_unit').value='';
+    document.getElementById('id_item_qty').value='';
+    document.getElementById('id_item_pprice').value='';
+
+      // Calculate data field.......... Reloads  
+    var total = calculateSum().toFixed(2);
+    document.getElementById('id_item_tprice').value = total;
+    document.getElementById("rowCount").innerText = countRows();
+    
+    invoiceCalculate(total);
+    
+});
+  
+document.querySelectorAll('.removeRow').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    row.parentNode.removeChild(row);
+          
+    const totalForms = document.querySelector('input[name="form-TOTAL_FORMS"]');
+    const formCount = parseInt(totalForms.value);
+    totalForms.value = formCount - 1;
+  });
+});
+</script>
+  
 <!-- Be sure to put the links in the right position to avoid dependency issue.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
 
