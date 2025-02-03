@@ -207,34 +207,27 @@ def purchase(request):
         'products' : products
     })
 def purchase_new(request):
-    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=2)
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
     products = ItemProduct.objects.all() 
 
     if request.method == 'POST':
         customer_form = PurchaseOrderForm(request.POST)
-        formset = CartItemFormSet(request.POST, queryset=PurchaseOrderItem.objects.none())
-        table_data = json.loads(request.POST['purchaseOrderTable'])
+        formset = CartItemFormSet(request.POST)
+        #table_data = json.loads(request.POST['purchaseOrderTable'])
 
         if customer_form.is_valid() and formset.is_valid():
             order = customer_form.save(commit=False)
             order.porder_create_by = request.user
             order.save()
-            #cart_items = formset.save(commit=False)
-            for item in table_data:
-                PurchaseOrderItem.objects.create(
-                    porder_id = order,
-                    item_id=item['product_name'],
-                    itme_qty=item['quantity'],
-                    item_pprice=item['price']
-                )
-            #for item in cart_items:
-            #    item.porder_id = order
-            #    item.save()
+            cart_items = formset.save(commit=False)
+            for item in cart_items:
+                ##item.porder_id = order.id
+                item.save()
             return redirect('slt:purchase')  # Redirect to a success page or another view
 
     else:
         customer_form = PurchaseOrderForm()
-        formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
+        formset = CartItemFormSet()
 
     return render(request, 'business_apps/purchase_new.html', {'form' : customer_form,
             'formset' : formset,

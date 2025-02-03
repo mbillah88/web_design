@@ -83,7 +83,7 @@
         </div>     
         <div class="content d-flex" style="gap: 1.3rem;text-align: center; flex-flow: column-reverse;;">          
           <div style="width: 50%; margin: 0 auto;">
-            <select name="mySelect" id="mySelect">
+            <select id="mySelect">
               <option value="" hidden>Select your Product...</option>
               {% for item in products %}
               <option value="{{ item.id }}">{{ item.item_name }}</option>
@@ -93,24 +93,24 @@
           <div class="content" style="display: flex;align-items: center;gap: 1rem;justify-content: space-evenly;"> 
             <div class="d-flex" style="gap: 2rem;">
               <div>
-                <label for="id_item_expi">Expired:</label>
-                <input type="text" name="item_expi" id="id_item_expi" value="{{ form.instance.item_sprice }}">    
+                <label for="id_expi">Expired:</label>
+                <input type="text" id="id_expi" readonly>    
               </div>
               <div>
-                <label for="id_item_sprice">S Price</label>
-                <input type="text" name="item_sprice" id="id_item_sprice" value="{{ form.instance.item_pprice }}">    
+                <label for="id_sprice">S Price</label>
+                <input type="text" id="id_sprice" value="" readonly>    
               </div>
               <div>
-                <label for="id_item_unit">Unit:</label>
-                <input type="text" name="item_unit" id="id_item_unit" value="{{ form.instance.item_sprice }}">    
+                <label for="id_unit">Unit:</label>
+                <input type="text" id="id_unit" value="" readonly>    
               </div>
               <div>
-                <label for="id_item_pprice">Price</label>
-                <input type="text" name="item_pprice"  id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+                <label for="id_pprice">Price</label>
+                <input type="text" id="id_pprice" value="" readonly>    
               </div>
               <div>
-                <label for="id_item_qty">Qty</label>
-                <input type="number" name="item_qty" min="1" id="id_item_qty">    
+                <label for="id_qty">Qty</label>
+                <input type="number" min="1" id="id_qty">    
               </div>
             </div>
             
@@ -153,7 +153,7 @@
               <textarea  class="form-control col-xs-12" id="it_text_area" name="text_area" rows="3" cols="50" placeholder="Write your Purchase note here..."></textarea>          
             </div>
             <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="id_item_sprice">Pay Type:</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="pay_type_id">Pay Type:</label></div>
               <div style="flex: 50%; text-align: center; flex: 50%; color: #000; font-weight: 600;">
                 <select name="pay_type" id="pay_type_id">
                   <option value="1">Cash</option>
@@ -273,25 +273,25 @@ document.getElementById('mySelect').onchange = function(){
       url: './product_search/' + pk ,
       method: 'GET',
       success: function(response) {
-        document.getElementById('id_item_expi').value = response.category_name.category_name;
-        document.getElementById('id_item_sprice').value = response.item_sprice;
-        document.getElementById('id_item_unit').value = response.itme_unit.unit_name;
-        document.getElementById('id_item_pprice').value = response.item_pprice;
-        document.getElementById('id_item_qty').value = 1;
+        document.getElementById('id_expi').value = "";
+        document.getElementById('id_sprice').value = response.item_sprice;
+        document.getElementById('id_unit').value = response.itme_unit.unit_name;
+        document.getElementById('id_pprice').value = response.item_pprice;
+        document.getElementById('id_qty').value = 1;
       }
     });
   } 
 </script>
-<!--Cart Item add Table row -->
+<!--Cart Item add Table row 
 <script>
   function addItemToCart() {
     // Get input values
       var item = document.getElementById("mySelect");
       var item_code = item.value;
       var item_name = item.options[item.selectedIndex].text;
-      var item_unit = document.getElementById('id_item_unit').value;
-      var item_qty = document.getElementById('id_item_qty').value;
-      var item_price = document.getElementById('id_item_pprice').value;
+      var item_unit = document.getElementById('id_unit').value;
+      var item_qty = document.getElementById('id_qty').value;
+      var item_price = document.getElementById('id_pprice').value;
 
     // Calculate Qty * Price values
       var price = parseFloat(item_price);
@@ -356,7 +356,7 @@ document.getElementById('mySelect').onchange = function(){
     
     invoiceCalculate(total);
 }
-</script>
+</script> -->
 <!--Table row Sum -->
 <script>  
   function countRows() {
@@ -370,7 +370,7 @@ document.getElementById('mySelect').onchange = function(){
       var table = document.getElementById("purchaseOrderTable");
       var totalSum = 0;
         for (var i = 1, row; row = table.rows[i]; i++) {
-          var value = parseFloat(row.cells[5].innerText);
+          var value = parseFloat(row.cells[5].getElementsByTagName('input')[0].value);
           totalSum += value;
       }
       return totalSum;
@@ -426,7 +426,7 @@ document.getElementById('mySelect').onchange = function(){
       if (paid_amt === '') {
         $(this).val(0);
       }
-      this.paid_amt = paid_amt; 
+      this.paid_amt = paid_amt.toFixed(2);
       var payable_amt = document.getElementById('id_pay_total').value;
       var paid_amt = document.getElementById('id_paid_total').value;
       var due_amt = parseFloat(payable_amt-paid_amt); 
@@ -470,15 +470,14 @@ document.getElementById('mySelect').onchange = function(){
       var item = document.getElementById("mySelect");
       var item_code = item.value;
       var item_name = item.options[item.selectedIndex].text;
-      var item_unit = document.getElementById('id_item_unit').value;
-      var item_qty = document.getElementById('id_item_qty').value;
-      var item_price = document.getElementById('id_item_pprice').value;
+      var item_unit = document.getElementById('id_unit').value;
+      var item_qty = document.getElementById('id_qty').value;
+      var item_price = document.getElementById('id_pprice').value;
 
     // Calculate Qty * Price values
       var price = parseFloat(item_price);
       var quantity = parseInt(item_qty);
-      var item_total = 0;
-      item_total += price * quantity;
+      var item_total = parseFloat(price * quantity);
     
     // Validate input
     if (item_code === '' || item_qty === '' || item_price === '') {
@@ -489,11 +488,11 @@ document.getElementById('mySelect').onchange = function(){
     //var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
       var itemExists = false;
       for (var i = 0, row; row = table.rows[i]; i++) {
-        if (row.cells[0].innerHTML === item_code) {
+        if (row.cells[0].getElementsByTagName('input')[0].value === item_code) {
           console.log(item_code);
           //row.cells[1].innerHTML = parseInt(row.cells[1].innerHTML) + parseInt(itemQuantity);
           itemExists = true;
-          alert('Item '+ item_code + ' Already Exists.');
+          alert('Item : '+ item_code + ' Already Exists.');
           break;
         }
       }
@@ -516,15 +515,15 @@ document.getElementById('mySelect').onchange = function(){
       const cell6 = newRow.insertCell(5);
       const cell7 = newRow.insertCell(6);
       
-      cell1.innerHTML = `<input type="number" name="form-${formCount}-item_code" value="${item_code}" required >`;        
-      cell2.innerHTML = `<input type="text" name="form-${formCount}-item_name" value="${item_name}" required >`;
-      cell3.innerHTML = `<input type="text" name="form-${formCount}-item_unit" value="${item_unit}" required>`;
-      cell4.innerHTML = `<input type="number" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
-      cell5.innerHTML = `<input type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
-      cell6.innerHTML = `<input type="text" name="form-${formCount}-item_total" value="${item_total}" required>`;
+      cell1.innerHTML = `<input id="form-${formCount}-item_code" type="number" name="form-${formCount}-item_code" value="${item_code}" required >`;        
+      cell2.innerHTML = `<input id="form-${formCount}-item_name" type="text"value="${item_name}" required >`;
+      cell3.innerHTML = `<input id="form-${formCount}-item_unit" type="text" value="${item_unit}" required>`;
+      cell4.innerHTML = `<input id="form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
+      cell5.innerHTML = `<input id="form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
+      cell6.innerHTML = `<input id="form-${formCount}-item_total" type="text" value="${item_total}" required>`;
       cell7.innerHTML = '<button type="button" class="removeRow">Remove</button>';
-
-      // Add event listener for remove button
+// name="form-${formCount}-item_name"   name="form-${formCount}-item_unit"  name="form-${formCount}-item_total" 
+      // Add event listener for remove button 
       cell7.querySelector('.removeRow').addEventListener('click', function() {
       table.removeChild(newRow);
       totalForms.value = formCount;  // Decrement the form count
@@ -535,11 +534,11 @@ document.getElementById('mySelect').onchange = function(){
     // Clear the input fields    
     var selectize = $('#mySelect')[0].selectize;
     selectize.clear();
-    document.getElementById('id_item_expi').value='';
-    document.getElementById('id_item_sprice').value='';
-    document.getElementById('id_item_unit').value='';
-    document.getElementById('id_item_qty').value='';
-    document.getElementById('id_item_pprice').value='';
+    document.getElementById('id_expi').value='';
+    document.getElementById('id_sprice').value='';
+    document.getElementById('id_unit').value='';
+    document.getElementById('id_qty').value='';
+    document.getElementById('id_pprice').value='';
 
       // Calculate data field.......... Reloads  
     var total = calculateSum().toFixed(2);
