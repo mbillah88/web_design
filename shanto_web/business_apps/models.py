@@ -95,7 +95,6 @@ class PurchaseOrderItem(models.Model):
   item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
   itme_unit = models.CharField(max_length=255, default='')
   itme_qty = models.PositiveBigIntegerField(default=1)
-  item_sprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
 
   def __str__(self):
