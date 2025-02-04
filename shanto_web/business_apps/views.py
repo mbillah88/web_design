@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import *
 import json
+from django.views.decorators.csrf import csrf_protect
 
 # Create your views here.
 @login_required
@@ -362,3 +363,18 @@ class ItemListView(APIView):
         item = ItemProduct.objects.get(id=pk)
         serializer = ItemProductSerializer(item)
         return Response(serializer.data)
+
+@csrf_protect
+def save_table_data(request):
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
+    
+    if request.method == 'POST':
+        formset = CartItemFormSet(request.POST)
+        if formset.is_valid():
+            formset.save()
+            return redirect('slt:success')  # Redirect to a success page or another view
+        else: print(formset)
+    else:
+        formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
+    
+    return render(request, 'business_apps/check.html', {'formset': formset})

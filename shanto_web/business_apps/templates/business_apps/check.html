@@ -1,0 +1,152 @@
+{% extends "business_apps/master.html" %}
+
+{% block title %}
+  SLT | Sales List
+{% endblock %}
+
+{% block header %}
+Sales List
+{% endblock %}
+
+{% block content %}
+<div class="main-content">
+  <div class="content">    
+    <div class="form-header" style="display: flex;">      
+      <div>
+        <span style="font-size: 1.3rem; font-weight: bolder;">Sales List</span>
+      </div>
+      <div>        
+        <a href="{% url 'slt:sales_new' %}">New Sales</a>
+      </div>
+    </div>   
+    
+  <div class="content">
+  <div class="content">
+                   
+    <div class="content" style="display: flex;align-items: center;gap: 1rem;justify-content: space-evenly;"> 
+      <div class="d-flex" style="gap: 2rem;">
+        <div>
+          <label for="id_expi">Expired:</label>
+          <input type="text" id="id_expi" readonly>    
+        </div>
+        <div>
+          <label for="id_sprice">S Price</label>
+          <input type="text" id="id_sprice" value="" readonly>    
+        </div>
+        <div>
+          <label for="id_unit">Unit:</label>
+          <input type="text" id="id_unit" value="" readonly>    
+        </div>
+        <div>
+          <label for="id_pprice">Price</label>
+          <input type="text" id="id_pprice" value="" readonly>    
+        </div>
+        <div>
+          <label for="id_qty">Qty</label>
+          <input type="number" min="1" id="id_qty">    
+        </div>
+      </div>
+      
+      <div class="bg-light p-2">
+        <input id="addItemToCart" type="button" class="btn btn-outline-danger" value="Add Item">
+      </div>
+    </div> 
+  </div>  
+<form method="POST" action="{% url 'slt:save_table_data' %}">
+  {% csrf_token %}
+  
+  <!-- Render the management form fields manually in a hidden row -->
+  <table style="display: none;">
+      <tr>
+          <td><input type="hidden" name="{{ formset.management_form.prefix }}-TOTAL_FORMS" value="{{ formset.management_form.TOTAL_FORMS.value }}"></td>
+          <td><input type="hidden" name="{{ formset.management_form.prefix }}-INITIAL_FORMS" value="{{ formset.management_form.INITIAL_FORMS.value }}"></td>
+          <td><input type="hidden" name="{{ formset.management_form.prefix }}-MIN_NUM_FORMS" value="{{ formset.management_form.MIN_NUM_FORMS.value }}"></td>
+          <td><input type="hidden" name="{{ formset.management_form.prefix }}-MAX_NUM_FORMS" value="{{ formset.management_form.MAX_NUM_FORMS.value }}"></td>
+      </tr>
+  </table>
+
+  <table id="dataTable">
+      <thead>
+          <tr>
+            <th>Order Name</th>
+              <th>Product Name</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Action</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for form in formset %}
+          
+              <tr>
+                  <td>{{ form.porder_id }}</td>
+                  <td>{{ form.item_id }}</td>
+                  <td>{{ form.item_qty }}</td>
+                  <td>{{ form.item_pprice }}</td>
+                  <td><button type="button" class="removeRow">Remove</button></td>
+              </tr>
+          {% endfor %}
+      </tbody>
+  </table>
+  
+  <button type="button" id="addRowButton">Add Row</button>
+  <button type="submit">Save Data</button>
+</form>
+Add JavaScript to handle adding and removing rows dynamically:
+
+html
+<script>
+document.getElementById('addRowButton').addEventListener('click', function() {
+  
+    // Get input values
+    //var item = document.getElementById("mySelect");
+      //var item_code = item.value;
+      //var item_name = item.options[item.selectedIndex].text;
+      //var item_unit = document.getElementById('id_unit').value;
+      var item_qty = document.getElementById('id_qty').value;
+      var item_price = document.getElementById('id_pprice').value;
+
+  const table = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+  const newRow = table.insertRow();
+  
+  // Get total form count and update it
+  const totalForms = document.querySelector('input[name="form-TOTAL_FORMS"]');
+  const formCount = parseInt(totalForms.value);
+  totalForms.value = formCount + 1;
+  
+  // Create new cells with input fields
+  const cell1 = newRow.insertCell(0);
+  const cell2 = newRow.insertCell(1);
+  const cell3 = newRow.insertCell(2);
+  const cell4 = newRow.insertCell(3);
+  const cell5 = newRow.insertCell(4);
+
+  cell1.innerHTML = `<input type="text" name="form-${formCount}-porder_id" value="3" required>`;
+  cell2.innerHTML = `<input type="text" name="form-${formCount}-item_id" value="${item_qty}" required>`;
+  cell3.innerHTML = `<input type="text" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
+  cell4.innerHTML = `<input type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
+  cell5.innerHTML = '<button type="button" class="removeRow">Remove</button>';
+
+  // Add event listener for remove button
+  cell5.querySelector('.removeRow').addEventListener('click', function() {
+      table.removeChild(newRow);
+      totalForms.value = formCount;  // Decrement the form count
+  });
+});
+
+document.querySelectorAll('.removeRow').forEach(button => {
+  button.addEventListener('click', function() {
+      const row = this.closest('tr');
+      row.parentNode.removeChild(row);
+      
+      const totalForms = document.querySelector('input[name="form-TOTAL_FORMS"]');
+      const formCount = parseInt(totalForms.value);
+      totalForms.value = formCount - 1;
+  });
+});
+</script>
+  </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -199,51 +199,8 @@
       </form>
     </div>
   </div>
-  <div class="content">
-    <form method="POST" id="thisForm" action="{% url 'slt:save_table_data' %}">
-      {% csrf_token %}
-      
-      <table id="dataTable">
-          <thead>
-              <tr>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr>
-                  <td contenteditable="true">Example Product</td>
-                  <td contenteditable="true">5</td>
-                  <td contenteditable="true">20.00</td>
-              </tr>
-              <!-- More rows as needed -->
-          </tbody>
-      </table>
   
-      <input type="hidden" name="table_data" id="table_data">
-      <button type="submit">Save Data</button>
-  </form>
-  </div>
 </div>
-<script>
-  document.querySelector('form').addEventListener('submit', function(event) {
-      let table = document.getElementById('dataTable');
-      let data = [];
-      for (let i = 1; i < table.rows.length; i++) {
-          let row = table.rows[i];
-          let rowData = {
-              product_name: row.cells[0].innerText,
-              quantity: row.cells[1].innerText,
-              price: row.cells[2].innerText
-          };
-          data.push(rowData);
-          console.log(table_data);
-      }
-      document.getElementById('table_data').value = JSON.stringify(data);
-      console.log(table_data);
-  });
-  </script>
 <!--Serializer Select Options Searchable-->
 <script>
     $(document).ready(function () {

@@ -93,7 +93,7 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderItem(models.Model):
   porder_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
   item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
-  itme_qty = models.PositiveBigIntegerField(default=1)
+  item_qty = models.PositiveBigIntegerField(default=1)
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
 
   def get_total_price(self):
