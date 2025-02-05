@@ -76,7 +76,7 @@ class PurchaseOrderForm(forms.ModelForm):
 class PurchaseOrderItemForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrderItem
-        fields = ['porder_id','item_id','item_qty','item_pprice']
+        fields = ['item_id','item_qty','item_pprice']
 
     helper = FormHelper()
     helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))

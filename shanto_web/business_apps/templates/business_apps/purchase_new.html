@@ -505,7 +505,47 @@ document.getElementById('mySelect').onchange = function(){
     }
   }
 </script>
-
+<!--// Calculate Discount and Payment field... -->
+<script>
+  function invoiceCalculate(total_amt){
+    this.total_amt = total_amt; 
+    var disc_amt = 0;
+    var disc_perc = 0;
+    var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
+    var paid_amt = 0; 
+    var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
+    document.getElementById('id_item_tprice').value = total_amt;
+    document.getElementById('id_disc_amt').value = disc_amt;
+    document.getElementById('id_disc_perc').value = disc_perc;
+    document.getElementById('id_pay_total').value = payable_amt;
+    document.getElementById('id_paid_total').value = paid_amt;
+    document.getElementById('id_due_amt').value = due_amt;
+  }
+  
+  function invoiceDiscCalculate(disc_amt){
+    if (disc_amt === '') {
+      $(this).val(0);
+    }
+    this.disc_amt = disc_amt; 
+    var total_amt = document.getElementById('id_item_tprice').value;
+    var paid_amt = document.getElementById('id_paid_total').value;
+    var payable_amt = parseFloat(total_amt-disc_amt);
+    var due_amt = parseFloat(payable_amt-paid_amt); 
+    document.getElementById('id_pay_total').value = payable_amt;
+    document.getElementById('id_due_amt').value = due_amt;
+  }
+  
+  function invoiceDueCalculate(paid_amt){
+    if (paid_amt === '') {
+      $(this).val(0);
+    }
+    this.paid_amt = paid_amt; 
+    var payable_amt = document.getElementById('id_pay_total').value;
+    var paid_amt = document.getElementById('id_paid_total').value;
+    var due_amt = parseFloat(payable_amt-paid_amt); 
+    document.getElementById('id_due_amt').value = due_amt;
+  }
+</script>
 <script>
   document.getElementById('addItemToCart').addEventListener('click', function() {
     const table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];

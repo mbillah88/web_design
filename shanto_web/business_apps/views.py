@@ -367,14 +367,28 @@ class ItemListView(APIView):
 @csrf_protect
 def save_table_data(request):
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
-    
+    products = ItemProduct.objects.all() 
     if request.method == 'POST':
-        formset = CartItemFormSet(request.POST)
-        if formset.is_valid():
-            formset.save()
+        order = PurchaseOrderForm(request.POST)
+        formset = CartItemFormSet(request.POST,queryset=PurchaseOrderItem.objects.none())
+
+        for name in request.POST:
+            print("{}: {}".format(name, request.POST.getlist(name)))
+
+        if order.is_valid and formset.is_valid(): 
+            order = PurchaseOrderForm.save(commit=False)
+            order.porder_create_by = request.user
+            order.save() 
+            cart_items = formset.save(commit=False)
+            for item in cart_items:
+                item.porder_id = order
+                item.save()          
+            #formset.save()
             return redirect('slt:success')  # Redirect to a success page or another view
-        else: print(formset)
     else:
+        order = PurchaseOrderForm()
         formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
     
-    return render(request, 'business_apps/check.html', {'formset': formset})
+    return render(request, 'business_apps/check.html', {'form' : order,
+            'formset' : formset,
+            'products' : products})
