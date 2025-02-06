@@ -237,9 +237,31 @@ def purchase_new(request):
 def purchase_update(request):
   return render(request, 'business_apps/purchase_update.html')
 def purchase_order_process(request):    
-    form = PurchaseOrderItemForm()
-    products = ItemProduct.objects.all()
-    return render(request, 'business_apps/purchase_new_order.html', {'form': form, 'products': products})
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=2)
+    products = ItemProduct.objects.all()   
+
+    if request.method == 'POST':
+        order_form = PurchaseOrderForm(request.POST)
+        formset = CartItemFormSet(request.POST)
+        #for Data Check...
+        for name in request.POST:
+            print("{}: {}".format(name, request.POST.getlist(name)))
+            
+        if order_form.is_valid: 
+            order = order_form.save(commit=False)
+            order.porder_create_by = request.user
+            order.save()
+            cart_items = formset.save(commit=False)
+            for item in cart_items:
+                item.porder_id = order
+                item.save()   
+        return redirect('slt:success')  # Redirect to a success page or another view
+
+    else:
+        order_form = PurchaseOrderForm()
+        formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
+
+    return render(request, 'business_apps/purchase_new_order.html', {'order_form': order_form, 'formset': formset,'products': products})
 
 # Tools_Unit_View...
 @login_required
@@ -374,6 +396,7 @@ def save_table_data(request):
 
         for name in request.POST:
             print("{}: {}".format(name, request.POST.getlist(name)))
+        print(order)
 
         if order.is_valid and formset.is_valid(): 
             order = PurchaseOrderForm.save(commit=False)

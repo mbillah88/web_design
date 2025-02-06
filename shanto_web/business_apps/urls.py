@@ -48,7 +48,7 @@ urlpatterns = [
     path('purchase/supplier/<int:pk>/', views.supplier_detail, name='supplier_detail'),
     path('purchase/product_search/<int:pk>', views.ItemListView.as_view(), name='ItemListView'),
     path('purchase/save_table_data', views.save_table_data, name='save_table_data'),
-        path('purchase/success', views.success, name='success'),
+    path('purchase/success', views.success, name='success'),
     # Settings Tools .... 
     path('settings/', views.settings, name='settings'),
     path('settings/tools_unit', views.tools_unit, name='tools_unit'),

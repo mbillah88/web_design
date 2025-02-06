@@ -87,8 +87,6 @@ class PurchaseOrder(models.Model):
   porder_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='o_create_user')
   porder_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='o_create_update')
   
-  def __str__(self):
-    return self.id
 
 class PurchaseOrderItem(models.Model):
   porder_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
