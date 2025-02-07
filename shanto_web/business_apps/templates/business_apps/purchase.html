@@ -28,7 +28,7 @@ Purchase List
       </div>
       <div>        
         <a href="{% url 'slt:purchase_new' %}">New Purchase</a>
-        <a href="{% url 'slt:purchase_order_process' %}">New Order</a>
+        <a href="{% url 'slt:purchase_order' %}">New Order</a>
       </div>
     </div>   
         
@@ -74,39 +74,9 @@ Purchase List
         <a href="{% url 'slt:purchase_new' %}">Purchase Order Due Payment</a>
       </div>
     </div>   
-        
-    <table>
-        <tr>
-          <th scope="col">Product Name</th>
-          <th scope="col">Product Category</th>
-          <th scope="col">Product Brand</th>
-          <th scope="col">Product Model</th>
-          <th scope="col">Product description</th>
-          <th scope="col">Product Price</th>
-          <th scope="col">Action</th>
-        </tr>
-        {% for data in prod %}
-        <tr>       
-          <td>
-            <a href="{% url 'slt:product_details' data.pk %}">
-              {% if data.item_image %}
-                <img src="{{data.item_image.url}}" style="width:100px; height:auto;">
-              {% endif %}
-            </a>
-          </td>
-          <td>{{ data.item_name }}</td>
-          <td>{{ data.category_name }}</td>
-          <td>{{ data.brand_name }}</td>
-          <td>{{ data.item_model }}</td>
-          <td>{{ data.item_description }}</td>
-          <td>{{ data.item_sprice }}</td>
-          <td>
-            <a href="{% url 'slt:purchase_update' data.pk %}">Edit</a>
-            <a href="">Delete</a>
-          </td>
-        </tr>
+        {% for data in produtcs %}
+          {{data}}
         {% endfor %}
-    </table>
     <hr/>
 
 

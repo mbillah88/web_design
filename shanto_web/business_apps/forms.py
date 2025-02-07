@@ -67,7 +67,7 @@ class SupplierForm(forms.ModelForm):
 class PurchaseOrderForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrder
-        fields = ['supplier_id','porder_total','porder_discount','porder_status','porder_note']
+        fields = ['supplier_id','porder_total','porder_discount','porder_due','porder_status','porder_note']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

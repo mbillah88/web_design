@@ -80,6 +80,7 @@ class PurchaseOrder(models.Model):
   supplier_id = models.ForeignKey(Supplier, on_delete=models.CASCADE, null = True)
   porder_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   porder_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  porder_due = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   porder_status = models.CharField(max_length=1,choices=OrderChoice, default=3)
   porder_note = models.CharField(max_length=500, default='')
   porder_create_time = models.DateTimeField(auto_now_add=True,null = True)  
@@ -100,7 +101,7 @@ class PurchaseOrderItem(models.Model):
 class PurchasePayment(models.Model):
   order_id = models.ForeignKey(PurchaseOrderItem, on_delete=models.CASCADE, null = True)
   payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
-  payment_status = models.CharField(max_length=20)
+  payment_type = models.CharField(max_length=20)
   payment_time = models.DateTimeField(auto_now_add=True, null = True)  
   payment_update_time = models.DateTimeField(auto_now=True, null = True)   
   payment_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_create_user')

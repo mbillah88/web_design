@@ -58,9 +58,6 @@
             <div style="flex: 1;">
               <label for="id_porder_status">O Type:</label>
               {{ form.porder_status }}
-              {% for PurchaseOrder in form.fields.PurchaseOrder.queryset %} 
-              <option value="{{ PurchaseOrder.id }}" {% if PurchaseOrder.id == form.PurchaseOrder.value %}selected{% endif %}> {{ PurchaseOrder.porder_status }} </option> 
-              {% endfor %}
             </div>
           </div>            
           <div class="d-flex w-100 gap-3" > 
@@ -147,7 +144,7 @@
           <div style="flex: 1;display: flex;flex-direction: column;justify-content: space-evenly;">
             <div>
               <span >Notes:</span>
-              <textarea  class="form-control col-xs-12" id="it_text_area" name="text_area" rows="3" cols="50" placeholder="Write your Purchase note here..."></textarea>          
+              <textarea  class="form-control col-xs-12" id="it_porder_note" name="porder_note" rows="3" cols="50" placeholder="Write your Purchase note here..." required></textarea>          
             </div>
             <div class="d-flex" style="align-items: center;" >
               <div style="flex: 50%; text-align: end; flex: 50%;"><label for="pay_type_id">Pay Type:</label></div>
@@ -163,12 +160,12 @@
           <div style="flex: 1;align-items: center;">
             <div class="d-flex flex-column">
               <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_tprice">Item Total:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="item_sprice" required id="id_item_tprice" value="" readonly></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_total">Item Total:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_total" required id="id_porder_total" value="" readonly></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_amt">Discount (Amt):</label></div>
-                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_amt"required id="id_disc_amt" value="{{ form.instance.item_sprice }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_discount">Discount (Amt):</label></div>
+                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
@@ -183,8 +180,8 @@
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="paid_total"required id="id_paid_total" value="{{ form.instance.item_sprice }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_due_amt">Due Amount:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="due_amt"required id="id_due_amt" value="{{ form.instance.item_sprice }}" readonly></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_due">Due Amount:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_due"required id="id_porder_due" value="{{ form.instance.porder_due }}" readonly></div>              
               </div>
             </div>
 
@@ -195,32 +192,6 @@
         </div>
       </form>
     </div>
-  </div>
-  <div class="content">
-    <form method="POST" id="thisForm" action="{% url 'slt:save_table_data' %}">
-      {% csrf_token %}
-      
-      <table id="dataTable">
-          <thead>
-              <tr>
-                  <th>Product Name</th>
-                  <th>Quantity</th>
-                  <th>Price</th>
-              </tr>
-          </thead>
-          <tbody>
-              <tr>
-                  <td contenteditable="true">Example Product</td>
-                  <td contenteditable="true">5</td>
-                  <td contenteditable="true">20.00</td>
-              </tr>
-              <!-- More rows as needed -->
-          </tbody>
-      </table>
-  
-      <input type="hidden" name="table_data" id="table_data">
-      <button type="submit">Save Data</button>
-  </form>
   </div>
 </div>
 <script>
@@ -322,81 +293,6 @@ document.getElementById('mySelect').onchange = function(){
     });
   } 
 </script>
-<!--Cart Item add Table row 
-<script>
-  function addItemToCart() {
-    // Get input values
-      var item = document.getElementById("mySelect");
-      var item_code = item.value;
-      var item_name = item.options[item.selectedIndex].text;
-      var item_unit = document.getElementById('id_unit').value;
-      var item_qty = document.getElementById('id_qty').value;
-      var item_price = document.getElementById('id_pprice').value;
-
-    // Calculate Qty * Price values
-      var price = parseFloat(item_price);
-      var quantity = parseInt(item_qty);
-      var item_total = 0;
-      item_total += price * quantity;
-    
-    // Validate input
-    if (item_code === '' || item_qty === '' || item_price === '') {
-        alert('Please fill in all fields');
-        return;
-    }
-    // Check if item already exists in the cart
-    var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
-      var itemExists = false;
-      for (var i = 0, row; row = table.rows[i]; i++) {
-        if (row.cells[0].innerHTML === item_code) {
-          //row.cells[1].innerHTML = parseInt(row.cells[1].innerHTML) + parseInt(itemQuantity);
-          itemExists = true;
-          alert('Item '+ item_code + ' Already Exists.');
-          break;
-        }
-      }
-    // If item does not exist, create a new row
-    if (!itemExists) {
-    // Create a new row for the table
-    var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
-    var newRow = table.insertRow(table.rows.length);
-
-    // Insert cells for the row
-    var cell1 = newRow.insertCell(0);
-    var cell2 = newRow.insertCell(1);
-    var cell3 = newRow.insertCell(2);
-    var cell4 = newRow.insertCell(3);
-    var cell5 = newRow.insertCell(4);
-    var cell6 = newRow.insertCell(5);
-    var cell7 = newRow.insertCell(6);
-
-    // Add values to the cells
-    cell1.innerHTML = item_code;
-    cell2.innerHTML = item_name;
-    cell3.innerHTML = item_unit;
-    cell4.innerHTML = item_price;
-    cell5.innerHTML = item_qty;
-    cell6.innerHTML = item_total.toFixed(2);
-    cell7.innerHTML = '<button style="width: 50%; color: red;" onclick="removeRow(this)">X</button>';
-
-    }
-    // Clear the input fields    
-    var selectize = $('#mySelect')[0].selectize;
-    selectize.clear();
-    document.getElementById('id_item_expi').value='';
-    document.getElementById('id_item_sprice').value='';
-    document.getElementById('id_item_unit').value='';
-    document.getElementById('id_item_qty').value='';
-    document.getElementById('id_item_pprice').value='';
-
-      // Calculate data field.......... Reloads  
-    var total = calculateSum().toFixed(2);
-    document.getElementById('id_item_tprice').value = total;
-    document.getElementById("rowCount").innerText = countRows();
-    
-    invoiceCalculate(total);
-}
-</script> -->
 <!--Table row Sum -->
 <script>  
   function countRows() {
@@ -426,7 +322,7 @@ document.getElementById('mySelect').onchange = function(){
     
       // Calculate data field.......... Reloads     
     var total = calculateSum().toFixed(2);
-    document.getElementById('id_item_tprice').value = total;
+    document.getElementById('id_porder_total').value = total;
     document.getElementById("rowCount").innerText = countRows();
     
     invoiceCalculate(total);
@@ -441,12 +337,12 @@ document.getElementById('mySelect').onchange = function(){
       var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
       var paid_amt = 0; 
       var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
-      document.getElementById('id_item_tprice').value = total_amt;
-      document.getElementById('id_disc_amt').value = disc_amt;
+      document.getElementById('id_porder_total').value = total_amt;
+      document.getElementById('id_porder_discount').value = disc_amt;
       document.getElementById('id_disc_perc').value = disc_perc;
       document.getElementById('id_pay_total').value = payable_amt;
       document.getElementById('id_paid_total').value = paid_amt;
-      document.getElementById('id_due_amt').value = due_amt;
+      document.getElementById('id_porder_due').value = due_amt;
     }
     
     function invoiceDiscCalculate(disc_amt){
@@ -454,12 +350,12 @@ document.getElementById('mySelect').onchange = function(){
         $(this).val(0);
       }
       this.disc_amt = disc_amt; 
-      var total_amt = document.getElementById('id_item_tprice').value;
+      var total_amt = document.getElementById('id_porder_total').value;
       var paid_amt = document.getElementById('id_paid_total').value;
       var payable_amt = parseFloat(total_amt-disc_amt);
       var due_amt = parseFloat(payable_amt-paid_amt); 
       document.getElementById('id_pay_total').value = payable_amt;
-      document.getElementById('id_due_amt').value = due_amt;
+      document.getElementById('id_porder_due').value = due_amt;
     }
     
     function invoiceDueCalculate(paid_amt){
@@ -470,12 +366,12 @@ document.getElementById('mySelect').onchange = function(){
       var payable_amt = document.getElementById('id_pay_total').value;
       var paid_amt = document.getElementById('id_paid_total').value;
       var due_amt = parseFloat(payable_amt-paid_amt); 
-      document.getElementById('id_due_amt').value = due_amt;
+      document.getElementById('id_porder_due').value = due_amt;
     }
 </script>
 <script>  
   $(document).ready(function() {  
-    $("#id_disc_amt").on("input", function() {
+    $("#id_porder_discount").on("input", function() {
       var value = $(this).val();
       invoiceDiscCalculate(value);
     }); 
@@ -511,12 +407,12 @@ document.getElementById('mySelect').onchange = function(){
     var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
     var paid_amt = 0; 
     var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
-    document.getElementById('id_item_tprice').value = total_amt;
-    document.getElementById('id_disc_amt').value = disc_amt;
+    document.getElementById('id_porder_total').value = total_amt;
+    document.getElementById('id_porder_discount').value = disc_amt;
     document.getElementById('id_disc_perc').value = disc_perc;
     document.getElementById('id_pay_total').value = payable_amt;
     document.getElementById('id_paid_total').value = paid_amt;
-    document.getElementById('id_due_amt').value = due_amt;
+    document.getElementById('id_porder_due').value = due_amt;
   }
   
   function invoiceDiscCalculate(disc_amt){
@@ -524,12 +420,12 @@ document.getElementById('mySelect').onchange = function(){
       $(this).val(0);
     }
     this.disc_amt = disc_amt; 
-    var total_amt = document.getElementById('id_item_tprice').value;
+    var total_amt = document.getElementById('id_porder_total').value;
     var paid_amt = document.getElementById('id_paid_total').value;
     var payable_amt = parseFloat(total_amt-disc_amt);
     var due_amt = parseFloat(payable_amt-paid_amt); 
     document.getElementById('id_pay_total').value = payable_amt;
-    document.getElementById('id_due_amt').value = due_amt;
+    document.getElementById('id_porder_due').value = due_amt;
   }
   
   function invoiceDueCalculate(paid_amt){
@@ -540,7 +436,7 @@ document.getElementById('mySelect').onchange = function(){
     var payable_amt = document.getElementById('id_pay_total').value;
     var paid_amt = document.getElementById('id_paid_total').value;
     var due_amt = parseFloat(payable_amt-paid_amt); 
-    document.getElementById('id_due_amt').value = due_amt;
+    document.getElementById('id_porder_due').value = due_amt;
   }
 </script>
 <script>
@@ -595,12 +491,12 @@ document.getElementById('mySelect').onchange = function(){
       const cell6 = newRow.insertCell(5);
       const cell7 = newRow.insertCell(6);
       
-      cell1.innerHTML = `<input id="form-${formCount}-item_code" type="number" name="form-${formCount}-item_code" value="${item_code}" required >`;        
-      cell2.innerHTML = `<input id="form-${formCount}-item_name" type="text"value="${item_name}" required >`;
-      cell3.innerHTML = `<input id="form-${formCount}-item_unit" type="text" value="${item_unit}" required>`;
-      cell4.innerHTML = `<input id="form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
-      cell5.innerHTML = `<input id="form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
-      cell6.innerHTML = `<input id="form-${formCount}-item_total" type="text" value="${item_total}" required>`;
+      cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required >`;        
+      cell2.innerHTML = `<input type="text"value="${item_name}" required >`;
+      cell3.innerHTML = `<input type="text" value="${item_unit}" required>`;
+      cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
+      cell5.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
+      cell6.innerHTML = `<input type="text" value="${item_total}" required>`;
       cell7.innerHTML = '<button type="button" class="removeRow">Remove</button>';
 // name="form-${formCount}-item_name"   name="form-${formCount}-item_unit"  name="form-${formCount}-item_total" 
       // Add event listener for remove button 
@@ -622,7 +518,7 @@ document.getElementById('mySelect').onchange = function(){
 
       // Calculate data field.......... Reloads  
     var total = calculateSum().toFixed(2);
-    document.getElementById('id_item_tprice').value = total;
+    document.getElementById('id_porder_total').value = total;
     document.getElementById("rowCount").innerText = countRows();
     
     invoiceCalculate(total);

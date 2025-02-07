@@ -210,25 +210,29 @@ def purchase(request):
 def purchase_new(request):
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
     products = ItemProduct.objects.all() 
-
     if request.method == 'POST':
         customer_form = PurchaseOrderForm(request.POST)
-        formset = CartItemFormSet(request.POST)
-        #table_data = json.loads(request.POST['purchaseOrderTable'])
-
+        formset = CartItemFormSet(request.POST,queryset=PurchaseOrderItem.objects.none())        
+        #for Data Check...
+        for name in request.POST:
+            print("{}: {}".format(name, request.POST.getlist(name)))        
+        # Print formset errors for debugging
+        if not formset.is_valid():
+            print("Formset Errors:", formset.errors)
+    
         if customer_form.is_valid() and formset.is_valid():
             order = customer_form.save(commit=False)
             order.porder_create_by = request.user
             order.save()
             cart_items = formset.save(commit=False)
             for item in cart_items:
-                ##item.porder_id = order.id
+                item.porder_id = order
                 item.save()
             return redirect('slt:purchase')  # Redirect to a success page or another view
 
     else:
         customer_form = PurchaseOrderForm()
-        formset = CartItemFormSet()
+        formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
 
     return render(request, 'business_apps/purchase_new.html', {'form' : customer_form,
             'formset' : formset,
@@ -237,7 +241,7 @@ def purchase_new(request):
 def purchase_update(request):
   return render(request, 'business_apps/purchase_update.html')
 def purchase_order_process(request):    
-    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=2)
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
     products = ItemProduct.objects.all()   
 
     if request.method == 'POST':
@@ -246,14 +250,18 @@ def purchase_order_process(request):
         #for Data Check...
         for name in request.POST:
             print("{}: {}".format(name, request.POST.getlist(name)))
-            
-        if order_form.is_valid: 
+        
+        # Print formset errors for debugging
+        if not formset.is_valid():
+            print("Formset Errors:", formset.errors)
+    
+        if order_form.is_valid and formset.is_valid: 
             order = order_form.save(commit=False)
             order.porder_create_by = request.user
             order.save()
             cart_items = formset.save(commit=False)
             for item in cart_items:
-                item.porder_id = order
+                item.porder_id = '1'
                 item.save()   
         return redirect('slt:success')  # Redirect to a success page or another view
 
@@ -386,32 +394,25 @@ class ItemListView(APIView):
         serializer = ItemProductSerializer(item)
         return Response(serializer.data)
 
-@csrf_protect
 def save_table_data(request):
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
-    products = ItemProduct.objects.all() 
+    
     if request.method == 'POST':
-        order = PurchaseOrderForm(request.POST)
-        formset = CartItemFormSet(request.POST,queryset=PurchaseOrderItem.objects.none())
-
+        formset = CartItemFormSet(request.POST)
+        
+        #for Data Check...
         for name in request.POST:
             print("{}: {}".format(name, request.POST.getlist(name)))
-        print(order)
-
-        if order.is_valid and formset.is_valid(): 
-            order = PurchaseOrderForm.save(commit=False)
-            order.porder_create_by = request.user
-            order.save() 
-            cart_items = formset.save(commit=False)
-            for item in cart_items:
-                item.porder_id = order
-                item.save()          
-            #formset.save()
-            return redirect('slt:success')  # Redirect to a success page or another view
+        
+        # Print formset errors for debugging
+        if not formset.is_valid():
+            print("Formset Errors:", formset.errors)
+    
+        if formset.is_valid():
+            formset.save()
+            return redirect('slt:purchase')  # Redirect to a success page or another view
+    
     else:
-        order = PurchaseOrderForm()
         formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
     
-    return render(request, 'business_apps/check.html', {'form' : order,
-            'formset' : formset,
-            'products' : products})
+    return render(request, 'business_apps/purchase_new_order.html', {'formset': formset})

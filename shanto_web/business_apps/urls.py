@@ -43,7 +43,7 @@ urlpatterns = [
     
     path('purchase/', views.purchase, name='purchase'),
     path('purchase/purchase_new', views.purchase_new, name='purchase_new'),
-    path('purchase/purchase_new_order', views.purchase_order_process, name='purchase_order_process'),
+    path('purchase/purchase_order', views.purchase_order_process, name='purchase_order'),
     path('purchase/<int:pk>/purchase_update', views.purchase_update, name='purchase_update'),
     path('purchase/supplier/<int:pk>/', views.supplier_detail, name='supplier_detail'),
     path('purchase/product_search/<int:pk>', views.ItemListView.as_view(), name='ItemListView'),
