@@ -14,6 +14,9 @@ from rest_framework import status
 from .serializers import *
 import json
 from django.views.decorators.csrf import csrf_protect
+from django.core.paginator import Paginator
+from .filters import *
+from .function import get_order_item_count 
 
 # Create your views here.
 @login_required
@@ -200,12 +203,23 @@ def sales_update(request):
 # Purchase ....
 @login_required
 def purchase(request):
-    porder = PurchaseOrder.objects.all()
+    #porder = PurchaseOrder.objects.all().order_by('-porder_create_time')
     products = PurchaseOrderItem.objects.all()
-    
+    orders = get_order_item_count().order_by('-porder_create_time')
+    # Get the queryset and apply filtering
+    filterset = PurchaseOrderFilter(request.GET, queryset=orders)
+    filtered_queryset = filterset.qs
+    # Set up pagination
+    paginator = Paginator(filtered_queryset, 10)  # Show 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'business_apps/purchase.html', {
-        'porder' : porder,
-        'products' : products
+        #'porder' : porder,
+        'products' : products,
+        'filterset': filterset,
+        'page_obj': page_obj,
+        'orders': orders,
     })
 def purchase_new(request):
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
@@ -238,8 +252,38 @@ def purchase_new(request):
             'formset' : formset,
             'products' : products})
 
-def purchase_update(request):
-  return render(request, 'business_apps/purchase_update.html')
+def purchase_update(request, pk):
+    po = get_object_or_404(PurchaseOrder, id=pk)
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
+    products = ItemProduct.objects.all() 
+    if request.method == 'POST':
+        customer_form = PurchaseOrderForm(request.POST, instance=po)
+        formset = CartItemFormSet(request.POST,queryset=PurchaseOrderItem.objects.none())        
+        #for Data Check...
+        for name in request.POST:
+            print("{}: {}".format(name, request.POST.getlist(name)))        
+        # Print formset errors for debugging
+        if not formset.is_valid():
+            print("Formset Errors:", formset.errors)
+    
+        if customer_form.is_valid() and formset.is_valid():
+            order = customer_form.save(commit=False)
+            order.porder_create_by = request.user
+            order.save()
+            cart_items = formset.save(commit=False)
+            for item in cart_items:
+                item.porder_id = order
+                item.save()
+            return redirect('slt:purchase')  # Redirect to a success page or another view
+
+    else:
+        customer_form = PurchaseOrderForm(instance=po)
+        formset = CartItemFormSet(queryset=pk)
+
+    return render(request, 'business_apps/purchase_update.html', {'form' : customer_form,
+            'formset' : formset,
+            'products' : products})
+
 def purchase_order_process(request):    
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
     products = ItemProduct.objects.all()   

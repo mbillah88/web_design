@@ -24,23 +24,26 @@
 
 <div class="main-content">
   <div class="add-container">
-    <div class="content">
-      <div class="form-header">
-        <div>
-          <h3>
+    <div class="content">    
+      <nav class="navbar navbar-expand">
+        <div class="container-fluid">
+          <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
             {% if form.instance.pk %}
-              <span style="font-size: 1.3rem; font-weight: bolder; background-color: rgba(255, 17, 0, 0.822);">Edit Supplier : {{ form.instance.supplier_name }}</span>
+              <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Supplier : {{ form.instance.supplier_name }}</span>
             {% else %}
-            <span>Add Supplier</span>
+            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Add Supplier</span>
             {% endif %}
-          </h3>
-  
+          </div>
+          <div>
+            <a class="nav-link" href="{% url 'slt:supplier' %}">Supplier List</a>
+          </div>
         </div>
-        <div>        
-          <a href="{% url 'slt:supplier' %}">Backt ot List</a>
-        </div>
-  
-      </div>
+      </nav>
+      <hr style="margin: .0rem 0rem 1rem 0rem;
+      color: inherit;
+      background-color: currentColor;
+      border: 0;
+      opacity: .75;">  
       {% if form.errors %}
           {% for field in form %}
               {% for error in field.errors %}

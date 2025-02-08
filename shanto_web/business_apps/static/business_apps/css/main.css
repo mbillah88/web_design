@@ -311,7 +311,7 @@ input[type=text], input[type=number], input[type=datetime-local],select {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
-    font-size: .8em;
+    font-size: 1.1em;
   }
   
   tr:nth-child(even) {

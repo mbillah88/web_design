@@ -88,9 +88,11 @@ class PurchaseOrder(models.Model):
   porder_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='o_create_user')
   porder_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='o_create_update')
   
+  def __str__(self):
+    return self.get_porder_status_display() 
 
 class PurchaseOrderItem(models.Model):
-  porder_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
+  porder_id = models.ForeignKey(PurchaseOrder, related_name='items', on_delete=models.CASCADE, null = True)
   item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
   item_qty = models.PositiveBigIntegerField(default=1)
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
