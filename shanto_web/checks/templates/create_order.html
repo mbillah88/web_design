@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Order</title>
+</head>
+<body>
+    <h2>Create Order</h2>
+    <div style="display: flex;">
+        <form method="post">
+            <input type="hidden" name="csrfmiddlewaretoken" value="YAJ0o5uP9FEdbdfQszMDn3mUm0sEHTbyXkNJlJHJWNAcDd6NHiNWUzJKk5IQWHfC">
+            <h3>Customer Information</h3>
+       <p>
+        <label for="id_name">Name:</label>
+        <input type="text" name="name" maxlength="100" required id="id_name">
+      </p>
+      <p>
+        <label for="id_email">Email:</label>
+        <input type="email" name="email" maxlength="254" required id="id_email">
+      </p>
+
+    <h1>Save Item List</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>quantity</th>
+                    <th>price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for form in formset %}
+                <tr>
+                    <td>{{ form.product_name }}</td>
+                    <td>{{ form.quantity }}</td>
+                    <td>{{ form.price }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Save Items</button>
+    </form>
+</body>
+</html>
