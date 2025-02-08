@@ -26,19 +26,26 @@
 <div class="main-content">
   <div class="add-container" style="max-width: 960px;">
     <div class="content">
-      <div class="form-header">
-        <div>
-            {% if form.instance.pk %}
-              <span style="font-size: 1.3rem; font-weight: bolder; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : {{ form.instance.item_name}}</span>
+        
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+          {% if form.instance.pk %}
+              <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : {{ form.instance.item_name}}</span>
             {% else %}
-            <span style="font-size: 1.3rem; font-weight: bolder;">New Purchase</span>
+            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">New Purchase</span>
             {% endif %}
         </div>
-        <div>        
-          <a href="{% url 'slt:purchase' %}">Purchase List</a>
+        <div>
+          <a class="nav-link" href="{% url 'slt:purchase' %}">Purchase List</a>
         </div>
-
       </div>
+    </nav>
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;">
       <form class="form-container" enctype="multipart/form-data" method="post">
         <!-- Security token -->
         {% csrf_token %}
@@ -48,9 +55,6 @@
               <label for="id_supplier_id">Supplier:</label>
               <div style="display: flex; gap: .5rem;">
                 {{ form.supplier_id }}
-               <!--{% for Supplier in form.fields.Supplier.queryset %} 
-                <option  value="{{ Supplier.id }}" {% if Supplier.id == form.Supplier.value %}selected{% endif %}> {{ Supplier.supplier_name }} </option> 
-                {% endfor %}--> 
                 {% url 'slt:add_supplier_new' as url %}
                 <a href="{{url}}">
                   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>                
@@ -61,9 +65,6 @@
             <div style="flex: 1;">
               <label for="id_porder_status">O Type:</label>
               {{ form.porder_status }}
-              {% for PurchaseOrder in form.fields.PurchaseOrder.queryset %} 
-              <option value="{{ PurchaseOrder.id }}" {% if PurchaseOrder.id == form.PurchaseOrder.value %}selected{% endif %}> {{ PurchaseOrder.porder_status }} </option> 
-              {% endfor %}
             </div>
           </div>            
           <div class="d-flex w-100 gap-3" > 
@@ -83,7 +84,7 @@
         </div>     
         <div class="content d-flex" style="gap: 1.3rem;text-align: center; flex-flow: column-reverse;;">          
           <div style="width: 50%; margin: 0 auto;">
-            <select name="mySelect" id="mySelect">
+            <select id="mySelect">
               <option value="" hidden>Select your Product...</option>
               {% for item in products %}
               <option value="{{ item.id }}">{{ item.item_name }}</option>
@@ -93,24 +94,24 @@
           <div class="content" style="display: flex;align-items: center;gap: 1rem;justify-content: space-evenly;"> 
             <div class="d-flex" style="gap: 2rem;">
               <div>
-                <label for="id_item_expi">Expired:</label>
-                <input type="text" name="item_expi" id="id_item_expi" value="{{ form.instance.item_sprice }}">    
+                <label for="id_expi">Expired:</label>
+                <input type="text" id="id_expi" readonly>    
               </div>
               <div>
-                <label for="id_item_sprice">S Price</label>
-                <input type="text" name="item_sprice" id="id_item_sprice" value="{{ form.instance.item_pprice }}">    
+                <label for="id_sprice">S Price</label>
+                <input type="text" id="id_sprice" value="" readonly>    
               </div>
               <div>
-                <label for="id_item_unit">Unit:</label>
-                <input type="text" name="item_unit" id="id_item_unit" value="{{ form.instance.item_sprice }}">    
+                <label for="id_unit">Unit:</label>
+                <input type="text" id="id_unit" value="" readonly>    
               </div>
               <div>
-                <label for="id_item_pprice">Price</label>
-                <input type="text" name="item_pprice"  id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+                <label for="id_pprice">Price</label>
+                <input type="text" id="id_pprice" value="" readonly>    
               </div>
               <div>
-                <label for="id_item_qty">Qty</label>
-                <input type="number" name="item_qty" min="1" id="id_item_qty">    
+                <label for="id_qty">Qty</label>
+                <input type="number" min="1" id="id_qty">    
               </div>
             </div>
             
@@ -150,10 +151,10 @@
           <div style="flex: 1;display: flex;flex-direction: column;justify-content: space-evenly;">
             <div>
               <span >Notes:</span>
-              <textarea  class="form-control col-xs-12" id="it_text_area" name="text_area" rows="3" cols="50" placeholder="Write your Purchase note here..."></textarea>          
+              <textarea  class="form-control col-xs-12" id="it_porder_note" name="porder_note" rows="3" cols="50" placeholder="Write your Purchase note here..." required></textarea>          
             </div>
             <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="id_item_sprice">Pay Type:</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="pay_type_id">Pay Type:</label></div>
               <div style="flex: 50%; text-align: center; flex: 50%; color: #000; font-weight: 600;">
                 <select name="pay_type" id="pay_type_id">
                   <option value="1">Cash</option>
@@ -166,12 +167,12 @@
           <div style="flex: 1;align-items: center;">
             <div class="d-flex flex-column">
               <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_tprice">Item Total:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="item_sprice" required id="id_item_tprice" value="" readonly></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_total">Item Total:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_total" required id="id_porder_total" value="" readonly></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_amt">Discount (Amt):</label></div>
-                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_amt"required id="id_disc_amt" value="{{ form.instance.item_sprice }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_discount">Discount (Amt):</label></div>
+                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
@@ -186,8 +187,8 @@
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="paid_total"required id="id_paid_total" value="{{ form.instance.item_sprice }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_due_amt">Due Amount:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="due_amt"required id="id_due_amt" value="{{ form.instance.item_sprice }}" readonly></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_due">Due Amount:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_due"required id="id_porder_due" value="{{ form.instance.porder_due }}" readonly></div>              
               </div>
             </div>
 
@@ -199,8 +200,25 @@
       </form>
     </div>
   </div>
-  
 </div>
+<script>
+  document.querySelector('form').addEventListener('submit', function(event) {
+      let table = document.getElementById('dataTable');
+      let data = [];
+      for (let i = 1; i < table.rows.length; i++) {
+          let row = table.rows[i];
+          let rowData = {
+              product_name: row.cells[0].innerText,
+              quantity: row.cells[1].innerText,
+              price: row.cells[2].innerText
+          };
+          data.push(rowData);
+          console.log(table_data);
+      }
+      document.getElementById('table_data').value = JSON.stringify(data);
+      console.log(table_data);
+  });
+  </script>
 <!--Serializer Select Options Searchable-->
 <script>
     $(document).ready(function () {
@@ -273,89 +291,14 @@ document.getElementById('mySelect').onchange = function(){
       url: './product_search/' + pk ,
       method: 'GET',
       success: function(response) {
-        document.getElementById('id_item_expi').value = response.category_name.category_name;
-        document.getElementById('id_item_sprice').value = response.item_sprice;
-        document.getElementById('id_item_unit').value = response.itme_unit.unit_name;
-        document.getElementById('id_item_pprice').value = response.item_pprice;
-        document.getElementById('id_item_qty').value = 1;
+        document.getElementById('id_expi').value = "";
+        document.getElementById('id_sprice').value = response.item_sprice;
+        document.getElementById('id_unit').value = response.itme_unit.unit_name;
+        document.getElementById('id_pprice').value = response.item_pprice;
+        document.getElementById('id_qty').value = 1;
       }
     });
   } 
-</script>
-<!--Cart Item add Table row -->
-<script>
-  function addItemToCart() {
-    // Get input values
-      var item = document.getElementById("mySelect");
-      var item_code = item.value;
-      var item_name = item.options[item.selectedIndex].text;
-      var item_unit = document.getElementById('id_item_unit').value;
-      var item_qty = document.getElementById('id_item_qty').value;
-      var item_price = document.getElementById('id_item_pprice').value;
-
-    // Calculate Qty * Price values
-      var price = parseFloat(item_price);
-      var quantity = parseInt(item_qty);
-      var item_total = 0;
-      item_total += price * quantity;
-    
-    // Validate input
-    if (item_code === '' || item_qty === '' || item_price === '') {
-        alert('Please fill in all fields');
-        return;
-    }
-    // Check if item already exists in the cart
-    var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
-      var itemExists = false;
-      for (var i = 0, row; row = table.rows[i]; i++) {
-        if (row.cells[0].innerHTML === item_code) {
-          //row.cells[1].innerHTML = parseInt(row.cells[1].innerHTML) + parseInt(itemQuantity);
-          itemExists = true;
-          alert('Item '+ item_code + ' Already Exists.');
-          break;
-        }
-      }
-    // If item does not exist, create a new row
-    if (!itemExists) {
-    // Create a new row for the table
-    var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
-    var newRow = table.insertRow(table.rows.length);
-
-    // Insert cells for the row
-    var cell1 = newRow.insertCell(0);
-    var cell2 = newRow.insertCell(1);
-    var cell3 = newRow.insertCell(2);
-    var cell4 = newRow.insertCell(3);
-    var cell5 = newRow.insertCell(4);
-    var cell6 = newRow.insertCell(5);
-    var cell7 = newRow.insertCell(6);
-
-    // Add values to the cells
-    cell1.innerHTML = item_code;
-    cell2.innerHTML = item_name;
-    cell3.innerHTML = item_unit;
-    cell4.innerHTML = item_price;
-    cell5.innerHTML = item_qty;
-    cell6.innerHTML = item_total.toFixed(2);
-    cell7.innerHTML = '<button style="width: 50%; color: red;" onclick="removeRow(this)">X</button>';
-
-    }
-    // Clear the input fields    
-    var selectize = $('#mySelect')[0].selectize;
-    selectize.clear();
-    document.getElementById('id_item_expi').value='';
-    document.getElementById('id_item_sprice').value='';
-    document.getElementById('id_item_unit').value='';
-    document.getElementById('id_item_qty').value='';
-    document.getElementById('id_item_pprice').value='';
-
-      // Calculate data field.......... Reloads  
-    var total = calculateSum().toFixed(2);
-    document.getElementById('id_item_tprice').value = total;
-    document.getElementById("rowCount").innerText = countRows();
-    
-    invoiceCalculate(total);
-}
 </script>
 <!--Table row Sum -->
 <script>  
@@ -370,7 +313,7 @@ document.getElementById('mySelect').onchange = function(){
       var table = document.getElementById("purchaseOrderTable");
       var totalSum = 0;
         for (var i = 1, row; row = table.rows[i]; i++) {
-          var value = parseFloat(row.cells[5].innerText);
+          var value = parseFloat(row.cells[5].getElementsByTagName('input')[0].value);
           totalSum += value;
       }
       return totalSum;
@@ -386,7 +329,7 @@ document.getElementById('mySelect').onchange = function(){
     
       // Calculate data field.......... Reloads     
     var total = calculateSum().toFixed(2);
-    document.getElementById('id_item_tprice').value = total;
+    document.getElementById('id_porder_total').value = total;
     document.getElementById("rowCount").innerText = countRows();
     
     invoiceCalculate(total);
@@ -401,12 +344,12 @@ document.getElementById('mySelect').onchange = function(){
       var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
       var paid_amt = 0; 
       var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
-      document.getElementById('id_item_tprice').value = total_amt;
-      document.getElementById('id_disc_amt').value = disc_amt;
+      document.getElementById('id_porder_total').value = total_amt;
+      document.getElementById('id_porder_discount').value = disc_amt;
       document.getElementById('id_disc_perc').value = disc_perc;
       document.getElementById('id_pay_total').value = payable_amt;
       document.getElementById('id_paid_total').value = paid_amt;
-      document.getElementById('id_due_amt').value = due_amt;
+      document.getElementById('id_porder_due').value = due_amt;
     }
     
     function invoiceDiscCalculate(disc_amt){
@@ -414,28 +357,28 @@ document.getElementById('mySelect').onchange = function(){
         $(this).val(0);
       }
       this.disc_amt = disc_amt; 
-      var total_amt = document.getElementById('id_item_tprice').value;
+      var total_amt = document.getElementById('id_porder_total').value;
       var paid_amt = document.getElementById('id_paid_total').value;
       var payable_amt = parseFloat(total_amt-disc_amt);
       var due_amt = parseFloat(payable_amt-paid_amt); 
       document.getElementById('id_pay_total').value = payable_amt;
-      document.getElementById('id_due_amt').value = due_amt;
+      document.getElementById('id_porder_due').value = due_amt;
     }
     
     function invoiceDueCalculate(paid_amt){
       if (paid_amt === '') {
         $(this).val(0);
       }
-      this.paid_amt = paid_amt; 
+      this.paid_amt = paid_amt.toFixed(2);
       var payable_amt = document.getElementById('id_pay_total').value;
       var paid_amt = document.getElementById('id_paid_total').value;
       var due_amt = parseFloat(payable_amt-paid_amt); 
-      document.getElementById('id_due_amt').value = due_amt;
+      document.getElementById('id_porder_due').value = due_amt;
     }
 </script>
 <script>  
   $(document).ready(function() {  
-    $("#id_disc_amt").on("input", function() {
+    $("#id_porder_discount").on("input", function() {
       var value = $(this).val();
       invoiceDiscCalculate(value);
     }); 
@@ -462,7 +405,47 @@ document.getElementById('mySelect').onchange = function(){
     }
   }
 </script>
-
+<!--// Calculate Discount and Payment field... -->
+<script>
+  function invoiceCalculate(total_amt){
+    this.total_amt = total_amt; 
+    var disc_amt = 0;
+    var disc_perc = 0;
+    var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
+    var paid_amt = 0; 
+    var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
+    document.getElementById('id_porder_total').value = total_amt;
+    document.getElementById('id_porder_discount').value = disc_amt;
+    document.getElementById('id_disc_perc').value = disc_perc;
+    document.getElementById('id_pay_total').value = payable_amt;
+    document.getElementById('id_paid_total').value = paid_amt;
+    document.getElementById('id_porder_due').value = due_amt;
+  }
+  
+  function invoiceDiscCalculate(disc_amt){
+    if (disc_amt === '') {
+      $(this).val(0);
+    }
+    this.disc_amt = disc_amt; 
+    var total_amt = document.getElementById('id_porder_total').value;
+    var paid_amt = document.getElementById('id_paid_total').value;
+    var payable_amt = parseFloat(total_amt-disc_amt);
+    var due_amt = parseFloat(payable_amt-paid_amt); 
+    document.getElementById('id_pay_total').value = payable_amt;
+    document.getElementById('id_porder_due').value = due_amt;
+  }
+  
+  function invoiceDueCalculate(paid_amt){
+    if (paid_amt === '') {
+      $(this).val(0);
+    }
+    this.paid_amt = paid_amt; 
+    var payable_amt = document.getElementById('id_pay_total').value;
+    var paid_amt = document.getElementById('id_paid_total').value;
+    var due_amt = parseFloat(payable_amt-paid_amt); 
+    document.getElementById('id_porder_due').value = due_amt;
+  }
+</script>
 <script>
   document.getElementById('addItemToCart').addEventListener('click', function() {
     const table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
@@ -470,15 +453,14 @@ document.getElementById('mySelect').onchange = function(){
       var item = document.getElementById("mySelect");
       var item_code = item.value;
       var item_name = item.options[item.selectedIndex].text;
-      var item_unit = document.getElementById('id_item_unit').value;
-      var item_qty = document.getElementById('id_item_qty').value;
-      var item_price = document.getElementById('id_item_pprice').value;
+      var item_unit = document.getElementById('id_unit').value;
+      var item_qty = document.getElementById('id_qty').value;
+      var item_price = document.getElementById('id_pprice').value;
 
     // Calculate Qty * Price values
       var price = parseFloat(item_price);
       var quantity = parseInt(item_qty);
-      var item_total = 0;
-      item_total += price * quantity;
+      var item_total = parseFloat(price * quantity);
     
     // Validate input
     if (item_code === '' || item_qty === '' || item_price === '') {
@@ -489,11 +471,11 @@ document.getElementById('mySelect').onchange = function(){
     //var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
       var itemExists = false;
       for (var i = 0, row; row = table.rows[i]; i++) {
-        if (row.cells[0].innerHTML === item_code) {
+        if (row.cells[0].getElementsByTagName('input')[0].value === item_code) {
           console.log(item_code);
           //row.cells[1].innerHTML = parseInt(row.cells[1].innerHTML) + parseInt(itemQuantity);
           itemExists = true;
-          alert('Item '+ item_code + ' Already Exists.');
+          alert('Item : '+ item_code + ' Already Exists.');
           break;
         }
       }
@@ -516,15 +498,15 @@ document.getElementById('mySelect').onchange = function(){
       const cell6 = newRow.insertCell(5);
       const cell7 = newRow.insertCell(6);
       
-      cell1.innerHTML = `<input type="number" name="form-${formCount}-item_code" value="${item_code}" required >`;        
-      cell2.innerHTML = `<input type="text" name="form-${formCount}-item_name" value="${item_name}" required >`;
-      cell3.innerHTML = `<input type="text" name="form-${formCount}-item_unit" value="${item_unit}" required>`;
-      cell4.innerHTML = `<input type="number" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
-      cell5.innerHTML = `<input type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
-      cell6.innerHTML = `<input type="text" name="form-${formCount}-item_total" value="${item_total}" required>`;
+      cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required >`;        
+      cell2.innerHTML = `<input type="text"value="${item_name}" required >`;
+      cell3.innerHTML = `<input type="text" value="${item_unit}" required>`;
+      cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
+      cell5.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
+      cell6.innerHTML = `<input type="text" value="${item_total}" required>`;
       cell7.innerHTML = '<button type="button" class="removeRow">Remove</button>';
-
-      // Add event listener for remove button
+// name="form-${formCount}-item_name"   name="form-${formCount}-item_unit"  name="form-${formCount}-item_total" 
+      // Add event listener for remove button 
       cell7.querySelector('.removeRow').addEventListener('click', function() {
       table.removeChild(newRow);
       totalForms.value = formCount;  // Decrement the form count
@@ -535,15 +517,15 @@ document.getElementById('mySelect').onchange = function(){
     // Clear the input fields    
     var selectize = $('#mySelect')[0].selectize;
     selectize.clear();
-    document.getElementById('id_item_expi').value='';
-    document.getElementById('id_item_sprice').value='';
-    document.getElementById('id_item_unit').value='';
-    document.getElementById('id_item_qty').value='';
-    document.getElementById('id_item_pprice').value='';
+    document.getElementById('id_expi').value='';
+    document.getElementById('id_sprice').value='';
+    document.getElementById('id_unit').value='';
+    document.getElementById('id_qty').value='';
+    document.getElementById('id_pprice').value='';
 
       // Calculate data field.......... Reloads  
     var total = calculateSum().toFixed(2);
-    document.getElementById('id_item_tprice').value = total;
+    document.getElementById('id_porder_total').value = total;
     document.getElementById("rowCount").innerText = countRows();
     
     invoiceCalculate(total);

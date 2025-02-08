@@ -1,0 +1,555 @@
+{% extends "business_apps/master.html" %}
+{% load i18n %}
+
+{% block title %}
+  SLT | New Purchase
+{% endblock %}
+
+{% block header %}
+  New Purchase
+{% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+{% url 'slt:purchase' as urls %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{urls}}">Purchase</a></li>
+    <li class="breadcrumb-item active" aria-current="page">New Purchase</li>
+  </ul>
+</div>
+{% endblock %}
+
+    
+{% block content %}
+<div class="main-content">
+  <div class="add-container" style="max-width: 960px;">
+    <div class="content">
+        
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+          {% if form.instance.pk %}
+              <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : {{ form.instance.item_name}}</span>
+            {% else %}
+            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">New Purchase</span>
+            {% endif %}
+        </div>
+        <div>
+          <a class="nav-link" href="{% url 'slt:purchase' %}">Purchase List</a>
+        </div>
+      </div>
+    </nav>
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;">
+      <form class="form-container" enctype="multipart/form-data" method="post">
+        <!-- Security token -->
+        {% csrf_token %}
+        <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: .5rem;">      
+          <div class="d-flex w-100 gap-3" >
+            <div style="flex: 3;">
+              <label for="id_supplier_id">Supplier:</label>
+              <div style="display: flex; gap: .5rem;">
+                {{ form.supplier_id }}
+                {% url 'slt:add_supplier_new' as url %}
+                <a href="{{url}}">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>                
+                </a>
+                
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <label for="id_porder_status">O Type:</label>
+              {{ form.porder_status }}
+            </div>
+          </div>            
+          <div class="d-flex w-100 gap-3" > 
+            <div> 
+              <label for="supplier_address">Supplier Address:</label>
+              <input type="text" name="supplier_address" maxlength="255" required id="supplier_address" readonly>     
+            </div>
+            <div>
+              <label for="supplier_mobile">Supplier Mobile:</label>
+              <input type="text" name="supplier_mobile" maxlength="255" required id="supplier_mobile" readonly>    
+            </div>
+            <div>
+              <label for="id_item_description">POrder Date:</label>
+              <input type="datetime-local" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}">    
+            </div>
+          </div>
+        </div>     
+        <div class="content d-flex" style="gap: 1.3rem;text-align: center; flex-flow: column-reverse;;">          
+          <div style="width: 50%; margin: 0 auto;">
+            <select id="mySelect">
+              <option value="" hidden>Select your Product...</option>
+              {% for item in products %}
+              <option value="{{ item.id }}">{{ item.item_name }}</option>
+              {% endfor %}
+            </select>                
+          </div>                
+          <div class="content" style="display: flex;align-items: center;gap: 1rem;justify-content: space-evenly;"> 
+            <div class="d-flex" style="gap: 2rem;">
+              <div>
+                <label for="id_expi">Expired:</label>
+                <input type="text" id="id_expi" readonly>    
+              </div>
+              <div>
+                <label for="id_sprice">S Price</label>
+                <input type="text" id="id_sprice" value="" readonly>    
+              </div>
+              <div>
+                <label for="id_unit">Unit:</label>
+                <input type="text" id="id_unit" value="" readonly>    
+              </div>
+              <div>
+                <label for="id_pprice">Price</label>
+                <input type="text" id="id_pprice" value="" readonly>    
+              </div>
+              <div>
+                <label for="id_qty">Qty</label>
+                <input type="number" min="1" id="id_qty">    
+              </div>
+            </div>
+            
+            <div class="bg-light p-2">
+              <input id="addItemToCart" type="button" class="btn btn-outline-danger" value="Add Item">
+            </div>
+          </div>       
+        </div>
+        <div class="content">
+          <span style="font-size: 1.3rem; font-weight: bolder;">Product Item</span>
+          <span id="rowCount" style="font-size: 1.3rem; font-weight: bolder;">0</span>          
+          <!-- Render the management form fields manually in a hidden row -->
+          <table style="display: none;">
+            <tr>
+                <td><input type="hidden" name="{{ formset.management_form.prefix }}-TOTAL_FORMS" value="{{ formset.management_form.TOTAL_FORMS.value }}"></td>
+                <td><input type="hidden" name="{{ formset.management_form.prefix }}-INITIAL_FORMS" value="{{ formset.management_form.INITIAL_FORMS.value }}"></td>
+                <td><input type="hidden" name="{{ formset.management_form.prefix }}-MIN_NUM_FORMS" value="{{ formset.management_form.MIN_NUM_FORMS.value }}"></td>
+                <td><input type="hidden" name="{{ formset.management_form.prefix }}-MAX_NUM_FORMS" value="{{ formset.management_form.MAX_NUM_FORMS.value }}"></td>
+            </tr>
+        </table>
+          <table id="purchaseOrderTable">
+              <thead style="background-color: #008b8b75">
+                <th style="width: 10%;">Item Code</th>
+                <th style="width: 30%;">Item Name</th>
+                <th>Unit</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Total</th>
+                <th>Action</th>
+              </thead>
+              <tbody style="background-color: rgb(181, 184, 183);">
+                  <!-- Add more product rows here -->
+                   {% for form  in formset %}
+                   <tr>
+                    <td>{{form.item_id}}</td>
+                   </tr>
+                   {% endfor %}
+              </tbody>
+          </table>
+        </div>        
+        <div class="content d-flex"> 
+          <div style="flex: 1;display: flex;flex-direction: column;justify-content: space-evenly;">
+            <div>
+              <span >Notes:</span>
+              <textarea  class="form-control col-xs-12" id="it_porder_note" name="porder_note" rows="3" cols="50" value="{{ form.instance.porder_note }}" placeholder="Write your Purchase note here..." required></textarea>          
+            </div>
+            <div class="d-flex" style="align-items: center;" >
+              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="pay_type_id">Pay Type:</label></div>
+              <div style="flex: 50%; text-align: center; flex: 50%; color: #000; font-weight: 600;">
+                <select name="pay_type" id="pay_type_id">
+                  <option value="1">Cash</option>
+                  <option value="2">Card</option>
+                  <option value="3">Others</option>
+                </select>
+              </div>              
+            </div>
+          </div>
+          <div style="flex: 1;align-items: center;">
+            <div class="d-flex flex-column">
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_total">Item Total:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_total" required id="id_porder_total" value="{{ form.instance.porder_total }}" readonly></div>              
+              </div>
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_discount">Discount (Amt):</label></div>
+                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
+              </div>
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.item_sprice }}"></div>              
+              </div>
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_total">Payable Total:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.pay_total }}" readonly></div>              
+              </div>
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_paid_total">Payment:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="paid_total"required id="id_paid_total" value="{{ form.instance.paid_total }}"></div>              
+              </div>
+              <div class="d-flex" style="align-items: center;" >
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_due">Due Amount:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_due"required id="id_porder_due" value="{{ form.instance.porder_due }}" readonly></div>              
+              </div>
+            </div>
+
+          </div>
+        </div> 
+        <div class="submit-row">
+          <input id="form_submit_id" type="submit">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+  document.querySelector('form').addEventListener('submit', function(event) {
+      let table = document.getElementById('dataTable');
+      let data = [];
+      for (let i = 1; i < table.rows.length; i++) {
+          let row = table.rows[i];
+          let rowData = {
+              product_name: row.cells[0].innerText,
+              quantity: row.cells[1].innerText,
+              price: row.cells[2].innerText
+          };
+          data.push(rowData);
+          console.log(table_data);
+      }
+      document.getElementById('table_data').value = JSON.stringify(data);
+      console.log(table_data);
+  });
+  </script>
+<!--Serializer Select Options Searchable-->
+<script>
+    $(document).ready(function () {
+        $('select').selectize({
+            sortField: 'text'
+        });        
+        $('.selectize-control').addClass("w-100")
+    });
+
+  // to clear the selected value.
+   $('form').find('.selectized').each(function(index, element) { element.selectize && element.selectize.clear() })
+
+</script>
+<!--Supplier Search and Add -->
+<script>
+  function fetchData(pk) {
+    console.log("FETCH DATA"+pk);
+            //const pk = document.getElementById('data-id').value;
+            fetch(`./supplier/${pk}`)
+                .then(response => response.json())
+                .then(data => {
+                  console.log(data);
+                    document.getElementById('supplier_address').value = data.address;  // Adjust field name as needed                    
+                    document.getElementById('supplier_mobile').value = data.mobile; 
+                  })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+</script>
+<script>
+  var e = document.getElementById("id_supplier_id");
+    function onChange() {
+      var value = e.value;
+      var text = e.options[e.selectedIndex].text;
+      console.log(value, text);
+        $("#item-id").val(value);
+        $("#item-description").val(text);
+        if (/^[0-9]+$/.test(value)) {
+            console.log('Input is a number.');
+            fetchData(value)
+        } else if (/^[a-zA-Z]+$/.test(value)) {
+          fetchData(value)
+            console.log('Input is a letter.');
+        } else {
+            console.log('Input ID is neither a pure number nor a pure letter.');
+        }
+    }
+    e.onchange = onChange;
+    onChange();
+</script>
+<!--Item Name Search Filed -->
+<script> 
+document.getElementById('mySelect').onchange = function(){
+      var value = this.value;
+      var text = this.options[e.selectedIndex].text;
+      console.log(value, text);
+      if (/^[0-9]+$/.test(value)) {
+            console.log('Input is a number.');
+            fetchProductData(value)
+        } else if (/^[a-zA-Z]+$/.test(value)) {
+          fetchProductData(value)
+            console.log('Input is a letter.');
+        } else {
+            console.log('Input ID is neither a pure number nor a pure letter.');
+        }
+  };
+</script> 
+<script>
+  function fetchProductData(pk) {
+    $.ajax({
+      url: './product_search/' + pk ,
+      method: 'GET',
+      success: function(response) {
+        document.getElementById('id_expi').value = "";
+        document.getElementById('id_sprice').value = response.item_sprice;
+        document.getElementById('id_unit').value = response.itme_unit.unit_name;
+        document.getElementById('id_pprice').value = response.item_pprice;
+        document.getElementById('id_qty').value = 1;
+      }
+    });
+  } 
+</script>
+<!--Table row Sum -->
+<script>  
+  function countRows() {
+    rowCount = 0;
+    var table = document.getElementById("purchaseOrderTable");
+    rowCount = table.rows.length - 1; // Exclude the header row
+    return rowCount;
+    //document.getElementById("rowCount").innerText = rowCount;
+  }
+  function calculateSum() {
+      var table = document.getElementById("purchaseOrderTable");
+      var totalSum = 0;
+        for (var i = 1, row; row = table.rows[i]; i++) {
+          var value = parseFloat(row.cells[5].getElementsByTagName('input')[0].value);
+          totalSum += value;
+      }
+      return totalSum;
+  }
+</script>
+<!--Remove Cart Item frome Table row -->
+<script>
+  function removeRow(button) {
+      // Get the parent row of the button
+      var row = button.parentNode.parentNode;
+      // Remove the row from the table
+      row.parentNode.removeChild(row);
+    
+      // Calculate data field.......... Reloads     
+    var total = calculateSum().toFixed(2);
+    document.getElementById('id_porder_total').value = total;
+    document.getElementById("rowCount").innerText = countRows();
+    
+    invoiceCalculate(total);
+  }
+</script>
+<!--// Calculate Discount and Payment field... -->
+<script>
+    function invoiceCalculate(total_amt){
+      this.total_amt = total_amt; 
+      var disc_amt = 0;
+      var disc_perc = 0;
+      var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
+      var paid_amt = 0; 
+      var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
+      document.getElementById('id_porder_total').value = total_amt;
+      document.getElementById('id_porder_discount').value = disc_amt;
+      document.getElementById('id_disc_perc').value = disc_perc;
+      document.getElementById('id_pay_total').value = payable_amt;
+      document.getElementById('id_paid_total').value = paid_amt;
+      document.getElementById('id_porder_due').value = due_amt;
+    }
+    
+    function invoiceDiscCalculate(disc_amt){
+      if (disc_amt === '') {
+        $(this).val(0);
+      }
+      this.disc_amt = disc_amt; 
+      var total_amt = document.getElementById('id_porder_total').value;
+      var paid_amt = document.getElementById('id_paid_total').value;
+      var payable_amt = parseFloat(total_amt-disc_amt);
+      var due_amt = parseFloat(payable_amt-paid_amt); 
+      document.getElementById('id_pay_total').value = payable_amt;
+      document.getElementById('id_porder_due').value = due_amt;
+    }
+    
+    function invoiceDueCalculate(paid_amt){
+      if (paid_amt === '') {
+        $(this).val(0);
+      }
+      this.paid_amt = paid_amt.toFixed(2);
+      var payable_amt = document.getElementById('id_pay_total').value;
+      var paid_amt = document.getElementById('id_paid_total').value;
+      var due_amt = parseFloat(payable_amt-paid_amt); 
+      document.getElementById('id_porder_due').value = due_amt;
+    }
+</script>
+<script>  
+  $(document).ready(function() {  
+    $("#id_porder_discount").on("input", function() {
+      var value = $(this).val();
+      invoiceDiscCalculate(value);
+    }); 
+  });
+  $(document).ready(function() {  
+    $("#id_paid_total").on("input", function() {
+      var value = $(this).val();
+      invoiceDueCalculate(value);
+    }); 
+  });
+</script>
+<script>
+  function moveToNextField_if(event, nextFieldID) {
+    if (event.key === "Enter") {
+      let paid = parseFloat(document.getElementById('id_paid_total').value);
+      let payable = parseFloat(document.getElementById('id_pay_total').value);
+      if (paid > payable) {
+        alert("Error: Paid amount is greater than the payable amount.");
+      } else {
+        document.getElementById(nextFieldID).focus();
+      }
+
+      event.preventDefault();
+    }
+  }
+</script>
+<!--// Calculate Discount and Payment field... -->
+<script>
+  function invoiceCalculate(total_amt){
+    this.total_amt = total_amt; 
+    var disc_amt = 0;
+    var disc_perc = 0;
+    var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
+    var paid_amt = 0; 
+    var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
+    document.getElementById('id_porder_total').value = total_amt;
+    document.getElementById('id_porder_discount').value = disc_amt;
+    document.getElementById('id_disc_perc').value = disc_perc;
+    document.getElementById('id_pay_total').value = payable_amt;
+    document.getElementById('id_paid_total').value = paid_amt;
+    document.getElementById('id_porder_due').value = due_amt;
+  }
+  
+  function invoiceDiscCalculate(disc_amt){
+    if (disc_amt === '') {
+      $(this).val(0);
+    }
+    this.disc_amt = disc_amt; 
+    var total_amt = document.getElementById('id_porder_total').value;
+    var paid_amt = document.getElementById('id_paid_total').value;
+    var payable_amt = parseFloat(total_amt-disc_amt);
+    var due_amt = parseFloat(payable_amt-paid_amt); 
+    document.getElementById('id_pay_total').value = payable_amt;
+    document.getElementById('id_porder_due').value = due_amt;
+  }
+  
+  function invoiceDueCalculate(paid_amt){
+    if (paid_amt === '') {
+      $(this).val(0);
+    }
+    this.paid_amt = paid_amt; 
+    var payable_amt = document.getElementById('id_pay_total').value;
+    var paid_amt = document.getElementById('id_paid_total').value;
+    var due_amt = parseFloat(payable_amt-paid_amt); 
+    document.getElementById('id_porder_due').value = due_amt;
+  }
+</script>
+<script>
+  document.getElementById('addItemToCart').addEventListener('click', function() {
+    const table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
+    // Get input values
+      var item = document.getElementById("mySelect");
+      var item_code = item.value;
+      var item_name = item.options[item.selectedIndex].text;
+      var item_unit = document.getElementById('id_unit').value;
+      var item_qty = document.getElementById('id_qty').value;
+      var item_price = document.getElementById('id_pprice').value;
+
+    // Calculate Qty * Price values
+      var price = parseFloat(item_price);
+      var quantity = parseInt(item_qty);
+      var item_total = parseFloat(price * quantity);
+    
+    // Validate input
+    if (item_code === '' || item_qty === '' || item_price === '') {
+        alert('Please fill in all fields');
+        return;
+    }
+    // Check if item already exists in the cart
+    //var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
+      var itemExists = false;
+      for (var i = 0, row; row = table.rows[i]; i++) {
+        if (row.cells[0].getElementsByTagName('input')[0].value === item_code) {
+          console.log(item_code);
+          //row.cells[1].innerHTML = parseInt(row.cells[1].innerHTML) + parseInt(itemQuantity);
+          itemExists = true;
+          alert('Item : '+ item_code + ' Already Exists.');
+          break;
+        }
+      }
+    // If item does not exist, create a new row
+    if (!itemExists) {
+    // Create a new row for the table
+      const newRow = table.insertRow();
+      
+      // Get total form count and update it
+      const totalForms = document.querySelector('input[name="form-TOTAL_FORMS"]');
+      const formCount = parseInt(totalForms.value);
+      totalForms.value = formCount + 1;
+      
+      // Create new cells with input fields
+      const cell1 = newRow.insertCell(0);
+      const cell2 = newRow.insertCell(1);
+      const cell3 = newRow.insertCell(2);
+      const cell4 = newRow.insertCell(3);
+      const cell5 = newRow.insertCell(4);
+      const cell6 = newRow.insertCell(5);
+      const cell7 = newRow.insertCell(6);
+      
+      cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required >`;        
+      cell2.innerHTML = `<input type="text"value="${item_name}" required >`;
+      cell3.innerHTML = `<input type="text" value="${item_unit}" required>`;
+      cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
+      cell5.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
+      cell6.innerHTML = `<input type="text" value="${item_total}" required>`;
+      cell7.innerHTML = '<button type="button" class="removeRow">Remove</button>';
+// name="form-${formCount}-item_name"   name="form-${formCount}-item_unit"  name="form-${formCount}-item_total" 
+      // Add event listener for remove button 
+      cell7.querySelector('.removeRow').addEventListener('click', function() {
+      table.removeChild(newRow);
+      totalForms.value = formCount;  // Decrement the form count
+    });
+
+    }
+    
+    // Clear the input fields    
+    var selectize = $('#mySelect')[0].selectize;
+    selectize.clear();
+    document.getElementById('id_expi').value='';
+    document.getElementById('id_sprice').value='';
+    document.getElementById('id_unit').value='';
+    document.getElementById('id_qty').value='';
+    document.getElementById('id_pprice').value='';
+
+      // Calculate data field.......... Reloads  
+    var total = calculateSum().toFixed(2);
+    document.getElementById('id_porder_total').value = total;
+    document.getElementById("rowCount").innerText = countRows();
+    
+    invoiceCalculate(total);
+    
+});
+  
+document.querySelectorAll('.removeRow').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    row.parentNode.removeChild(row);
+          
+    const totalForms = document.querySelector('input[name="form-TOTAL_FORMS"]');
+    const formCount = parseInt(totalForms.value);
+    totalForms.value = formCount - 1;
+  });
+});
+</script>
+  
+<!-- Be sure to put the links in the right position to avoid dependency issue.-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+
+{% endblock %}

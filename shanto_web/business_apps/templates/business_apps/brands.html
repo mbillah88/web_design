@@ -9,15 +9,23 @@
 {% endblock %}
 {% block content %}
 <div class="main-content">
-  <div class="content">      
-    <div class="form-header" style="display: flex;">      
-      <div>        
-        <span style="font-size: 1.3rem; font-weight: bolder;">Brands List</span>
+  <div class="content">        
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Brands List</span>
+
+        </div>
+        <div>
+          <a class="nav-link" href="{% url 'slt:new_brand' %}">New Brand</a>
+        </div>
       </div>
-      <div>        
-        <a href="{% url 'slt:new_brand' %}">New Brand</a>
-      </div>
-    </div>   
+    </nav>
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;">  
         
     <table>
         <tr>

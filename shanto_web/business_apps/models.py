@@ -80,6 +80,7 @@ class PurchaseOrder(models.Model):
   supplier_id = models.ForeignKey(Supplier, on_delete=models.CASCADE, null = True)
   porder_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   porder_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  porder_due = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   porder_status = models.CharField(max_length=1,choices=OrderChoice, default=3)
   porder_note = models.CharField(max_length=500, default='')
   porder_create_time = models.DateTimeField(auto_now_add=True,null = True)  
@@ -88,12 +89,12 @@ class PurchaseOrder(models.Model):
   porder_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='o_create_update')
   
   def __str__(self):
-    return f'PurchaseOrder {self.id} by {self.supplier_id}'
+    return self.get_porder_status_display() 
 
 class PurchaseOrderItem(models.Model):
-  porder_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
+  porder_id = models.ForeignKey(PurchaseOrder, related_name='items', on_delete=models.CASCADE, null = True)
   item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
-  itme_qty = models.PositiveBigIntegerField(default=1)
+  item_qty = models.PositiveBigIntegerField(default=1)
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
 
   def get_total_price(self):
@@ -102,7 +103,7 @@ class PurchaseOrderItem(models.Model):
 class PurchasePayment(models.Model):
   order_id = models.ForeignKey(PurchaseOrderItem, on_delete=models.CASCADE, null = True)
   payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
-  payment_status = models.CharField(max_length=20)
+  payment_type = models.CharField(max_length=20)
   payment_time = models.DateTimeField(auto_now_add=True, null = True)  
   payment_update_time = models.DateTimeField(auto_now=True, null = True)   
   payment_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_create_user')

@@ -20,16 +20,25 @@ Supplier List
     
 {% block content %}
 <div class="main-content">
-  <div class="content">      
-    <div class="form-header" style="display: flex;">      
-      <div>        
-        <span style="font-size: 1.3rem; font-weight: bolder;">Supplier List</span>
+  <div class="content">          
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Supplier List</span>
+          <a class="nav-link" href="{% url 'slt:supplier_new' %}">New Supplier</a>
+        </div>
+        <div class="btn-group" style="gap: 2rem;align-items: center;">
+            <div class="d-flex">             
+              <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;"onkeyup="searchTable()" placeholder="Search for names...">
+            </div>
+        </div>
       </div>
-      <div>        
-        <a href="{% url 'slt:supplier_new' %}">New Supplier</a>
-      </div>
-    </div>   
-        
+    </nav>
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;">  
     <table>
         <tr>
           <th scope="col">Supplier Name</th>

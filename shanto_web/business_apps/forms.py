@@ -67,7 +67,7 @@ class SupplierForm(forms.ModelForm):
 class PurchaseOrderForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrder
-        fields = ['supplier_id','porder_total','porder_discount','porder_status','porder_note']
+        fields = ['supplier_id','porder_total','porder_discount','porder_due','porder_status','porder_note']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -76,7 +76,7 @@ class PurchaseOrderForm(forms.ModelForm):
 class PurchaseOrderItemForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrderItem
-        fields = ['item_id','itme_qty','item_pprice']
+        fields = ['item_id','item_qty','item_pprice']
 
     helper = FormHelper()
     helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))

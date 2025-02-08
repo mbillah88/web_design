@@ -12,19 +12,25 @@
 <div class="main-content">
   <div class="add-container">
     <div class="content">
-      <div class="form-header">
-        <div>
+        
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
             {% if form.instance.pk %}
-              <span style="font-size: 1.3rem; font-weight: bolder; background-color: rgba(255, 17, 0, 0.822);">Edit Product : {{ form.instance.item_name}}</span>
+              <span style="font-size: 1.3rem; font-weight: bolder;  margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Product : {{ form.instance.item_name}}</span>
             {% else %}
-            <span style="font-size: 1.3rem; font-weight: bolder;">Add Product</span>
+            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Add Product</span>
             {% endif %}
+          <a class="nav-link" href="{% url 'slt:product' %}">Product List</a>
         </div>
-        <div>        
-          <a href="{% url 'slt:product' %}">Product List</a>
-        </div>
-
+        
       </div>
+    </nav>
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;">
       {% if form.errors %}
         <p>{{form.errors}}</p>
       {% endif %}
