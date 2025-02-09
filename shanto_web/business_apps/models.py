@@ -89,16 +89,17 @@ class PurchaseOrder(models.Model):
   porder_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='o_create_update')
   
   def __str__(self):
+    return str(self.id )
     return self.get_porder_status_display() 
 
 class PurchaseOrderItem(models.Model):
-  porder_id = models.ForeignKey(PurchaseOrder, related_name='items', on_delete=models.CASCADE, null = True)
+  porder_id = models.ForeignKey(PurchaseOrder, related_name='item_sl', on_delete=models.CASCADE, null = True)
   item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
   item_qty = models.PositiveBigIntegerField(default=1)
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
 
   def get_total_price(self):
-    return self.itme_qty * self.porder_id.item_pprice
+    return self.item_qty * self.item_pprice
 
 class PurchasePayment(models.Model):
   order_id = models.ForeignKey(PurchaseOrderItem, on_delete=models.CASCADE, null = True)
