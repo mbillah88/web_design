@@ -1,5 +1,6 @@
 {% extends "business_apps/master.html" %}
 {% load i18n %}
+{% load multiply %}
 
 {% block title %}
   SLT | New Purchase
@@ -151,7 +152,7 @@
                     <td>{{form.instance.item_id.itme_unit}}</td>
                     <td>{{form.instance.item_pprice}}</td>
                     <td>{{form.instance.item_qty}}</td>
-                    <td>{{form.total_price}}</td>
+                    <td>{{form.instance.item_qty|multiply:form.total_price}}</td>
                    </tr>
                    {% endfor %}
               </tbody>
