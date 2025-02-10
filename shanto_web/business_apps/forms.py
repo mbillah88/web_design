@@ -98,3 +98,6 @@ class ItemUnitForm(forms.ModelForm):
     helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))
     helper.form_method = 'POST'
         #min_value=1, max_value=10, initial=1
+
+class SearchForm(forms.Form):
+    pk = forms.IntegerField(label='Primary Key', required=True)
