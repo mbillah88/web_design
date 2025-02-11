@@ -279,19 +279,11 @@ def purchase_update(request, pk):
     else:
         customer_form = PurchaseOrderForm(instance=po)
         porder = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
-
         formset = CartItemFormSet(queryset=porder)
-        print(porder)    
-
-        # Precompute the total price for each cart item
-        items_total = [
-            {'total_price': cart_item.get_total_price()} for cart_item in porder
-        ]
-        print(items_total)
-        return render(request, 'business_apps/purchase_update.html', {'form' : customer_form,
+        return render(request, 'business_apps/purchase_update.html', {
+            'form' : customer_form,
             'formset' : formset,
-            'products' : products,
-            'items_total' : items_total})
+            'products' : products})
 
 # Tools_Unit_View...
 @login_required
@@ -377,20 +369,20 @@ def item_detail(request, pk):
                 'brand_name': item.brand_name,
                 'item_model': item.item_model,
                 'item_description': item.item_description,
-                'itme_unit': item.itme_unit,
-                'itme_sku': item.itme_sku,
-                'itme_alert_qty': item.itme_alert_qty,
-                'itme_barcode': item.itme_barcode,
+                'item_unit': item.item_unit,
+                'item_sku': item.item_sku,
+                'iteme_alert_qty': item.item_alert_qty,
+                'item_barcode': item.item_barcode,
                 'item_sprice': item.item_sprice,
                 'item_pprice': item.item_pprice,
-                'itme_barcode': item.itme_barcode,
+                'item_barcode': item.item_barcode,
                 'item_image': item.item_image,
-                'itme_status': item.itme_status,
+                'item_status': item.item_status,
                 'created_at': item.created_at,
             }
             return JsonResponse(data)
         except ItemProduct.DoesNotExist:
-            return JsonResponse({'error': 'Itme Not found'}, status=404)
+            return JsonResponse({'error': 'item Not found'}, status=404)
     else:
         return JsonResponse({'is_authenticated': False})
 

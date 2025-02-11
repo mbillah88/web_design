@@ -149,7 +149,7 @@
                    <tr>
                       <td>{{form.instance.item_id.id}}</td>
                       <td>{{form.instance.item_id.item_name}}</td>
-                      <td>{{form.instance.item_id.itme_unit}}</td>
+                      <td>{{form.instance.item_id.item_unit}}</td>
                       <td>{{form.instance.item_pprice}}</td>
                       <td>{{form.instance.item_qty}}</td>
                       <td>{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>
@@ -289,7 +289,7 @@ document.getElementById('mySelect').onchange = function(){
       success: function(response) {
         document.getElementById('id_expi').value = "";
         document.getElementById('id_sprice').value = response.item_sprice;
-        document.getElementById('id_unit').value = response.itme_unit.unit_name;
+        document.getElementById('id_unit').value = response.item_unit.unit_name;
         document.getElementById('id_pprice').value = response.item_pprice;
         document.getElementById('id_qty').value = 1;
       }

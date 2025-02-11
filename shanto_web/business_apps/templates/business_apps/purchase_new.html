@@ -293,7 +293,7 @@ document.getElementById('mySelect').onchange = function(){
       success: function(response) {
         document.getElementById('id_expi').value = "";
         document.getElementById('id_sprice').value = response.item_sprice;
-        document.getElementById('id_unit').value = response.itme_unit.unit_name;
+        document.getElementById('id_unit').value = response.item_unit.unit_name;
         document.getElementById('id_pprice').value = response.item_pprice;
         document.getElementById('id_qty').value = 1;
       }

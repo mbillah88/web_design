@@ -15,12 +15,12 @@ class ItemBrandSerializer(serializers.ModelSerializer):
 class ItemUnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = ItemUnit
-        fields = '__all__'
+        fields = ['id', 'unit_name']
 
 class ItemProductSerializer(serializers.ModelSerializer):
     category_name = ItemCategorySerializer()
     brand_name = ItemBrandSerializer()
-    itme_unit = ItemUnitSerializer()
+    item_unit = ItemUnitSerializer()
 
     class Meta:
         model = ItemProduct
