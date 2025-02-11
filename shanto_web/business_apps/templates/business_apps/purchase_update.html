@@ -79,7 +79,7 @@
             </div>
             <div>
               <label for="id_porder_create_time">POrder Date:</label>
-              <input type="datetime-local" name="porder_create_time" maxlength="255" required id="id_porder_create_time" value="{{ form.instance.porder_create_time }}">    
+              <input type="datetime-local" name="porder_create_time" maxlength="255" required id="id_porder_create_time" value="{{ form.instance.porder_create_time|date:'Y-m-d H:m'  }}">    
             </div>
           </div>
         </div>     
@@ -147,12 +147,12 @@
                   <!-- Add more product rows here -->
                     {% for form in formset %}
                    <tr>
-                      <td>{{form.instance.item_id.id}}</td>
-                      <td>{{form.instance.item_id.item_name}}</td>
-                      <td>{{form.instance.item_id.itme_unit}}</td>
-                      <td>{{form.instance.item_pprice}}</td>
-                      <td>{{form.instance.item_qty}}</td>
-                      <td>{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>
+                      <td><input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="{{form.instance.item_id.id}}" required readonly></td>
+                      <td><input type="text"value="{{form.instance.item_id.item_name}}" required readonly></td>
+                      <td><input type="text" value="{{form.instance.item_id.itme_unit}}" required readonly></td>
+                      <td><input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="{{form.instance.item_pprice}}" required readonly></td>
+                      <td><input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="{{form.instance.item_qty}}" required readonly></td>
+                      <td><input type="text" value="{{form.instance.item_qty|multiply:form.instance.item_pprice}}" required readonly></td>
                       <td><button type="button" class="removeRow">Remove</button></td>
                    </tr>
                    {% endfor %}
@@ -188,15 +188,15 @@
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.item_sprice }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.disc_perc }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_total">Payable Total:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.item_sprice }}" readonly></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.pay_total }}" readonly></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_paid_total">Payment:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="paid_total"required id="id_paid_total" value="{{ form.instance.item_sprice }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="paid_total"required id="id_paid_total" value="{{ form.instance.paid_total }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_due">Due Amount:</label></div>
@@ -284,7 +284,7 @@ document.getElementById('mySelect').onchange = function(){
 <script>
   function fetchProductData(pk) {
     $.ajax({
-      url: './product_search/' + pk ,
+      url: './pproducts_details/' + pk ,
       method: 'GET',
       success: function(response) {
         document.getElementById('id_expi').value = "";
@@ -307,28 +307,34 @@ document.getElementById('mySelect').onchange = function(){
       //for Total Sume ....
       var totalSum = 0;
         for (var i = 1, row; row = table.rows[i]; i++) {
-          var value = parseFloat(row.cells[5].innerText);
+          var value = parseFloat(row.cells[5].getElementsByTagName('input')[0].value);
           totalSum += value;
       }
+      invoiceCalculate(totalSum);
       return totalSum;
   }
-  
   window.onload = calculateSum;
 </script>
 <!--// Calculate Discount and Payment field... -->
 <script>
+    function getDiscountPercentage(originalPrice, discountAmount) {
+      return (discountAmount / originalPrice) * 100;
+    }
+    function getDiscountAmount(originalPrice, discountPercentage) {
+      return (discountPercentage / 100) * originalPrice;
+    }
     function invoiceCalculate(total_amt){
-      this.total_amt = total_amt; 
-      var disc_amt = 0;
-      var disc_perc = 0;
+      this.total_amt = total_amt.toFixed(2); ; 
+      var disc_amt = document.getElementById('id_porder_discount').value;
+      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
       var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
-      var paid_amt = 0; 
+      var paid_amt = document.getElementById('id_paid_total').value; 
       var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
       document.getElementById('id_porder_total').value = total_amt;
-      document.getElementById('id_porder_discount').value = disc_amt;
+      //document.getElementById('id_porder_discount').value = disc_amt;
       document.getElementById('id_disc_perc').value = disc_perc;
       document.getElementById('id_pay_total').value = payable_amt;
-      document.getElementById('id_paid_total').value = paid_amt;
+      //document.getElementById('id_paid_total').value = paid_amt;
       document.getElementById('id_porder_due').value = due_amt;
     }
     
@@ -336,11 +342,16 @@ document.getElementById('mySelect').onchange = function(){
       if (disc_amt === '') {
         $(this).val(0);
       }
+      if (due_amt < 0) {
+        alert("Error: Paid amount is greater than the payable amount.");
+      }
       this.disc_amt = disc_amt; 
       var total_amt = document.getElementById('id_porder_total').value;
+      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
       var paid_amt = document.getElementById('id_paid_total').value;
       var payable_amt = parseFloat(total_amt-disc_amt);
       var due_amt = parseFloat(payable_amt-paid_amt); 
+      document.getElementById('id_disc_perc').value = disc_perc;
       document.getElementById('id_pay_total').value = payable_amt;
       document.getElementById('id_porder_due').value = due_amt;
     }
@@ -349,7 +360,7 @@ document.getElementById('mySelect').onchange = function(){
       if (paid_amt === '') {
         $(this).val(0);
       }
-      this.paid_amt = paid_amt.toFixed(2);
+      this.paid_amt = paid_amt;
       var payable_amt = document.getElementById('id_pay_total').value;
       var paid_amt = document.getElementById('id_paid_total').value;
       var due_amt = parseFloat(payable_amt-paid_amt); 
@@ -441,12 +452,12 @@ document.getElementById('mySelect').onchange = function(){
       const cell6 = newRow.insertCell(5);
       const cell7 = newRow.insertCell(6);
       
-      cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required >`;        
-      cell2.innerHTML = `<input type="text"value="${item_name}" required >`;
-      cell3.innerHTML = `<input type="text" value="${item_unit}" required>`;
-      cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
-      cell5.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
-      cell6.innerHTML = `<input type="text" value="${item_total}" required>`;
+      cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required readonly>`;        
+      cell2.innerHTML = `<input type="text"value="${item_name}" required readonly>`;
+      cell3.innerHTML = `<input type="text" value="${item_unit}" required readonly>`;
+      cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required readonly>`;
+      cell5.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required readonly>`;
+      cell6.innerHTML = `<input type="text" value="${item_total}" required readonly>`;
       cell7.innerHTML = '<button type="button" class="removeRow">Remove</button>';
 // name="form-${formCount}-item_name"   name="form-${formCount}-item_unit"  name="form-${formCount}-item_total" 
       // Add event listener for remove button 

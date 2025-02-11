@@ -337,18 +337,24 @@ document.getElementById('mySelect').onchange = function(){
 </script>
 <!--// Calculate Discount and Payment field... -->
 <script>
+   function getDiscountPercentage(originalPrice, discountAmount) {
+      return (discountAmount / originalPrice) * 100;
+    }
+    function getDiscountAmount(originalPrice, discountPercentage) {
+      return (discountPercentage / 100) * originalPrice;
+    }
     function invoiceCalculate(total_amt){
-      this.total_amt = total_amt; 
-      var disc_amt = 0;
-      var disc_perc = 0;
+      this.total_amt = total_amt.toFixed(2); ; 
+      var disc_amt = document.getElementById('id_porder_discount').value;
+      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
       var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
-      var paid_amt = 0; 
+      var paid_amt = document.getElementById('id_paid_total').value; 
       var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
       document.getElementById('id_porder_total').value = total_amt;
-      document.getElementById('id_porder_discount').value = disc_amt;
+      //document.getElementById('id_porder_discount').value = disc_amt;
       document.getElementById('id_disc_perc').value = disc_perc;
       document.getElementById('id_pay_total').value = payable_amt;
-      document.getElementById('id_paid_total').value = paid_amt;
+      //document.getElementById('id_paid_total').value = paid_amt;
       document.getElementById('id_porder_due').value = due_amt;
     }
     
@@ -356,11 +362,16 @@ document.getElementById('mySelect').onchange = function(){
       if (disc_amt === '') {
         $(this).val(0);
       }
+      if (due_amt < 0) {
+        alert("Error: Paid amount is greater than the payable amount.");
+      }
       this.disc_amt = disc_amt; 
       var total_amt = document.getElementById('id_porder_total').value;
+      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
       var paid_amt = document.getElementById('id_paid_total').value;
       var payable_amt = parseFloat(total_amt-disc_amt);
       var due_amt = parseFloat(payable_amt-paid_amt); 
+      document.getElementById('id_disc_perc').value = disc_perc;
       document.getElementById('id_pay_total').value = payable_amt;
       document.getElementById('id_porder_due').value = due_amt;
     }
@@ -498,14 +509,13 @@ document.getElementById('mySelect').onchange = function(){
       const cell6 = newRow.insertCell(5);
       const cell7 = newRow.insertCell(6);
       
-      cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required >`;        
-      cell2.innerHTML = `<input type="text"value="${item_name}" required >`;
-      cell3.innerHTML = `<input type="text" value="${item_unit}" required>`;
-      cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required>`;
-      cell5.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required>`;
-      cell6.innerHTML = `<input type="text" value="${item_total}" required>`;
+      cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required readonly>`;        
+      cell2.innerHTML = `<input type="text"value="${item_name}" required readonly>`;
+      cell3.innerHTML = `<input type="text" value="${item_unit}" required readonly>`;
+      cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required readonly>`;
+      cell5.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required readonly>`;
+      cell6.innerHTML = `<input type="text" value="${item_total}" required readonly>`;
       cell7.innerHTML = '<button type="button" class="removeRow">Remove</button>';
-// name="form-${formCount}-item_name"   name="form-${formCount}-item_unit"  name="form-${formCount}-item_total" 
       // Add event listener for remove button 
       cell7.querySelector('.removeRow').addEventListener('click', function() {
       table.removeChild(newRow);

@@ -395,10 +395,10 @@ def item_detail(request, pk):
         return JsonResponse({'is_authenticated': False})
 
 @login_required
-def supplier_detail(request, pk):    
+def supplier_detail(request, supplier_pk):    
     if request.user.is_authenticated:
         try:
-            item = Supplier.objects.get(pk=pk)
+            item = Supplier.objects.get(pk=supplier_pk)
             data = {
                 'address': item.supplier_address,
                 'mobile': item.supplier_mobile,
@@ -406,6 +406,55 @@ def supplier_detail(request, pk):
             return JsonResponse(data)
         except Supplier.DoesNotExist:
             return JsonResponse({'error': 'Supplier Not found'}, status=404)
+    else:
+        return JsonResponse({'is_authenticated': False})
+
+@login_required
+def supplier_details(request, purchase_pk, supplier_pk):    
+    if request.user.is_authenticated:
+        try:
+            item = Supplier.objects.get(pk=supplier_pk)
+            data = {
+                'address': item.supplier_address,
+                'mobile': item.supplier_mobile,
+            }
+            return JsonResponse(data)
+        except Supplier.DoesNotExist:
+            return JsonResponse({'error': 'Supplier Not found'}, status=404)
+    else:
+        return JsonResponse({'is_authenticated': False})
+
+@login_required
+def pproducts_detail(request, product_search_pk):    
+    if request.user.is_authenticated:
+        try:
+            item = ItemProduct.objects.get(pk=product_search_pk)
+            #data = {
+            #    'address': item.supplier_address,
+            #    'mobile': item.supplier_mobile,
+            #}
+            serializer = ItemProductSerializer(item)
+            return JsonResponse(serializer.data)
+            #return JsonResponse(data)
+        except ItemProduct.DoesNotExist:
+            return JsonResponse({'error': 'Product Not found'}, status=404)
+    else:
+        return JsonResponse({'is_authenticated': False})
+
+@login_required
+def pproducts_details(request, purchase_pk, product_search_pk):    
+    if request.user.is_authenticated:
+        try:
+            item = ItemProduct.objects.get(pk=product_search_pk)
+            #data = {
+            #    'address': item.supplier_address,
+            #    'mobile': item.supplier_mobile,
+            #}
+            serializer = ItemProductSerializer(item)
+            return JsonResponse(serializer.data)
+            #return JsonResponse(data)
+        except ItemProduct.DoesNotExist:
+            return JsonResponse({'error': 'Product Not found'}, status=404)
     else:
         return JsonResponse({'is_authenticated': False})
 
@@ -417,15 +466,12 @@ class ItemListView(APIView):
         return Response(serializer.data)
 
 def save_table_data(request):
-    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
-    
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)    
     if request.method == 'POST':
-        formset = CartItemFormSet(request.POST)
-        
+        formset = CartItemFormSet(request.POST)        
         #for Data Check...
         for name in request.POST:
-            print("{}: {}".format(name, request.POST.getlist(name)))
-        
+            print("{}: {}".format(name, request.POST.getlist(name)))        
         # Print formset errors for debugging
         if not formset.is_valid():
             print("Formset Errors:", formset.errors)
