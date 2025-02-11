@@ -1,5 +1,6 @@
 {% extends "business_apps/master.html" %}
 {% load i18n %}
+{% load multiply %}
 
 {% block title %}
   SLT | New Purchase
@@ -31,7 +32,7 @@
       <div class="container-fluid">
         <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
           {% if form.instance.pk %}
-              <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : {{ form.instance.item_name}}</span>
+              <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : POI-{{ form.instance.pk}} Supplier: {{ form.instance.supplier_id.supplier_name}} </span>
             {% else %}
             <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">New Purchase</span>
             {% endif %}
@@ -70,15 +71,15 @@
           <div class="d-flex w-100 gap-3" > 
             <div> 
               <label for="supplier_address">Supplier Address:</label>
-              <input type="text" name="supplier_address" maxlength="255" required id="supplier_address" value="{{form.supplier_id.id}}" readonly>     
+              <input type="text" name="supplier_address" maxlength="255" required id="supplier_address" value="{{ form.instance.supplier_id.supplier_address }}" readonly>     
             </div>
             <div>
               <label for="supplier_mobile">Supplier Mobile:</label>
-              <input type="text" name="supplier_mobile" maxlength="255" required id="supplier_mobile" readonly>    
+              <input type="text" name="supplier_mobile" maxlength="255" required id="supplier_mobile" value="{{ form.instance.supplier_id.supplier_mobile }}" readonly>    
             </div>
             <div>
-              <label for="id_item_description">POrder Date:</label>
-              <input type="datetime-local" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}">    
+              <label for="id_porder_create_time">POrder Date:</label>
+              <input type="datetime-local" name="porder_create_time" maxlength="255" required id="id_porder_create_time" value="{{ form.instance.porder_create_time }}">    
             </div>
           </div>
         </div>     
@@ -146,12 +147,13 @@
                   <!-- Add more product rows here -->
                     {% for form in formset %}
                    <tr>
-                    <td>{{form.instance.item_id.id}}</td>
-                    <td>{{form.instance.item_id.item_name}}</td>
-                    <td>{{form.instance.item_id.itme_unit}}</td>
-                    <td>{{form.instance.item_pprice}}</td>
-                    <td>{{form.instance.item_qty}}</td>
-                    <td>{{form.get_total_price}}</td>
+                      <td>{{form.instance.item_id.id}}</td>
+                      <td>{{form.instance.item_id.item_name}}</td>
+                      <td>{{form.instance.item_id.itme_unit}}</td>
+                      <td>{{form.instance.item_pprice}}</td>
+                      <td>{{form.instance.item_qty}}</td>
+                      <td>{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>
+                      <td><button type="button" class="removeRow">Remove</button></td>
                    </tr>
                    {% endfor %}
               </tbody>
@@ -161,7 +163,7 @@
           <div style="flex: 1;display: flex;flex-direction: column;justify-content: space-evenly;">
             <div>
               <span >Notes:</span>
-              <textarea  class="form-control col-xs-12" id="it_porder_note" name="porder_note" rows="3" cols="50" placeholder="Write your Purchase note here..." required>{{form.instance.porder_note}}</textarea>          
+              <textarea  class="form-control col-xs-12" id="it_porder_note" name="porder_note" rows="3" cols="50" placeholder="Write your Purchase note here..." required>{{ form.instance.porder_note }}</textarea>          
             </div>
             <div class="d-flex" style="align-items: center;" >
               <div style="flex: 50%; text-align: end; flex: 50%;"><label for="pay_type_id">Pay Type:</label></div>
@@ -178,7 +180,7 @@
             <div class="d-flex flex-column">
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_total">Item Total:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_total" required id="id_porder_total" value="" readonly></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_total" required id="id_porder_total" value="{{ form.instance.porder_total }}" readonly></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_discount">Discount (Amt):</label></div>
@@ -210,7 +212,9 @@
       </form>
     </div>
   </div>
+
 </div>
+
 <!--Serializer Select Options Searchable-->
 <script>
     $(document).ready(function () {
@@ -280,7 +284,7 @@ document.getElementById('mySelect').onchange = function(){
 <script>
   function fetchProductData(pk) {
     $.ajax({
-      url: './product_search/' + pk ,
+      url: './pproducts_details/' + pk ,
       method: 'GET',
       success: function(response) {
         document.getElementById('id_expi').value = "";
@@ -292,40 +296,24 @@ document.getElementById('mySelect').onchange = function(){
     });
   } 
 </script>
-<!--Table row Sum -->
-<script>  
-  function countRows() {
-    rowCount = 0;
-    var table = document.getElementById("purchaseOrderTable");
-    rowCount = table.rows.length - 1; // Exclude the header row
-    return rowCount;
-    //document.getElementById("rowCount").innerText = rowCount;
-  }
+<!--// Discount and Payment field key press... -->
+<script>
   function calculateSum() {
       var table = document.getElementById("purchaseOrderTable");
+      //for Row Counts....
+      rowCount = table.rows.length -1;
+      document.getElementById("rowCount").innerText = rowCount;
+      console.log(table.rows.length -1);
+      //for Total Sume ....
       var totalSum = 0;
         for (var i = 1, row; row = table.rows[i]; i++) {
-          var value = parseFloat(row.cells[5].getElementsByTagName('input')[0].value);
+          var value = parseFloat(row.cells[5].innerText);
           totalSum += value;
       }
       return totalSum;
   }
-</script>
-<!--Remove Cart Item frome Table row -->
-<script>
-  function removeRow(button) {
-      // Get the parent row of the button
-      var row = button.parentNode.parentNode;
-      // Remove the row from the table
-      row.parentNode.removeChild(row);
-    
-      // Calculate data field.......... Reloads     
-    var total = calculateSum().toFixed(2);
-    document.getElementById('id_porder_total').value = total;
-    document.getElementById("rowCount").innerText = countRows();
-    
-    invoiceCalculate(total);
-  }
+  
+  window.onload = calculateSum;
 </script>
 <!--// Calculate Discount and Payment field... -->
 <script>
@@ -368,20 +356,24 @@ document.getElementById('mySelect').onchange = function(){
       document.getElementById('id_porder_due').value = due_amt;
     }
 </script>
+<!--// Discount and Payment field key press... -->
 <script>  
   $(document).ready(function() {  
     $("#id_porder_discount").on("input", function() {
       var value = $(this).val();
       invoiceDiscCalculate(value);
+      console.log(value)
     }); 
   });
   $(document).ready(function() {  
     $("#id_paid_total").on("input", function() {
       var value = $(this).val();
       invoiceDueCalculate(value);
+      console.log(value);
     }); 
   });
 </script>
+<!--// Move to next field... -->
 <script>
   function moveToNextField_if(event, nextFieldID) {
     if (event.key === "Enter") {
@@ -395,47 +387,6 @@ document.getElementById('mySelect').onchange = function(){
 
       event.preventDefault();
     }
-  }
-</script>
-<!--// Calculate Discount and Payment field... -->
-<script>
-  function invoiceCalculate(total_amt){
-    this.total_amt = total_amt; 
-    var disc_amt = 0;
-    var disc_perc = 0;
-    var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
-    var paid_amt = 0; 
-    var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
-    document.getElementById('id_porder_total').value = total_amt;
-    document.getElementById('id_porder_discount').value = disc_amt;
-    document.getElementById('id_disc_perc').value = disc_perc;
-    document.getElementById('id_pay_total').value = payable_amt;
-    document.getElementById('id_paid_total').value = paid_amt;
-    document.getElementById('id_porder_due').value = due_amt;
-  }
-  
-  function invoiceDiscCalculate(disc_amt){
-    if (disc_amt === '') {
-      $(this).val(0);
-    }
-    this.disc_amt = disc_amt; 
-    var total_amt = document.getElementById('id_porder_total').value;
-    var paid_amt = document.getElementById('id_paid_total').value;
-    var payable_amt = parseFloat(total_amt-disc_amt);
-    var due_amt = parseFloat(payable_amt-paid_amt); 
-    document.getElementById('id_pay_total').value = payable_amt;
-    document.getElementById('id_porder_due').value = due_amt;
-  }
-  
-  function invoiceDueCalculate(paid_amt){
-    if (paid_amt === '') {
-      $(this).val(0);
-    }
-    this.paid_amt = paid_amt; 
-    var payable_amt = document.getElementById('id_pay_total').value;
-    var paid_amt = document.getElementById('id_paid_total').value;
-    var due_amt = parseFloat(payable_amt-paid_amt); 
-    document.getElementById('id_porder_due').value = due_amt;
   }
 </script>
 <script>
@@ -463,7 +414,7 @@ document.getElementById('mySelect').onchange = function(){
     //var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
       var itemExists = false;
       for (var i = 0, row; row = table.rows[i]; i++) {
-        if (row.cells[0].getElementsByTagName('input')[0].value === item_code) {
+        if (row.cells[0].innerText === item_code) {
           console.log(item_code);
           //row.cells[1].innerHTML = parseInt(row.cells[1].innerHTML) + parseInt(itemQuantity);
           itemExists = true;
@@ -491,7 +442,7 @@ document.getElementById('mySelect').onchange = function(){
       const cell7 = newRow.insertCell(6);
       
       cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required readonly>`;        
-      cell2.innerHTML = `<input type="text"value="${item_name}" required  readonly>`;
+      cell2.innerHTML = `<input type="text"value="${item_name}" required readonly>`;
       cell3.innerHTML = `<input type="text" value="${item_unit}" required readonly>`;
       cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required readonly>`;
       cell5.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required readonly>`;
@@ -518,7 +469,7 @@ document.getElementById('mySelect').onchange = function(){
       // Calculate data field.......... Reloads  
     var total = calculateSum().toFixed(2);
     document.getElementById('id_porder_total').value = total;
-    document.getElementById("rowCount").innerText = countRows();
+    //document.getElementById("rowCount").innerText = countRows();
     
     invoiceCalculate(total);
     
@@ -532,6 +483,13 @@ document.querySelectorAll('.removeRow').forEach(button => {
     const totalForms = document.querySelector('input[name="form-TOTAL_FORMS"]');
     const formCount = parseInt(totalForms.value);
     totalForms.value = formCount - 1;
+      // Calculate data field.......... Reloads  
+    var total = calculateSum().toFixed(2);
+    document.getElementById('id_porder_total').value = total;
+    //document.getElementById("rowCount").innerText = countRows();
+    
+    invoiceCalculate(total);
+    
   });
 });
 </script>
