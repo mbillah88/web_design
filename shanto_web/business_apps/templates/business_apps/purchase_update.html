@@ -149,8 +149,8 @@
                     {% for form in formset %}
                   <tr>
                     <td><input id="id-form-{{ forloop.counter0 }}-item_id" type="number" name="form-{{ forloop.counter0 }}-item_id" value="{{ form.instance.item_id.id }}" required readonly></td>
-                    <td><input type="text" value="{{form.instance.item_id.item_name}}" required readonly></td>
-                    <td><input type="text" value="{{ form.instance.item_id.item_unit }}" required readonly></td>
+                    <td><input id="id-itemname" type="text" value="{{form.instance.item_id.item_name}}" required readonly></td>
+                    <td><input id="id-itemunit" type="text" value="{{ form.instance.item_id.item_unit }}" required readonly></td>
                     <td><input id="id-form-{{ forloop.counter0 }}-item_qty" type="number" name="form-{{ forloop.counter0 }}-item_qty" value="{{ form.instance.item_qty }}" required readonly></td>
                     <td><input id="id-form-{{ forloop.counter0 }}-item_pprice" type="text" name="form-{{ forloop.counter0 }}-item_pprice" value="{{ form.instance.item_pprice }}" required readonly></td>
                     <td><input type="text" value="{{form.instance.item_qty|multiply:form.instance.item_pprice}}" required readonly></td>
@@ -168,13 +168,9 @@
               <textarea  class="form-control col-xs-12" id="it_porder_note" name="porder_note" rows="3" cols="50" placeholder="Write your Purchase note here..." required>{{ form.instance.porder_note }}</textarea>          
             </div>
             <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="pay_type_id">Pay Type:</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="id_payment_type">Pay Type:</label></div>
               <div style="flex: 50%; text-align: center; flex: 50%; color: #000; font-weight: 600;">
-                <select name="pay_type" id="pay_type_id">
-                  <option value="1">Cash</option>
-                  <option value="2">Card</option>
-                  <option value="3">Others</option>
-                </select>
+                {{ pay_form.payment_type }}
               </div>              
             </div>
           </div>
@@ -186,19 +182,19 @@
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_discount">Discount (Amt):</label></div>
-                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
+                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_payment_amount')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.disc_perc }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_payment_amount')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.disc_perc }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_total">Payable Total:</label></div>
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.pay_total }}" readonly></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_paid_total">Payment:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="paid_total"required id="id_paid_total" value="{{ form.instance.paid_total }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_payment_amount">Payment:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="payment_amount"required id="id_payment_amount" value="{{ pay_form.instance.payment_amount }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_due">Due Amount:</label></div>
@@ -342,17 +338,15 @@ document.getElementById('mySelect').onchange = function(){
       return (discountPercentage / 100) * originalPrice;
     }
     function invoiceCalculate(total_amt){
-      this.total_amt = total_amt.toFixed(2); ; 
+      this.total_amt = total_amt.toFixed(2); 
       var disc_amt = document.getElementById('id_porder_discount').value;
       var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
       var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
-      var paid_amt = document.getElementById('id_paid_total').value; 
+      var paid_amt = document.getElementById('id_payment_amount').value; 
       var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
       document.getElementById('id_porder_total').value = total_amt;
-      //document.getElementById('id_porder_discount').value = disc_amt;
       document.getElementById('id_disc_perc').value = disc_perc;
       document.getElementById('id_pay_total').value = payable_amt;
-      //document.getElementById('id_paid_total').value = paid_amt;
       document.getElementById('id_porder_due').value = due_amt;
     }
     
@@ -366,7 +360,7 @@ document.getElementById('mySelect').onchange = function(){
       this.disc_amt = disc_amt; 
       var total_amt = document.getElementById('id_porder_total').value;
       var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
-      var paid_amt = document.getElementById('id_paid_total').value;
+      var paid_amt = document.getElementById('id_payment_amount').value;
       var payable_amt = parseFloat(total_amt-disc_amt);
       var due_amt = parseFloat(payable_amt-paid_amt); 
       document.getElementById('id_disc_perc').value = disc_perc;
@@ -380,7 +374,7 @@ document.getElementById('mySelect').onchange = function(){
       }
       this.paid_amt = paid_amt;
       var payable_amt = document.getElementById('id_pay_total').value;
-      var paid_amt = document.getElementById('id_paid_total').value;
+      var paid_amt = document.getElementById('id_payment_amount').value;
       var due_amt = parseFloat(payable_amt-paid_amt); 
       document.getElementById('id_porder_due').value = due_amt;
     }
@@ -395,7 +389,7 @@ document.getElementById('mySelect').onchange = function(){
     }); 
   });
   $(document).ready(function() {  
-    $("#id_paid_total").on("input", function() {
+    $("#id_payment_amount").on("input", function() {
       var value = $(this).val();
       invoiceDueCalculate(value);
       console.log(value);
@@ -406,7 +400,7 @@ document.getElementById('mySelect').onchange = function(){
 <script>
   function moveToNextField_if(event, nextFieldID) {
     if (event.key === "Enter") {
-      let paid = parseFloat(document.getElementById('id_paid_total').value);
+      let paid = parseFloat(document.getElementById('id_payment_amount').value);
       let payable = parseFloat(document.getElementById('id_pay_total').value);
       if (paid > payable) {
         alert("Error: Paid amount is greater than the payable amount.");
@@ -422,38 +416,48 @@ document.getElementById('mySelect').onchange = function(){
   $(document).ready(function() {
     var table = document.getElementById('purchaseOrderTable');
     // Get input values
-    var item = document.getElementById("mySelect");
+      var item = document.getElementById("mySelect");
       var item_code = item.value;
       var item_name = item.options[item.selectedIndex].text;
-      var item_unit = document.getElementById('id_unit').value;
-      var item_qty = document.getElementById('id_qty').value;
-      var item_price = document.getElementById('id_pprice').value;
+      var item_unit = document.getElementById('id_unit');
+      var item_qty = document.getElementById('id_qty');
+      var item_price = document.getElementById('id_pprice');
 
-    var inputField1 = document.getElementById('cellValue1');
-    var inputField2 = document.getElementById('cellValue2');
-    var submitButton = document.getElementById('submitButton');
-    var selectedRow = null;
+      var submitButton = document.getElementById('addItemToCart');
+      var selectedRow = null;
 
+    // Initialize Selectize
+    const selectizeInstance = $(item).selectize()[0].selectize;
     // Add click event listeners to each row in the table
-    table.addEventListener('click', function(event) {
-        var target = event.target;
-
+    table.addEventListener('click', function(event) {        
+      var target = event.target;
         if (target.tagName === 'TD') {
             selectedRow = target.parentNode;
-
             // Populate the input fields with the row data
-            inputField1.value = selectedRow.cells[0].innerHTML;
-            inputField2.value = selectedRow.cells[1].innerHTML;
-        }
-    });
+            itemId = selectedRow.cells[0].getElementsByTagName('input')[0].value;
+            selectizeInstance.setValue(itemId);
+            namevalue = selectedRow.cells[1].getElementsByTagName('input')[0].value;
+            item_unit.value = selectedRow.cells[2].getElementsByTagName('input')[0].value;
+            item_qty.value = selectedRow.cells[3].getElementsByTagName('input')[0].value;
+            item_price.value = selectedRow.cells[4].getElementsByTagName('input')[0].value;
+        }   
+        submitButton.id = "submitButton"; // Change button id
+        submitButton.value = "Update Row"; // Change button value
+        submitButton.textContent = "Update Row"; // Update button text
 
     // Handle the submit button click event
     submitButton.addEventListener('click', function() {
         if (selectedRow) {
             // Update the row with the new input values
-            selectedRow.cells[0].innerHTML = inputField1.value;
-            selectedRow.cells[1].innerHTML = inputField2.value;
+            selectedRow.cells[0].getElementsByTagName('input')[0].value = item_code;
+            selectedRow.cells[1].getElementsByTagName('input')[0].value = item_name;
+            selectedRow.cells[2].getElementsByTagName('input')[0].value = item_unit.value;
+            selectedRow.cells[3].getElementsByTagName('input')[0].value = item_qty.value;
+            selectedRow.cells[4].getElementsByTagName('input')[0].value = item_price.value;
+            console.log(item_price.value);
         }
+    });
+     
     });
 });
 </script>

@@ -226,6 +226,7 @@ def purchase_new(request):
     products = ItemProduct.objects.all() 
     if request.method == 'POST':
         customer_form = PurchaseOrderForm(request.POST)
+        payment_form = PurchasePaymentForm(request.POST)
         formset = CartItemFormSet(request.POST,queryset=PurchaseOrderItem.objects.none())        
         #for Data Check...
         for name in request.POST:
@@ -234,7 +235,7 @@ def purchase_new(request):
         if not formset.is_valid():
             print("Formset Errors:", formset.errors)
     
-        if customer_form.is_valid() and formset.is_valid():
+        if customer_form.is_valid() and formset.is_valid() and payment_form.is_valid():
             order = customer_form.save(commit=False)
             order.porder_create_by = request.user
             order.save()
@@ -242,22 +243,31 @@ def purchase_new(request):
             for item in cart_items:
                 item.porder_id = order
                 item.save()
+            payment = payment_form.save(commit=False)
+            payment.order_id = order
+            payment.payment_create_by = request.user
+            payment.save()
             return redirect('slt:purchase')  # Redirect to a success page or another view
 
     else:
         customer_form = PurchaseOrderForm()
+        payment_form = PurchasePaymentForm()
         formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
 
-    return render(request, 'business_apps/purchase_new.html', {'form' : customer_form,
-            'formset' : formset,
-            'products' : products})
+    return render(request, 'business_apps/purchase_new.html', {
+        'form' : customer_form,
+        'pay_form' : payment_form,
+        'formset' : formset,
+        'products' : products})
 
 def purchase_update(request, pk):
     po = get_object_or_404(PurchaseOrder, id=pk)
+    payo = get_object_or_404(PurchasePayment, order_id=pk)
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
     products = ItemProduct.objects.all() 
     if request.method == 'POST':
         customer_form = PurchaseOrderForm(request.POST, instance=po)
+        payment_form = PurchasePaymentForm(request.POST, instance=payo)
         formset = CartItemFormSet(request.POST)        
         #for Data Check...
         for name in request.POST:
@@ -266,7 +276,7 @@ def purchase_update(request, pk):
         if not formset.is_valid():
             print("Formset Errors:", formset.errors)
     
-        if customer_form.is_valid() and formset.is_valid():
+        if customer_form.is_valid() and formset.is_valid() and payment_form.is_valid():
             order = customer_form.save(commit=False)
             order.porder_create_by = request.user
             order.save()
@@ -274,14 +284,20 @@ def purchase_update(request, pk):
             for item in cart_items:
                 item.porder_id = order
                 item.save()
+            payment = payment_form.save(commit=False)
+            payment.order_id = order
+            payment.payment_create_by = request.user
+            payment.save()
             return redirect('slt:purchase')  # Redirect to a success page or another view
 
     else:
         customer_form = PurchaseOrderForm(instance=po)
+        payment_form = PurchasePaymentForm(instance=payo)
         porder = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
         formset = CartItemFormSet(queryset=porder)
         return render(request, 'business_apps/purchase_update.html', {
             'form' : customer_form,
+            'pay_form' : payment_form,
             'formset' : formset,
             'products' : products})
 
