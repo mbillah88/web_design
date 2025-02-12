@@ -209,24 +209,6 @@
         </div>
       </form>
     </div>
-    <table id="editableTable">
-      <tr>
-          <td>Cell 1</td>
-          <td>Cell 2</td>
-      </tr>
-      <tr>
-          <td>Cell 3</td>
-          <td>Cell 4</td>
-      </tr>
-  </table>
-  <br>
-  <label for="cellValue1">Edit Cell 1 Value:</label>
-  <input type="text" id="cellValue1" name="cellValue1">
-  <br>
-  <label for="cellValue2">Edit Cell 2 Value:</label>
-  <input type="text" id="cellValue2" name="cellValue2">
-  <br>
-  <button id="submitButton">Submit</button>
   </div>
 </div>
 <!--Serializer Select Options Searchable-->
@@ -338,7 +320,7 @@ document.getElementById('mySelect').onchange = function(){
       return (discountPercentage / 100) * originalPrice;
     }
     function invoiceCalculate(total_amt){
-      this.total_amt = total_amt.toFixed(2); 
+      this.total_amt = total_amt; 
       var disc_amt = document.getElementById('id_porder_discount').value;
       var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
       var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
@@ -441,29 +423,77 @@ document.getElementById('mySelect').onchange = function(){
             item_qty.value = selectedRow.cells[3].getElementsByTagName('input')[0].value;
             item_price.value = selectedRow.cells[4].getElementsByTagName('input')[0].value;
         }   
-        submitButton.id = "submitButton"; // Change button id
-        submitButton.value = "Update Row"; // Change button value
-        submitButton.textContent = "Update Row"; // Update button text
+        //submitButton.id = "updateButton"; // Change button id
+        submitButton.value = "update Item"; // Change button value
+        //submitButton.textContent = "Update Row"; // Update button text
 
     // Handle the submit button click event
     submitButton.addEventListener('click', function() {
+      const tables = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
+   
+
+      var item = document.getElementById("mySelect");
+      var item_code = item.value;
+      var item_name = item.options[item.selectedIndex].text;
+      
+    // Check if item already exists in the cart
+    //var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
+    var itemExists = false;
+    var itemExistsCount = 0; // Initialize a counter for itemExists
+
+    for (var i = 0, row; row = tables.rows[i]; i++) {
+        var code = row.cells[0].getElementsByTagName('input')[0].value;
+
+        if (code === item_code) {
+            itemExists = true;
+            itemExistsCount++; // Increment the counter when itemExists is true
+            alert('Item : ' + item_code + ' Already Exists.');
+            break;
+        }
+    }
+
+    console.log('Item exists count: ' + itemExistsCount); // Output the count
+    // If item does not exist, create a new row
+    if (itemExistsCount === 1) {
         if (selectedRow) {
             // Update the row with the new input values
-            selectedRow.cells[0].getElementsByTagName('input')[0].value = item_code;
-            selectedRow.cells[1].getElementsByTagName('input')[0].value = item_name;
-            selectedRow.cells[2].getElementsByTagName('input')[0].value = item_unit.value;
-            selectedRow.cells[3].getElementsByTagName('input')[0].value = item_qty.value;
-            selectedRow.cells[4].getElementsByTagName('input')[0].value = item_price.value;
-            console.log(item_price.value);
+          selectedRow.cells[0].getElementsByTagName('input')[0].value = item_code;
+          selectedRow.cells[1].getElementsByTagName('input')[0].value = item_name;
+          selectedRow.cells[2].getElementsByTagName('input')[0].value = item_unit.value;
+          selectedRow.cells[3].getElementsByTagName('input')[0].value = item_qty.value;
+          selectedRow.cells[4].getElementsByTagName('input')[0].value = item_price.value;
+            
+      
         }
+        
+    
+    // Clear the input fields    
+    var selectize = $('#mySelect')[0].selectize;
+    selectize.clear();
+    document.getElementById('id_expi').value='';
+    document.getElementById('id_sprice').value='';
+    document.getElementById('id_unit').value='';
+    document.getElementById('id_qty').value='';
+    document.getElementById('id_pprice').value='';
+
+      // Calculate data field.......... Reloads  
+    var total = calculateSum().toFixed(2);
+    document.getElementById('id_porder_total').value = total;
+    //document.getElementById("rowCount").innerText = countRows();
+    
+    invoiceCalculate(total);
+      }
     });
-     
+  
     });
 });
 </script>
 <script>
   document.getElementById('addItemToCart').addEventListener('click', function() {
-    const table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
+    var submitButton = document.getElementById('addItemToCart');
+    if(submitButton.value === "Add Item"){
+      console.log(submitButton.value);
+      const table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
     // Get input values
       var item = document.getElementById("mySelect");
       var item_code = item.value;
@@ -548,6 +578,11 @@ document.getElementById('mySelect').onchange = function(){
     //document.getElementById("rowCount").innerText = countRows();
     
     invoiceCalculate(total);
+    
+    }else{
+      console.log(submitButton.value);
+
+    }
     
 });
   
