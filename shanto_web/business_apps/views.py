@@ -495,3 +495,19 @@ def save_table_data(request):
         formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
     
     return render(request, 'business_apps/purchase_new_order.html', {'formset': formset})
+
+#Printing page....
+def pinvoice(request, pk):
+    po = get_object_or_404(PurchaseOrder, id=pk)
+    payo = get_object_or_404(PurchasePayment, order_id=pk)
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
+    products = ItemProduct.objects.all() 
+    customer_form = PurchaseOrderForm(instance=po)
+    payment_form = PurchasePaymentForm(instance=payo)
+    porder = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
+    formset = CartItemFormSet(queryset=porder)
+    return render(request, 'business_apps/reports/pinvoice.html', {
+        'form' : customer_form,
+        'pay_form' : payment_form,
+        'formset' : formset,
+        'products' : products})

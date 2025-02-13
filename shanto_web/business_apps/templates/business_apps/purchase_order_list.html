@@ -23,6 +23,9 @@
         <a href="{% url 'slt:purchase_update' data.pk %}">Edit</a>
         <a href="">Delete</a>
       </td>
+      <td>
+        <a href="{% url 'slt:pinvoice' data.pk %}">View</a>
+      </td>
     </tr>
     {% endfor %}
 </table>
