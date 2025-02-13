@@ -50,7 +50,7 @@ urlpatterns = [
     path('purchase/success', views.success, name='success'),
     path('purchase/purchase_update/<int:purchase_pk>/supplier/<int:supplier_pk>/', views.supplier_details, name='supplier_details_for_purchase'),
     path('purchase/purchase_update/<int:purchase_pk>/pproducts_details/<int:product_search_pk>/', views.pproducts_details, name='pproducts_details_for_purchase'),
-
+    path('purchase/purchase_update/<int:purchase_pk>/item_delete_row/<int:row_id>/', views.item_delete_row, name='item_delete_row_for_purchase'),
     # Settings Tools .... 
     path('settings/', views.settings, name='settings'),
     path('settings/tools_unit', views.tools_unit, name='tools_unit'),

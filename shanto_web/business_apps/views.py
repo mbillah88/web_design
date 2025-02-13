@@ -300,7 +300,10 @@ def purchase_update(request, pk):
             'pay_form' : payment_form,
             'formset' : formset,
             'products' : products})
-
+def item_delete_row(request, purchase_pk, row_id):
+    obj = get_object_or_404(PurchaseOrderItem, id=row_id)
+    obj.delete()
+    return JsonResponse({'status': 'success', 'message': 'Row deleted successfully'})
 # Tools_Unit_View...
 @login_required
 def settings(request):
