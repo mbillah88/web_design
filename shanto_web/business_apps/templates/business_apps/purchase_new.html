@@ -154,13 +154,9 @@
               <textarea  class="form-control col-xs-12" id="it_porder_note" name="porder_note" rows="3" cols="50" placeholder="Write your Purchase note here..." required></textarea>          
             </div>
             <div class="d-flex" style="align-items: center;" >
-              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="pay_type_id">Pay Type:</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="id_payment_type">Pay Type:</label></div>
               <div style="flex: 50%; text-align: center; flex: 50%; color: #000; font-weight: 600;">
-                <select name="pay_type" id="pay_type_id">
-                  <option value="1">Cash</option>
-                  <option value="2">Card</option>
-                  <option value="3">Others</option>
-                </select>
+                {{ pay_form.payment_type }}
               </div>              
             </div>
           </div>
@@ -172,19 +168,19 @@
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_discount">Discount (Amt):</label></div>
-                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
+                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_payment_amount')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_paid_total')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.item_sprice }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_payment_amount')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.item_sprice }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_total">Payable Total:</label></div>
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.item_sprice }}" readonly></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_paid_total">Payment:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="paid_total"required id="id_paid_total" value="{{ form.instance.item_sprice }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_payment_amount">Payment:</label></div>
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="payment_amount"required id="id_payment_amount" value="{{ pay_form.instance.payment_amount }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_due">Due Amount:</label></div>
@@ -201,24 +197,6 @@
     </div>
   </div>
 </div>
-<script>
-  document.querySelector('form').addEventListener('submit', function(event) {
-      let table = document.getElementById('dataTable');
-      let data = [];
-      for (let i = 1; i < table.rows.length; i++) {
-          let row = table.rows[i];
-          let rowData = {
-              product_name: row.cells[0].innerText,
-              quantity: row.cells[1].innerText,
-              price: row.cells[2].innerText
-          };
-          data.push(rowData);
-          console.log(table_data);
-      }
-      document.getElementById('table_data').value = JSON.stringify(data);
-      console.log(table_data);
-  });
-  </script>
 <!--Serializer Select Options Searchable-->
 <script>
     $(document).ready(function () {
@@ -348,13 +326,11 @@ document.getElementById('mySelect').onchange = function(){
       var disc_amt = document.getElementById('id_porder_discount').value;
       var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
       var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
-      var paid_amt = document.getElementById('id_paid_total').value; 
+      var paid_amt = document.getElementById('id_payment_amount').value; 
       var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
       document.getElementById('id_porder_total').value = total_amt;
-      //document.getElementById('id_porder_discount').value = disc_amt;
       document.getElementById('id_disc_perc').value = disc_perc;
       document.getElementById('id_pay_total').value = payable_amt;
-      //document.getElementById('id_paid_total').value = paid_amt;
       document.getElementById('id_porder_due').value = due_amt;
     }
     
@@ -368,7 +344,7 @@ document.getElementById('mySelect').onchange = function(){
       this.disc_amt = disc_amt; 
       var total_amt = document.getElementById('id_porder_total').value;
       var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
-      var paid_amt = document.getElementById('id_paid_total').value;
+      var paid_amt = document.getElementById('id_payment_amount').value;
       var payable_amt = parseFloat(total_amt-disc_amt);
       var due_amt = parseFloat(payable_amt-paid_amt); 
       document.getElementById('id_disc_perc').value = disc_perc;
@@ -382,7 +358,7 @@ document.getElementById('mySelect').onchange = function(){
       }
       this.paid_amt = paid_amt.toFixed(2);
       var payable_amt = document.getElementById('id_pay_total').value;
-      var paid_amt = document.getElementById('id_paid_total').value;
+      var paid_amt = document.getElementById('id_payment_amount').value;
       var due_amt = parseFloat(payable_amt-paid_amt); 
       document.getElementById('id_porder_due').value = due_amt;
     }
@@ -395,7 +371,7 @@ document.getElementById('mySelect').onchange = function(){
     }); 
   });
   $(document).ready(function() {  
-    $("#id_paid_total").on("input", function() {
+    $("#id_payment_amount").on("input", function() {
       var value = $(this).val();
       invoiceDueCalculate(value);
     }); 
@@ -404,7 +380,7 @@ document.getElementById('mySelect').onchange = function(){
 <script>
   function moveToNextField_if(event, nextFieldID) {
     if (event.key === "Enter") {
-      let paid = parseFloat(document.getElementById('id_paid_total').value);
+      let paid = parseFloat(document.getElementById('id_payment_amount').value);
       let payable = parseFloat(document.getElementById('id_pay_total').value);
       if (paid > payable) {
         alert("Error: Paid amount is greater than the payable amount.");
@@ -429,7 +405,7 @@ document.getElementById('mySelect').onchange = function(){
     document.getElementById('id_porder_discount').value = disc_amt;
     document.getElementById('id_disc_perc').value = disc_perc;
     document.getElementById('id_pay_total').value = payable_amt;
-    document.getElementById('id_paid_total').value = paid_amt;
+    document.getElementById('id_payment_amount').value = paid_amt;
     document.getElementById('id_porder_due').value = due_amt;
   }
   
@@ -439,7 +415,7 @@ document.getElementById('mySelect').onchange = function(){
     }
     this.disc_amt = disc_amt; 
     var total_amt = document.getElementById('id_porder_total').value;
-    var paid_amt = document.getElementById('id_paid_total').value;
+    var paid_amt = document.getElementById('id_payment_amount').value;
     var payable_amt = parseFloat(total_amt-disc_amt);
     var due_amt = parseFloat(payable_amt-paid_amt); 
     document.getElementById('id_pay_total').value = payable_amt;
@@ -452,7 +428,7 @@ document.getElementById('mySelect').onchange = function(){
     }
     this.paid_amt = paid_amt; 
     var payable_amt = document.getElementById('id_pay_total').value;
-    var paid_amt = document.getElementById('id_paid_total').value;
+    var paid_amt = document.getElementById('id_payment_amount').value;
     var due_amt = parseFloat(payable_amt-paid_amt); 
     document.getElementById('id_porder_due').value = due_amt;
   }

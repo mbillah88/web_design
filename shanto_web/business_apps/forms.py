@@ -85,7 +85,7 @@ class PurchaseOrderItemForm(forms.ModelForm):
 class PurchasePaymentForm(forms.ModelForm):
     class Meta:
         model = PurchasePayment
-        fields = "__all__"
+        fields = ['payment_amount','payment_type']
 
 # Settings Tools .........
 class ItemUnitForm(forms.ModelForm):    

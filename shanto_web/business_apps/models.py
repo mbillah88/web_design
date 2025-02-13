@@ -9,13 +9,21 @@ def imageFilePath(request, filename):
     timeNow = datetime.datetime.now()
     filename = "%s%s" % (timeNow, old_filename)
     return BASE_DIR('uploads/', filename)
-  
+
 # iterable 
 OrderChoice =( 
     ("1", "Received"), 
     ("2", "Pending"), 
     ("3", "Ordered"), 
     ("4", "Cancel"), 
+) 
+
+# iterable 
+PaymentChoice =( 
+    ("1", "Cash"), 
+    ("2", "Card"), 
+    ("3", "Others"), 
+    ("4", "Due"), 
 ) 
 
 class ItemCategory(models.Model):
@@ -102,9 +110,9 @@ class PurchaseOrderItem(models.Model):
     return self.item_qty * self.item_pprice
 
 class PurchasePayment(models.Model):
-  order_id = models.ForeignKey(PurchaseOrderItem, on_delete=models.CASCADE, null = True)
+  order_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
   payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
-  payment_type = models.CharField(max_length=20)
+  payment_type = models.CharField(max_length=1,choices=PaymentChoice, default=1)
   payment_time = models.DateTimeField(auto_now_add=True, null = True)  
   payment_update_time = models.DateTimeField(auto_now=True, null = True)   
   payment_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_create_user')
