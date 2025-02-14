@@ -260,6 +260,35 @@ def purchase_new(request):
         'formset' : formset,
         'products' : products})
 
+def purchase_due_pay(request, pk):
+    po = get_object_or_404(PurchaseOrder, id=pk)
+    payo = get_object_or_404(PurchasePayment, order_id=pk)
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
+
+    if request.method == 'POST':
+        customer_form = PurchaseOrderForm(request.POST, instance=po)
+        payment_form = PurchasePaymentForm(request.POST, instance=payo)
+        
+        if customer_form.is_valid() and payment_form.is_valid():
+            order = customer_form.save(commit=False)
+            order.porder_create_by = request.user
+            order.save()
+            payment = payment_form.save(commit=False)
+            payment.order_id = order
+            payment.payment_create_by = request.user
+            payment.save()
+            return redirect('slt:purchase')  # Redirect to a success page or another view
+
+    else:
+        customer_form = PurchaseOrderForm(instance=po)
+        payment_form = PurchasePaymentForm(instance=payo)
+        porder = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
+        formset = CartItemFormSet(queryset=porder)
+        return render(request, 'business_apps/purchase_due_payment.html', {
+            'form' : customer_form,
+            'pay_form' : payment_form,
+            'formset' : formset})
+
 def purchase_update(request, pk):
     po = get_object_or_404(PurchaseOrder, id=pk)
     payo = get_object_or_404(PurchasePayment, order_id=pk)

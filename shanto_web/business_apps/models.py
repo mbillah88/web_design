@@ -22,8 +22,8 @@ OrderChoice =(
 PaymentChoice =( 
     ("1", "Cash"), 
     ("2", "Card"), 
-    ("3", "Others"), 
-    ("4", "Due"), 
+    ("3", "Due"), 
+    ("4", "Others"), 
 ) 
 
 class ItemCategory(models.Model):

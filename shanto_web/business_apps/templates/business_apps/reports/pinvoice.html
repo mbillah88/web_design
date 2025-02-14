@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
+            margin: 0 auto;
             padding: 0;
             width: 210mm;
             height: 297mm;
@@ -85,7 +85,7 @@
     <div class="container">
         <div style="display: flex;">
             <div>
-                <div> <span><h3>Invoice # POI-{{ form.instance.id }}</h3></span> <span>PO Date : {{ form.instance.porder_create_time|date:'Y-m-d H:m'  }}</span></div>
+                <div> <span><h3>Invoice # POI-{{ form.instance.id }}</h3></span> <span>PO Date : {{ form.instance.porder_create_time|date:'Y-m-d H:m a'  }}</span></div>
                
                 <span>Supplier Name : {{ form.instance.supplier_id.supplier_name }}</span><br>
                 <span>Contact No: {{ form.instance.supplier_id.supplier_mobile }}</span><br>

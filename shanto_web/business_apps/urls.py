@@ -44,6 +44,7 @@ urlpatterns = [
     path('purchase/', views.purchase, name='purchase'),
     path('purchase/purchase_new', views.purchase_new, name='purchase_new'),
     path('purchase/purchase_update/<int:pk>/', views.purchase_update, name='purchase_update'),
+    path('purchase/purchase_due_pay/<int:pk>/', views.purchase_due_pay, name='purchase_due_pay'),
     path('purchase/supplier/<int:supplier_pk>/', views.supplier_detail, name='supplier_detail'),
     path('purchase/product_search/<int:pk>/', views.ItemListView.as_view(), name='ItemListView'),
     path('purchase/save_table_data', views.save_table_data, name='save_table_data'),
