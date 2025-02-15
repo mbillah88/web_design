@@ -39,11 +39,20 @@ urlpatterns = [
 
     path('sales/', views.sales, name='sales'),
     path('sales/sales_new', views.sales_new, name='sales_new'),
-    path('sales/<int:pk>/sales_update', views.sales_update, name='sales_update'),
+    path('sales/sales_update/<int:pk>/', views.sales_update, name='sales_update'),
+    #path('sales/sales_due_pay/<int:pk>/', views.sales_due_pay, name='sales_due_pay'),
+    path('sales/customer/<int:customer_pk>/', views.customer_details, name='customer_details'),
+    path('sales/product_search/<int:pk>/', views.ItemListView.as_view(), name='ItemListView'),
+    #path('sales/sales_update/<int:sales_pk>/customer/<int:customer_pk>/', views.customer_details, name='customer_details_for_sales'),
+    #path('sales/sales_update/<int:sales_pk>/pproducts_details/<int:product_search_pk>/', views.pproducts_details, name='pproducts_details_for_sales'),
+    #path('sales/sales_update/<int:sales_pk>/item_delete_row/<int:row_id>/', views.item_delete_row, name='item_delete_row_for_sales'),
+    
+    path('sales/sinvoice/<int:pk>/', views.sinvoice, name='sinvoice'),
     
     path('purchase/', views.purchase, name='purchase'),
     path('purchase/purchase_new', views.purchase_new, name='purchase_new'),
     path('purchase/purchase_update/<int:pk>/', views.purchase_update, name='purchase_update'),
+    path('purchase/purchase_due_pay/<int:pk>/', views.purchase_due_pay, name='purchase_due_pay'),
     path('purchase/supplier/<int:supplier_pk>/', views.supplier_detail, name='supplier_detail'),
     path('purchase/product_search/<int:pk>/', views.ItemListView.as_view(), name='ItemListView'),
     path('purchase/save_table_data', views.save_table_data, name='save_table_data'),
@@ -51,6 +60,9 @@ urlpatterns = [
     path('purchase/purchase_update/<int:purchase_pk>/supplier/<int:supplier_pk>/', views.supplier_details, name='supplier_details_for_purchase'),
     path('purchase/purchase_update/<int:purchase_pk>/pproducts_details/<int:product_search_pk>/', views.pproducts_details, name='pproducts_details_for_purchase'),
     path('purchase/purchase_update/<int:purchase_pk>/item_delete_row/<int:row_id>/', views.item_delete_row, name='item_delete_row_for_purchase'),
+    
+    path('purchase/pinvoice/<int:pk>/', views.pinvoice, name='pinvoice'),
+    
     # Settings Tools .... 
     path('settings/', views.settings, name='settings'),
     path('settings/tools_unit', views.tools_unit, name='tools_unit'),

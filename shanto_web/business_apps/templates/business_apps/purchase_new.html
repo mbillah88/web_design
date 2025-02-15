@@ -298,21 +298,6 @@ document.getElementById('mySelect').onchange = function(){
   }
 </script>
 <!--Remove Cart Item frome Table row -->
-<script>
-  function removeRow(button) {
-      // Get the parent row of the button
-      var row = button.parentNode.parentNode;
-      // Remove the row from the table
-      row.parentNode.removeChild(row);
-    
-      // Calculate data field.......... Reloads     
-    var total = calculateSum().toFixed(2);
-    document.getElementById('id_porder_total').value = total;
-    document.getElementById("rowCount").innerText = countRows();
-    
-    invoiceCalculate(total);
-  }
-</script>
 <!--// Calculate Discount and Payment field... -->
 <script>
    function getDiscountPercentage(originalPrice, discountAmount) {
@@ -494,9 +479,15 @@ document.getElementById('mySelect').onchange = function(){
       cell7.innerHTML = '<button type="button" class="removeRow">Remove</button>';
       // Add event listener for remove button 
       cell7.querySelector('.removeRow').addEventListener('click', function() {
-      table.removeChild(newRow);
-      totalForms.value = formCount;  // Decrement the form count
-    });
+        table.removeChild(newRow);
+        totalForms.value = formCount;  // Decrement the form count
+          // Calculate data field.......... Reloads     
+        var total = calculateSum().toFixed(2);
+        document.getElementById('id_porder_total').value = total;
+        document.getElementById("rowCount").innerText = countRows();
+        
+        invoiceCalculate(total);
+      });
 
     }
     

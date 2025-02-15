@@ -102,10 +102,8 @@ Purchase List
       <div>        
         <a href="{% url 'slt:purchase_new' %}">Purchase Order Due Payment</a>
       </div>
-    </div>   
-        {% for data in produtcs %}
-          {{data}}
-        {% endfor %}
+    </div>          
+      {% include "business_apps/purchase_order_due_list.html" %}
     <hr/>
   </div>
   

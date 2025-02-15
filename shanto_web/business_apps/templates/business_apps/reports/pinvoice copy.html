@@ -1,0 +1,359 @@
+{% load i18n %}
+{% load multiply %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 210mm;
+            height: 297mm;
+            box-sizing: border-box;
+        }
+        .header, .footer {
+            background-color: #f2f2f2;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+            width: 100%;
+        }
+        .header {
+            top: 0;
+        }
+        .footer {
+            bottom: 0;
+        }
+        .container {
+            padding: 60px 20px 20px 20px; /* Adjust padding to account for fixed header/footer */
+            margin: 0 auto;
+            width: 100%;
+            max-width: 180mm; /* Adjust width to fit A4 page with margins */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .summary {
+            margin-top: 20px;
+        }
+        @media print {
+        body {
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
+        }
+        .header, .footer {
+            position: fixed;
+        }
+        .container {
+            padding-top: 70px; /* Adjust padding to account for fixed header */
+            padding-bottom: 40px; /* Adjust padding to account for fixed footer */
+        }
+        table, th, td {
+            border: 1px solid #000;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Invoice Header</h1>
+    </div>
+    <div class="container">
+        <div style="display: flex;">
+            <div>
+                <h2>Invoice # POI-{{ form.instance.id }}</h2>
+                <p>Supplier Name : {{ form.instance.supplier_id.supplier_name }}</p>
+                <p>Contact No: {{ form.instance.supplier_id.supplier_mobile }}</p>
+                <p>PO Date : {{ form.instance.porder_create_time|date:'Y-m-d H:m'  }}</p>
+            </div>
+            <div>
+                <p>Created By: {{ form.instance.porder_create_by }}</p>
+                
+            </div>
+        </div><h3>Item List</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>SL</th>
+                    <th style="width: 10%;">Item Code</th>
+                    <th style="width: 30%;">Item Name</th>
+                    <th>Unit</th>
+                    <th>Price</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>                
+                {% for form in formset %}
+                <tr>
+                    <td style="text-align: center;">{{ forloop.counter }}</td>
+                    <td>{{ form.instance.item_id.id }}</td>
+                    <td>{{form.instance.item_id.item_name}}</td>
+                    <td style="text-align: center;">{{ form.instance.item_id.item_unit }}</td>
+                    <td style="text-align: center;">{{ form.instance.item_qty }}</td>
+                    <td style="text-align: center;">{{ form.instance.item_pprice }}</td>
+                    <td style="text-align: right;">{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>
+                </tr>
+                {% endfor%}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="6" style="text-align: right;">Subtotal</th>
+                    <th style="text-align: right;">{{ form.instance.porder_total }}</th>
+                </tr>
+                <tr>
+                    <th colspan="6" style="text-align: right;">Discount</th>
+                    <th style="text-align: right;">{{ form.instance.porder_discount }}</th>
+                </tr>
+                <tr>
+                    <th colspan="6" style="text-align: right;">Total</th>
+                    <th style="text-align: right;">{{form.instance.porder_total|subtraction:form.instance.porder_discount}}</th>
+                </tr>
+                <tr>
+                    <th colspan="6" style="text-align: right;">Paid</th>
+                    <th style="text-align: right;">{{ pay_form.instance.payment_amount }}</th>
+                </tr>
+                <tr>
+                    <th colspan="6" style="text-align: right;">Due</th>
+                    <th style="text-align: right;">{{ form.instance.porder_due }}</th>
+                </tr>
+            </tfoot>
+        </table>
+        <div style="display: flex; padding-top: .5rem;">
+            <div style="flex: 50%;">
+                Due or Paid
+            </div>
+            <div style="display: flex; flex: 50%;">
+                <div style="display: flex; flex-direction: column; flex: 60%; text-align: end; font-weight: 700; padding: .5rem; gap: .4rem;">
+                    <label for="">Subtotal : </label>
+                    <label for="">Discount :</label>
+                    <label for="">Total :</label>
+                    <label for="">Paid :</label>
+                    <label for="">Due :</label>
+                </div>
+                <div style="display: flex; flex-direction: column; flex: 30%; align-items: end; font-weight: 700; padding: .5rem; gap: .4rem;">
+                    <label for="">{{ form.instance.porder_total }}</label>
+                    <label for="">{{ form.instance.porder_discount }}</label>
+                    <label for="">{{form.instance.porder_total|subtraction:form.instance.porder_discount}}</label>
+                    <label for="">{{ pay_form.instance.payment_amount }}</label>
+                    <label for="">{{ form.instance.porder_due }}</label>
+                </div>
+            </div>
+        </div>
+        <div class="summary">
+            <h4>(In Word : )</h4>
+            <p>Total Items: 2</p>
+            <p>Total Cost: $143.00</p>
+        </div>
+    </div>
+    <div class="footer">
+        <p>Invoice Footer - Thank you for your business!</p>
+    </div>
+    <div class="main-content">
+        <div class="add-container" style="max-width: 960px;">
+          <div class="content">
+              
+          <nav class="navbar navbar-expand">
+            <div class="container-fluid">
+              <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+                {% if form.instance.pk %}
+                    <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : POI-{{ form.instance.pk}} Supplier: {{ form.instance.supplier_id.supplier_name}} </span>
+                  {% else %}
+                  <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">New Purchase</span>
+                  {% endif %}
+              </div>
+              <div>
+                <a class="nav-link" href="{% url 'slt:purchase' %}">Purchase List</a>
+              </div>
+            </div>
+          </nav>
+          <hr style="margin: .0rem 0rem 1rem 0rem;
+          color: inherit;
+          background-color: currentColor;
+          border: 0;
+          opacity: .75;">
+            <form class="form-container" enctype="multipart/form-data" method="post">
+              <!-- Security token -->
+              {% csrf_token %}
+              <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: .5rem;">      
+                <div class="d-flex w-100 gap-3" >
+                  <div style="flex: 3;">
+                    <label for="id_supplier_id">Supplier:</label>
+                    <div style="display: flex; gap: .5rem;">
+                      {{ form.supplier_id }}
+                      {% url 'slt:add_supplier_new' as url %}
+                      <a href="{{url}}">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>                
+                      </a>
+                      
+                    </div>
+                  </div>
+                  <div style="flex: 1;">
+                    <label for="id_porder_status">O Type:</label>
+                    {{ form.porder_status }}
+                  </div>
+                </div>            
+                <div class="d-flex w-100 gap-3" > 
+                  <div> 
+                    <label for="supplier_address">Supplier Address:</label>
+                    <input type="text" name="supplier_address" maxlength="255" required id="supplier_address" value="{{ form.instance.supplier_id.supplier_address }}" readonly>     
+                  </div>
+                  <div>
+                    <label for="supplier_mobile">Supplier Mobile:</label>
+                    <input type="text" name="supplier_mobile" maxlength="255" required id="supplier_mobile" value="{{ form.instance.supplier_id.supplier_mobile }}" readonly>    
+                  </div>
+                  <div>
+                    <label for="id_porder_create_time">POrder Date:</label>
+                    <input type="datetime-local" name="porder_create_time" maxlength="255" required id="id_porder_create_time" value="{{ form.instance.porder_create_time|date:'Y-m-d H:m'  }}">    
+                  </div>
+                </div>
+              </div>     
+              <div class="content d-flex" style="gap: 1.3rem;text-align: center; flex-flow: column-reverse;;">          
+                <div style="width: 50%; margin: 0 auto;">
+                  <select id="mySelect">
+                    <option value="" hidden>Select your Product...</option>
+                    {% for item in products %}
+                    <option value="{{ item.id }}">{{ item.item_name }}</option>
+                    {% endfor %}
+                  </select>                
+                </div>                
+                <div class="content" style="display: flex;align-items: center;gap: 1rem;justify-content: space-evenly;"> 
+                  <div class="d-flex" style="gap: 2rem;">
+                    <div>
+                      <label for="id_expi">Expired:</label>
+                      <input type="text" id="id_expi" readonly>    
+                    </div>
+                    <div>
+                      <label for="id_sprice">S Price</label>
+                      <input type="text" id="id_sprice" value="" readonly>    
+                    </div>
+                    <div>
+                      <label for="id_unit">Unit:</label>
+                      <input type="text" id="id_unit" value="" readonly>    
+                    </div>
+                    <div>
+                      <label for="id_pprice">Price</label>
+                      <input type="text" id="id_pprice" value="" readonly>    
+                    </div>
+                    <div>
+                      <label for="id_qty">Qty</label>
+                      <input type="number" min="1" id="id_qty">    
+                    </div>
+                  </div>
+                  
+                  <div class="bg-light p-2">
+                    <input id="addItemToCart" type="button" class="btn btn-outline-danger" value="Add Item">
+                  </div>
+                </div>       
+              </div>
+              <div class="content">
+                <span style="font-size: 1.3rem; font-weight: bolder;">Product Item</span>
+                <span id="rowCount" style="font-size: 1.3rem; font-weight: bolder;">0</span>          
+                <!-- Render the management form fields manually in a hidden row -->
+                <table style="display: none;">
+                  <tr>
+                      <td><input type="hidden" name="{{ formset.management_form.prefix }}-TOTAL_FORMS" value="{{ formset.management_form.TOTAL_FORMS.value }}"></td>
+                      <td><input type="hidden" name="{{ formset.management_form.prefix }}-INITIAL_FORMS" value="{{ formset.management_form.INITIAL_FORMS.value }}"></td>
+                      <td><input type="hidden" name="{{ formset.management_form.prefix }}-MIN_NUM_FORMS" value="{{ formset.management_form.MIN_NUM_FORMS.value }}"></td>
+                      <td><input type="hidden" name="{{ formset.management_form.prefix }}-MAX_NUM_FORMS" value="{{ formset.management_form.MAX_NUM_FORMS.value }}"></td>
+                  </tr>
+              </table>
+                <table id="purchaseOrderTable">
+                    <thead style="background-color: #008b8b75">
+                      <th style="width: 10%;">Item Code</th>
+                      <th style="width: 30%;">Item Name</th>
+                      <th>Unit</th>
+                      <th>Price</th>
+                      <th>Qty</th>
+                      <th>Total</th>
+                      <th>Action</th>
+                      <th></th>
+                    </thead>
+                    <tbody style="background-color: rgb(181, 184, 183);">
+                        <!-- Add more product rows here -->
+                          {% for form in formset %}
+                        <tr>
+                          <td><input id="id-form-{{ forloop.counter0 }}-item_id" type="number" name="form-{{ forloop.counter0 }}-item_id" value="{{ form.instance.item_id.id }}" required readonly></td>
+                          <td><input id="id-itemname" type="text" value="{{form.instance.item_id.item_name}}" required readonly></td>
+                          <td><input id="id-itemunit" type="text" value="{{ form.instance.item_id.item_unit }}" required readonly></td>
+                          <td><input id="id-form-{{ forloop.counter0 }}-item_qty" type="number" name="form-{{ forloop.counter0 }}-item_qty" value="{{ form.instance.item_qty }}" required readonly></td>
+                          <td><input id="id-form-{{ forloop.counter0 }}-item_pprice" type="text" name="form-{{ forloop.counter0 }}-item_pprice" value="{{ form.instance.item_pprice }}" required readonly></td>
+                          <td><input type="text" value="{{form.instance.item_qty|multiply:form.instance.item_pprice}}" required readonly></td>
+                          <td>
+                            <form>
+                                {% csrf_token %}
+                                <button value="{{ form.instance.id }}" type="button" class="removeRow"><span>X</span></button>
+                            </form>
+                          </td>   
+                          <td type="hidden">Edit{{ form.id }}</td> <!-- Hidden ID field -->            
+                        </tr>
+                         {% endfor %}
+                    </tbody>
+                </table>
+              </div>        
+              <div class="content d-flex"> 
+                <div style="flex: 1;display: flex;flex-direction: column;justify-content: space-evenly;">
+                  <div>
+                    <span >Notes:</span>
+                    <textarea  class="form-control col-xs-12" id="it_porder_note" name="porder_note" rows="3" cols="50" placeholder="Write your Purchase note here..." required>{{ form.instance.porder_note }}</textarea>          
+                  </div>
+                  <div class="d-flex" style="align-items: center;" >
+                    <div style="flex: 50%; text-align: end; flex: 50%;"><label for="id_payment_type">Pay Type:</label></div>
+                    <div style="flex: 50%; text-align: center; flex: 50%; color: #000; font-weight: 600;">
+                      {{ pay_form.payment_type }}
+                    </div>              
+                  </div>
+                </div>
+                <div style="flex: 1;align-items: center;">
+                  <div class="d-flex flex-column">
+                    <div class="d-flex" style="align-items: center;" >
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_total">Item Total:</label></div>
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_total" required id="id_porder_total" value="{{ form.instance.porder_total }}" readonly></div>              
+                    </div>
+                    <div class="d-flex" style="align-items: center;" >
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_discount">Discount (Amt):</label></div>
+                      <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_payment_amount')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
+                    </div>
+                    <div class="d-flex" style="align-items: center;" >
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_payment_amount')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.disc_perc }}"></div>              
+                    </div>
+                    <div class="d-flex" style="align-items: center;" >
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_total">Payable Total:</label></div>
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.pay_total }}" readonly></div>              
+                    </div>
+                    <div class="d-flex" style="align-items: center;" >
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_payment_amount">Payment:</label></div>
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="payment_amount"required id="id_payment_amount" value="{{ pay_form.instance.payment_amount }}"></div>              
+                    </div>
+                    <div class="d-flex" style="align-items: center;" >
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_due">Due Amount:</label></div>
+                      <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_due"required id="id_porder_due" value="{{ form.instance.porder_due }}" readonly></div>              
+                    </div>
+                  </div>
+      
+                </div>
+              </div> 
+              <div class="submit-row">
+                <input id="form_submit_id" type="submit">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+</body>
+</html>
