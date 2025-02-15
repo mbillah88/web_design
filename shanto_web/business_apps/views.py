@@ -16,7 +16,7 @@ import json
 from django.views.decorators.csrf import csrf_protect
 from django.core.paginator import Paginator
 from .filters import *
-from .function import get_order_item_count 
+from .function import *
 
 # Create your views here.
 @login_required
@@ -192,9 +192,63 @@ def supplier_update(request, pk):
 # Sales ....
 @login_required
 def sales(request):
-  return render(request, 'business_apps/sales.html')
+  #porder = PurchaseOrder.objects.all().order_by('-porder_create_time')
+    products = SalesOrderItem.objects.all()
+    orders = get_sorder_item_count().order_by('-sorder_create_time')
+    # Get the queryset and apply filtering
+    filterset = SalesOrderFilter(request.GET, queryset=orders)
+    filtered_queryset = filterset.qs
+    # Set up pagination
+    paginator = Paginator(filtered_queryset, 10)  # Show 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'business_apps/sales.html', {
+        #'porder' : porder,
+        'products' : products,
+        'filterset': filterset,
+        'page_obj': page_obj,
+        'orders': orders,
+    })
 def sales_new(request):
-  return render(request, 'business_apps/sales_new.html')
+    CartItemFormSet = modelformset_factory(SalesOrderItem, form=SalesOrderItemForm, extra=0)
+    products = ItemProduct.objects.all() 
+    if request.method == 'POST':
+        customer_form = SalesOrderForm(request.POST)
+        payment_form = SalesPaymentForm(request.POST)
+        formset = CartItemFormSet(request.POST,queryset=SalesOrderItem.objects.none())        
+        #for Data Check...
+        for name in request.POST:
+            print("{}: {}".format(name, request.POST.getlist(name)))        
+        # Print formset errors for debugging
+        if not formset.is_valid():
+            print("Formset Errors:", formset.errors)
+        
+        if customer_form.is_valid() and formset.is_valid() and payment_form.is_valid():
+            order = customer_form.save(commit=False)
+            order.sorder_create_by = request.user
+            order.save()
+            cart_items = formset.save(commit=False)
+            for item in cart_items:
+                item.sorder_id = order
+                item.save()
+            payment = payment_form.save(commit=False)
+            payment.sorder_id = order
+            payment.payment_create_by = request.user
+            payment.save()
+            return redirect('slt:sales')  # Redirect to a success page or another view
+
+    else:
+        customer_form = SalesOrderForm()
+        payment_form = SalesPaymentForm()
+        formset = CartItemFormSet(queryset=SalesOrderItem.objects.none())
+
+    return render(request, 'business_apps/sales_new.html', {
+        'form' : customer_form,
+        'pay_form' : payment_form,
+        'formset' : formset,
+        'products' : products})
+            
 def sales_update(request):
   return render(request, 'business_apps/sales_new.html')
 
@@ -259,6 +313,35 @@ def purchase_new(request):
         'pay_form' : payment_form,
         'formset' : formset,
         'products' : products})
+
+def purchase_due_pay(request, pk):
+    po = get_object_or_404(PurchaseOrder, id=pk)
+    payo = get_object_or_404(PurchasePayment, order_id=pk)
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
+
+    if request.method == 'POST':
+        customer_form = PurchaseOrderForm(request.POST, instance=po)
+        payment_form = PurchasePaymentForm(request.POST, instance=payo)
+        
+        if customer_form.is_valid() and payment_form.is_valid():
+            order = customer_form.save(commit=False)
+            order.porder_create_by = request.user
+            order.save()
+            payment = payment_form.save(commit=False)
+            payment.order_id = order
+            payment.payment_create_by = request.user
+            payment.save()
+            return redirect('slt:purchase')  # Redirect to a success page or another view
+
+    else:
+        customer_form = PurchaseOrderForm(instance=po)
+        payment_form = PurchasePaymentForm(instance=payo)
+        porder = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
+        formset = CartItemFormSet(queryset=porder)
+        return render(request, 'business_apps/purchase_due_payment.html', {
+            'form' : customer_form,
+            'pay_form' : payment_form,
+            'formset' : formset})
 
 def purchase_update(request, pk):
     po = get_object_or_404(PurchaseOrder, id=pk)
@@ -436,6 +519,21 @@ def supplier_details(request, purchase_pk, supplier_pk):
         return JsonResponse({'is_authenticated': False})
 
 @login_required
+def customer_details(request, customer_pk):    
+    if request.user.is_authenticated:
+        try:
+            item = Clients.objects.get(pk=customer_pk)
+            data = {
+                'address': item.client_address,
+                'mobile': item.client_mobile,
+            }
+            return JsonResponse(data)
+        except Clients.DoesNotExist:
+            return JsonResponse({'error': 'Clients Not found'}, status=404)
+    else:
+        return JsonResponse({'is_authenticated': False})
+
+@login_required
 def pproducts_detail(request, product_search_pk):    
     if request.user.is_authenticated:
         try:
@@ -495,3 +593,33 @@ def save_table_data(request):
         formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
     
     return render(request, 'business_apps/purchase_new_order.html', {'formset': formset})
+
+#Printing page....
+def pinvoice(request, pk):
+    po = get_object_or_404(PurchaseOrder, id=pk)
+    payo = get_object_or_404(PurchasePayment, order_id=pk)
+    CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
+    products = ItemProduct.objects.all() 
+    customer_form = PurchaseOrderForm(instance=po)
+    payment_form = PurchasePaymentForm(instance=payo)
+    porder = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
+    formset = CartItemFormSet(queryset=porder)
+    return render(request, 'business_apps/reports/pinvoice.html', {
+        'form' : customer_form,
+        'pay_form' : payment_form,
+        'formset' : formset,
+        'products' : products})
+
+#Printing page....
+def sinvoice(request, pk):
+    po = get_object_or_404(SalesOrder, id=pk)
+    payo = get_object_or_404(SalesPayment, sorder_id_id=pk)
+    CartItemFormSet = modelformset_factory(SalesOrderItem, form=SalesOrderItemForm, extra=0)
+    customer_form = SalesOrderForm(instance=po)
+    payment_form = SalesPaymentForm(instance=payo)
+    porder = SalesOrderItem.objects.filter(sorder_id_id=pk) 
+    formset = CartItemFormSet(queryset=porder)
+    return render(request, 'business_apps/reports/sinvoice.html', {
+        'form' : customer_form,
+        'pay_form' : payment_form,
+        'formset' : formset})

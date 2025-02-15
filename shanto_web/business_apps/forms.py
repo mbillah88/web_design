@@ -101,3 +101,27 @@ class ItemUnitForm(forms.ModelForm):
 
 class SearchForm(forms.Form):
     pk = forms.IntegerField(label='Primary Key', required=True)
+
+
+class SalesOrderForm(forms.ModelForm):
+    class Meta:
+        model = SalesOrder
+        fields = ['customer','sorder_total','sorder_discount','sorder_due','sorder_status','sorder_note']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['customer'].empty_label = "Select customer..."
+
+class SalesOrderItemForm(forms.ModelForm):
+    class Meta:
+        model = SalesOrderItem
+        fields = ['item_id','item_qty','item_sprice']
+
+    helper = FormHelper()
+    helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))
+    helper.form_method = 'POST'
+
+class SalesPaymentForm(forms.ModelForm):
+    class Meta:
+        model = SalesPayment
+        fields = ['payment_amount','payment_type']

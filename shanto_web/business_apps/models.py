@@ -22,8 +22,8 @@ OrderChoice =(
 PaymentChoice =( 
     ("1", "Cash"), 
     ("2", "Card"), 
-    ("3", "Others"), 
-    ("4", "Due"), 
+    ("3", "Due"), 
+    ("4", "Others"), 
 ) 
 
 class ItemCategory(models.Model):
@@ -117,3 +117,40 @@ class PurchasePayment(models.Model):
   payment_update_time = models.DateTimeField(auto_now=True, null = True)   
   payment_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_create_user')
   payment_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_create_update')
+
+
+  
+class SalesOrder(models.Model):
+  customer = models.ForeignKey(Clients, on_delete=models.CASCADE, null = True)
+  sorder_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  sorder_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  sorder_due = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  sorder_status = models.CharField(max_length=1,choices=OrderChoice, default=3)
+  sorder_note = models.CharField(max_length=500, default='')
+  sorder_create_time = models.DateTimeField(auto_now_add=True,null = True)  
+  sorder_update_time = models.DateTimeField(auto_now=True,null = True)  
+  sorder_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='s_order_user')
+  sorder_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='s_order_update')
+  
+  def __str__(self):
+    return str(self.id )
+    return self.get_porder_status_display() 
+
+class SalesOrderItem(models.Model):
+  sorder_id = models.ForeignKey(SalesOrder, related_name='item_sl', on_delete=models.CASCADE, null = True)
+  item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
+  item_qty = models.PositiveBigIntegerField(default=1)
+  item_sprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+
+  def get_total_price(self):
+    return self.item_qty * self.item_sprice
+
+class SalesPayment(models.Model):
+  sorder_id = models.ForeignKey(SalesOrder, on_delete=models.CASCADE, null = True)
+  payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  payment_type = models.CharField(max_length=1,choices=PaymentChoice, default=1)
+  payment_time = models.DateTimeField(auto_now_add=True, null = True)  
+  payment_update_time = models.DateTimeField(auto_now=True, null = True)   
+  payment_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='s_create_user')
+  payment_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='s_create_update')
+  
