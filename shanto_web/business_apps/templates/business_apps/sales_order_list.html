@@ -1,0 +1,31 @@
+
+<table>
+    <tr>
+      <th scope="col">S Order Code</th>
+      <th scope="col">Cutomer</th>
+      <th scope="col">Total Item</th>
+      <th scope="col">Total Amount</th>
+      <th scope="col">Order Status</th>
+      <th scope="col">Create Time</th>
+      <th scope="col">Created By</th>
+      <th scope="col">Action</th>
+    </tr>
+    {% for data in page_obj %}
+    <tr>       
+      <td>SOI-{{ data.id }}</td>
+      <td>{{ data.customer }}</td>
+      <td>{{ data.total_items }}</td>
+      <td>{{ data.sorder_total }}</td>
+      <td>{{ data.get_sorder_status_display }}</td>
+      <td>{{ data.sorder_create_time }}</td>
+      <td>{{ data.sorder_create_by }}</td>
+      <td>
+        <a href="{% url 'slt:sales_update' data.pk %}">Edit</a>
+        <a href="">Delete</a>
+      </td>
+      <td>
+        <a href="{% url 'slt:sinvoice' data.pk %}" target="_blank">View</a>
+      </td>
+    </tr>
+    {% endfor %}
+</table>

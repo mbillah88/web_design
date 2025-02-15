@@ -85,10 +85,10 @@
     <div class="container">
         <div style="display: flex;">
             <div>
-                <div> <span><h3>Invoice # POI-{{ form.instance.id }}</h3></span> <span>PO Date : {{ form.instance.porder_create_time|date:'Y-m-d H:m a'  }}</span></div>
+                <div> <span><h3>Invoice # POI-{{ form.instance.id }}</h3></span> <span>PO Date : {{ form.instance.sorder_create_time|date:'Y-m-d H:m a'  }}</span></div>
                
-                <span>Supplier Name : {{ form.instance.supplier_id.supplier_name }}</span><br>
-                <span>Contact No: {{ form.instance.supplier_id.supplier_mobile }}</span><br>
+                <span>Customer Name : {{ form.instance.customer.client_name }}</span><br>
+                <span>Contact No: {{ form.instance.customer.client_mobile }}</span><br>
             </div>
         </div><h3>Item List</h3>
         <table>
@@ -110,19 +110,19 @@
                     <td>{{ form.instance.item_id.id }}</td>
                     <td>{{form.instance.item_id.item_name}}</td>
                     <td style="text-align: center;">{{ form.instance.item_id.item_unit }}</td>
-                    <td style="text-align: center;">{{ form.instance.item_pprice }}</td>
+                    <td style="text-align: center;">{{ form.instance.item_sprice }}</td>
                     <td style="text-align: center;">{{ form.instance.item_qty }}</td>
-                    <td style="text-align: right;">{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>
+                    <td style="text-align: right;">{{form.instance.item_qty|multiply:form.instance.item_sprice}}</td>
                 </tr>
                 {% endfor%}
             </tbody>
         </table>
         <div style="display: flex;">
             <div style=" flex: 50%; ">                
-                <h5>(In Word : {{form.instance.porder_total|subtraction:form.instance.porder_discount|number_to_words }} taka only.)</h5>
+                <h5>(In Word : {{form.instance.srder_total|subtraction:form.instance.sorder_discount|number_to_words }} taka only.)</h5>
             </div>
             <div style=" flex: 30%; margin: 0 auto; display: flex ; justify-content: center; align-items: center;">
-                {% if form.instance.porder_due > 0 %}
+                {% if form.instance.sorder_due > 0 %}
                     <img style="width: 100px; height:100px;"  class="rounded-img" src="{% static 'business_apps/img/due_img.png' %}" alt="SLT Bannar"> 
                 {% else %}
                     <img style="width: 100px; height:100px;" class="rounded-img" src="{% static 'business_apps/img/paid_img.png' %}" alt="SLT Bannar"> 
@@ -137,17 +137,17 @@
                     <label for="">Due :</label>
                 </div>
                 <div style="display: flex; flex-direction: column; flex: 30%; align-items: end; font-weight: 700; padding: .5rem; gap: .4rem;">
-                    <label for="">{{ form.instance.porder_total }}</label>
-                    <label for="">{{ form.instance.porder_discount }}</label>
-                    <label for="">{{form.instance.porder_total|subtraction:form.instance.porder_discount}}</label>
+                    <label for="">{{ form.instance.sorder_total }}</label>
+                    <label for="">{{ form.instance.sorder_discount }}</label>
+                    <label for="">{{form.instance.sorder_total|subtraction:form.instance.sorder_discount}}</label>
                     <label for="">{{ pay_form.instance.payment_amount }}</label>
-                    <label for="">{{ form.instance.porder_due }}</label>
+                    <label for="">{{ form.instance.sorder_due }}</label>
                 </div>
             </div>
         </div>
         <div class="summary">
             <div><p>Signature</p></div>
-            <div><p>Created By: {{ form.instance.porder_create_by }}</p></div>
+            <div><p>Created By: {{ form.instance.sorder_create_by }}</p></div>
         </div>
     </div>
     <div class="footer">
