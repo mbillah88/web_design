@@ -233,7 +233,7 @@ def sales_new(request):
                 item.sorder_id = order
                 item.save()
             payment = payment_form.save(commit=False)
-            payment.order_id = order
+            payment.sorder_id = order
             payment.payment_create_by = request.user
             payment.save()
             return redirect('slt:sales')  # Redirect to a success page or another view
@@ -609,12 +609,12 @@ def pinvoice(request, pk):
         'pay_form' : payment_form,
         'formset' : formset,
         'products' : products})
+
 #Printing page....
 def sinvoice(request, pk):
     po = get_object_or_404(SalesOrder, id=pk)
-    payo = get_object_or_404(SalesPayment, sorder_id=pk)
+    payo = get_object_or_404(SalesPayment, sorder_id_id=pk)
     CartItemFormSet = modelformset_factory(SalesOrderItem, form=SalesOrderItemForm, extra=0)
-    products = ItemProduct.objects.all() 
     customer_form = SalesOrderForm(instance=po)
     payment_form = SalesPaymentForm(instance=payo)
     porder = SalesOrderItem.objects.filter(sorder_id_id=pk) 
@@ -622,5 +622,4 @@ def sinvoice(request, pk):
     return render(request, 'business_apps/reports/sinvoice.html', {
         'form' : customer_form,
         'pay_form' : payment_form,
-        'formset' : formset,
-        'products' : products})
+        'formset' : formset})
