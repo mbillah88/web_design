@@ -29,32 +29,36 @@ Dashboard
 {% endif %}
 
 <div class="main-content">
-    <div class="content d-flex sm-2">
+    <div style=" gap: 1rem;" class="content d-flex sm-2;">
         <div class="content" style="background-color: #1a2ae399;display: flex;
         flex-direction: column; gap: .5rem; text-align: center;border-left: 10px solid blue;
         border-bottom: 10px solid blue;">     
             <div style="flex: 50%;">
-                <h3 style="color: wheat;background-color: blue;padding: .5rem; border: 1px solid wheat;">Sales Todays</h3>
+                <h5 style="color: wheat;background-color: blue;padding: .5rem; border: 1px solid wheat;">Sales Todays</h5>
             </div>         
             <div style="flex: 50%;">
-                <h3>{{count}}</h3>        
+                <div> Order : <span>{{total_sales_orders}}</span></div>
+                <div> Item : <span>{{total_sales_items}}</span></div>
+                <div> Amount : <span>{{total_sales_amount}}</span></div>
             </div> 
         </div>
         <div class="content" style="background-color: #9f0d9fab;display: flex;
         flex-direction: column; gap: .5rem; text-align: center;border-left: 10px solid blue;
         border-bottom: 10px solid blue;">      
             <div style="flex: 50%;">
-                <h3 style="color: wheat;background-color: #ff00cbb5;padding: .5rem; border: 1px solid wheat;">Service Todays</h3>
+                <h5 style="color: wheat;background-color: #ff00cbb5;padding: .5rem; border: 1px solid wheat;">Purchase Todays</h5>
             </div>              
             <div style="flex: 50%;">
-                <h3>987654321</h3>
+                <span> Order : {{total_purchase_orders}}</span> <br>
+                <span> Item : {{total_purchase_items}}</span> <br>
+                <span> Amount : {{total_purchase_amount}}</span> 
             </div>
         </div>
         <div class="content" style="background-color: #1a2ae399; display: flex;
         flex-direction: column; gap: .5rem; text-align: center;border-left: 10px solid blue;
         border-bottom: 10px solid blue;">               
             <div style="flex: 50%;">
-                <h3 style="color: wheat;background-color: blue;padding: .5rem; border: 1px solid wheat;">Project Todays</h3>
+                <h5 style="color: wheat;background-color: blue;padding: .5rem; border: 1px solid wheat;">Service Todays</h5>
             </div>             
             <div style="flex: 50%;">
                 <h3>555</h3>
@@ -64,7 +68,7 @@ Dashboard
         flex-direction: column; gap: .5rem; text-align: center;border-left: 10px solid blue;
         border-bottom: 10px solid blue;">               
             <div style="flex: 50%;">
-                <h3 style="color: wheat;background-color: #ff00cbb5;padding: .5rem; border: 1px solid wheat;"">Due Todays</h3>
+                <h5 style="color: wheat;background-color: #ff00cbb5;padding: .5rem; border: 1px solid wheat;">Project Todays</h5>
             </div>          
             <div style="flex: 50%;">
                 <h3>987654321</h3>
@@ -76,28 +80,134 @@ Dashboard
 
 <div class="main-content">
     <div class="content">                
-        <h2>Sales List</h2>
-        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
-    
-        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
-        
+        <h5>Todays Sales</h5>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Total Qty </th>
+                    <th>Total Amt</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in sales_summary_today %}
+                    <tr>
+                        <td>{{ item.item_id__id }}</td>
+                        <td>{{ item.item_id__item_name }}</td>
+                        <td>{{ item.total_sold_quantity }}</td>
+                        <td>{{ item.total_sold_amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    <div class="content">                
-        <h2>Service List</h2>
-        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
-    
-        <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
-        
+    <div class="content">
+        <h5>Todays Purchase</h5>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Total Qty </th>
+                    <th>Total Amt</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in purchase_summary_today %}
+                    <tr>
+                        <td>{{ item.item_id__id }}</td>
+                        <td>{{ item.item_id__item_name }}</td>
+                        <td>{{ item.total_purchased_quantity }}</td>
+                        <td>{{ item.total_purchased_amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 
-<div class="main-content content" style="background-color: #9f0d9fab;display: flex;
+<div class="main-content">
+    <div class="content">                
+        <h4>Sales Samary</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Total Qty </th>
+                    <th>Total Amt</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in sales_summary %}
+                    <tr>
+                        <td>{{ item.item_id__id }}</td>
+                        <td>{{ item.item_id__item_name }}</td>
+                        <td>{{ item.total_sold_quantity }}</td>
+                        <td>{{ item.total_sold_amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="content">
+        <h4>Purchase Summary</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Total Qty </th>
+                    <th>Total Amt</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in purchase_summary %}
+                    <tr>
+                        <td>{{ item.item_id__id }}</td>
+                        <td>{{ item.item_id__item_name }}</td>
+                        <td>{{ item.total_purchased_quantity }}</td>
+                        <td>{{ item.total_purchased_amount }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+    
+<div class="main-content" style="background-color: #9f0d9fab;display: flex;
 flex-direction: column; gap: .5rem; text-align: center;border-left: 10px solid blue;
 border-bottom: 10px solid blue;">             
-    <h2>Setting the Viewport</h2>
-    <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
-
-    <p>This example does not really do anything, other than showing you how to add the viewport meta element.</p>
-    
+    <h4>Product Summary</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>SL</th>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Purchase Qty </th>
+                    <th>Purchase Amt</th>
+                    <th>Sales Qty </th>
+                    <th>Sales Amt</th>
+                    <th>Available Qty</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in inventory_summary %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.item_id }}</td>
+                        <td>{{ item.item_name }}</td>
+                        <td>{{ item.total_purchased_quantity }}</td>
+                        <td>{{ item.total_purchased_amount }}</td>
+                        <td>{{ item.total_sold_quantity }}</td>
+                        <td>{{ item.total_sold_amount }}</td>
+                        <td>{{ item.remaining_quantity }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 </div>
 {% endblock %}
