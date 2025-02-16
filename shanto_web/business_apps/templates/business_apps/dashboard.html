@@ -29,49 +29,49 @@ Dashboard
 {% endif %}
 
 <div class="main-content">
-    <div style=" gap: 1rem;" class="content d-flex sm-2;">
-        <div class="content" style="background-color: #1a2ae399;display: flex;
-        flex-direction: column; gap: .5rem; text-align: center;border-left: 10px solid blue;
-        border-bottom: 10px solid blue;">     
+    <div style=" gap: 1rem;" class="content row">
+        <div class="content col-sm-6" >     
             <div style="flex: 50%;">
-                <h5 style="color: wheat;background-color: blue;padding: .5rem; border: 1px solid wheat;">Sales Todays</h5>
+                <h5 style="color: wheat; background-color: #700375; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Sales Todays</h5>
             </div>         
             <div style="flex: 50%;">
-                <div> Order : <span>{{total_sales_orders}}</span></div>
-                <div> Item : <span>{{total_sales_items}}</span></div>
-                <div> Amount : <span>{{total_sales_amount}}</span></div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Order :</span> </div><div><span>{{total_sales_orders}}</span></div></div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Item :</span> </div><div><span>{{total_sales_items}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Amount :</span> </div><div><span>{{total_sales_amount}}</span></div> </div>
             </div> 
         </div>
-        <div class="content" style="background-color: #9f0d9fab;display: flex;
-        flex-direction: column; gap: .5rem; text-align: center;border-left: 10px solid blue;
-        border-bottom: 10px solid blue;">      
+        <div class="content col-sm-6">      
             <div style="flex: 50%;">
-                <h5 style="color: wheat;background-color: #ff00cbb5;padding: .5rem; border: 1px solid wheat;">Purchase Todays</h5>
+                <h5 style="color: wheat; background-color: #6f00ff; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Purchase Todays</h5>
             </div>              
             <div style="flex: 50%;">
-                <span> Order : {{total_purchase_orders}}</span> <br>
-                <span> Item : {{total_purchase_items}}</span> <br>
-                <span> Amount : {{total_purchase_amount}}</span> 
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%;"><span>{{total_purchase_orders}}</span></div></div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%;"><span>{{total_purchase_items}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%;"><span>{{total_purchase_amount}}</span></div> </div>
             </div>
         </div>
-        <div class="content" style="background-color: #1a2ae399; display: flex;
-        flex-direction: column; gap: .5rem; text-align: center;border-left: 10px solid blue;
-        border-bottom: 10px solid blue;">               
+        <div class="content col-sm-6">               
             <div style="flex: 50%;">
-                <h5 style="color: wheat;background-color: blue;padding: .5rem; border: 1px solid wheat;">Service Todays</h5>
+                <h5 style="color: wheat; background-color: #8c4e06; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Service Todays</h5>
             </div>             
-            <div style="flex: 50%;">
-                <h3>555</h3>
+            <div style="flex: 50%;">              
+                <div style="flex: 50%;">
+                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Order :</span> </div><div><span>{{total_purchase_orders}}</span></div></div>
+                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Item :</span> </div><div><span>{{total_purchase_items}}</span></div> </div>
+                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Amount :</span> </div><div><span>{{total_purchase_amount}}</span></div> </div>
+                </div>
             </div>
         </div>
-        <div class="content" style="background-color: #9f0d9fab;display: flex;
-        flex-direction: column; gap: .5rem; text-align: center;border-left: 10px solid blue;
-        border-bottom: 10px solid blue;">               
+        <div class="content col-sm-6">               
             <div style="flex: 50%;">
-                <h5 style="color: wheat;background-color: #ff00cbb5;padding: .5rem; border: 1px solid wheat;">Project Todays</h5>
+                <h5 style="color: wheat; background-color: #3a5b00; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Project Todays</h5>
             </div>          
-            <div style="flex: 50%;">
-                <h3>987654321</h3>
+            <div style="flex: 50%;">              
+                <div style="flex: 50%;">
+                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Order :</span> </div><div><span>{{total_purchase_orders}}</span></div></div>
+                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Item :</span> </div><div><span>{{total_purchase_items}}</span></div> </div>
+                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Amount :</span> </div><div><span>{{total_purchase_amount}}</span></div> </div>                
+                </div>
             </div>
         </div>
 
@@ -79,135 +79,218 @@ Dashboard
 </div>
 
 <div class="main-content">
-    <div class="content">                
-        <h5>Todays Sales</h5>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>Product Name</th>
-                    <th>Total Qty </th>
-                    <th>Total Amt</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in sales_summary_today %}
+    <div class="content"> 
+        
+        <div class="form-header" style="display: flex;">      
+            <div>        
+                <span style="font-size: 1.3rem; font-weight: bolder;">Todays Sales</span>
+            </div>
+            <div>        
+                <a href="#">Sales List</a>
+            </div>
+        </div> 
+        <hr>
+        <div class="content">               
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ item.item_id__id }}</td>
-                        <td>{{ item.item_id__item_name }}</td>
-                        <td>{{ item.total_sold_quantity }}</td>
-                        <td>{{ item.total_sold_amount }}</td>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Total Qty </th>
+                        <th>Total Amt</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for item in sales_summary_today %}
+                        <tr>
+                            <td>{{ item.item_id__id }}</td>
+                            <td>{{ item.item_id__item_name }}</td>
+                            <td>{{ item.total_sold_quantity }}</td>
+                            <td>{{ item.total_sold_amount }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="content">
-        <h5>Todays Purchase</h5>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>Product Name</th>
-                    <th>Total Qty </th>
-                    <th>Total Amt</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in purchase_summary_today %}
+        <div class="form-header" style="display: flex;">      
+            <div>        
+                <span style="font-size: 1.3rem; font-weight: bolder;">Todays Purchase</span>
+            </div>
+            <div>        
+                <a href="#">Purchase List</a>
+            </div>
+        </div> 
+        <hr>
+        <div class="content">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ item.item_id__id }}</td>
-                        <td>{{ item.item_id__item_name }}</td>
-                        <td>{{ item.total_purchased_quantity }}</td>
-                        <td>{{ item.total_purchased_amount }}</td>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Total Qty </th>
+                        <th>Total Amt</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for item in purchase_summary_today %}
+                        <tr>
+                            <td>{{ item.item_id__id }}</td>
+                            <td>{{ item.item_id__item_name }}</td>
+                            <td>{{ item.total_purchased_quantity }}</td>
+                            <td>{{ item.total_purchased_amount }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <div class="main-content">
-    <div class="content">                
-        <h4>Sales Samary</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>Product Name</th>
-                    <th>Total Qty </th>
-                    <th>Total Amt</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in sales_summary %}
+    <div class="content">     
+        <div class="form-header" style="display: flex;">     
+            <span style="font-size: 1.3rem; font-weight: bolder;">Sales Summary</span>           
+        </div> 
+        <hr>
+        <div class="content">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ item.item_id__id }}</td>
-                        <td>{{ item.item_id__item_name }}</td>
-                        <td>{{ item.total_sold_quantity }}</td>
-                        <td>{{ item.total_sold_amount }}</td>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Total Qty </th>
+                        <th>Total Amt</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for item in sales_summary %}
+                        <tr>
+                            <td>{{ item.item_id__id }}</td>
+                            <td>{{ item.item_id__item_name }}</td>
+                            <td>{{ item.total_sold_quantity }}</td>
+                            <td>{{ item.total_sold_amount }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="content">
-        <h4>Purchase Summary</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>Product ID</th>
-                    <th>Product Name</th>
-                    <th>Total Qty </th>
-                    <th>Total Amt</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in purchase_summary %}
+    <hr>
+    <div class="content">     
+        <div class="form-header" style="display: flex;">     
+            <span style="font-size: 1.3rem; font-weight: bolder;">Purchase Summary</span>           
+        </div>
+        <hr>
+        <div class="content">
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ item.item_id__id }}</td>
-                        <td>{{ item.item_id__item_name }}</td>
-                        <td>{{ item.total_purchased_quantity }}</td>
-                        <td>{{ item.total_purchased_amount }}</td>
+                        <th>Product ID</th>
+                        <th>Product Name</th>
+                        <th>Total Qty </th>
+                        <th>Total Amt</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for item in purchase_summary %}
+                        <tr>
+                            <td>{{ item.item_id__id }}</td>
+                            <td>{{ item.item_id__item_name }}</td>
+                            <td>{{ item.total_purchased_quantity }}</td>
+                            <td>{{ item.total_purchased_amount }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
-    
-<div class="main-content" style="background-color: #9f0d9fab;display: flex;
-flex-direction: column; gap: .5rem; text-align: center;border-left: 10px solid blue;
-border-bottom: 10px solid blue;">             
-    <h4>Product Summary</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>SL</th>
-                    <th>Product ID</th>
-                    <th>Product Name</th>
-                    <th>Purchase Qty </th>
-                    <th>Purchase Amt</th>
-                    <th>Sales Qty </th>
-                    <th>Sales Amt</th>
-                    <th>Available Qty</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in inventory_summary %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ item.item_id }}</td>
-                        <td>{{ item.item_name }}</td>
-                        <td>{{ item.total_purchased_quantity }}</td>
-                        <td>{{ item.total_purchased_amount }}</td>
-                        <td>{{ item.total_sold_quantity }}</td>
-                        <td>{{ item.total_sold_amount }}</td>
-                        <td>{{ item.remaining_quantity }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
+<div class="main-content">
+    <div class="content">       
+      <nav class="navbar navbar-expand">
+        <div class="container-fluid">
+          <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Product Summary</span>            
+          </div>
+          <div class="btn-group" style="gap: 2rem;align-items: center;">
+              <div>
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  Category
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                  <li><button class="dropdown-item" type="button">Action</button></li>
+                  <li><button class="dropdown-item" type="button">
+                    <a href="{% url 'slt:business' %}">Dashboard</a>
+                  </button>
+                </li>
+                </ul>
+              </div>
+              <div class="d-flex">             
+                <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;"onkeyup="searchTable()" placeholder="Search for names...">
+              </div>
+          </div>
+        </div>
+      </nav>
+      <hr style="margin: .0rem 0rem 1rem 0rem;
+      color: inherit;
+      background-color: currentColor;
+      border: 0;
+      opacity: .75;">
+      <div class="content">
+        <table id="productTable" class="table table-success table-striped">            
+            <tr>
+                <th style="text-align: center;">SL</th>
+                <th style="text-align: center;">Product ID</th>
+                <th style="text-align: center;">Product Name</th>
+                <th style="text-align: center;">Purchase Qty </th>
+                <th style="text-align: center;">Purchase Amt</th>
+                <th style="text-align: center;">Sales Qty </th>
+                <th style="text-align: center;">Sales Amt</th>
+                <th style="text-align: center;">Available Qty</th>
+            </tr>        
+            {% for item in inventory_summary %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td style="text-align: center; font-weight: 700;">{{ item.item_id }}</td>
+                <td style="font-weight: 700;">{{ item.item_name }}</td>
+                <td style="text-align: center;">{{ item.total_purchased_quantity }}</td>
+                <td style="text-align: right;">{{ item.total_purchased_amount }}</td>
+                <td style="text-align: center;">{{ item.total_sold_quantity }}</td>
+                <td>{{ item.total_sold_amount }}</td>
+                <td style="text-align: center; font-weight: 700;">{{ item.remaining_quantity }}</td>
+            </tr>
+            {% endfor %}
         </table>
-</div>
+  
+      </div> 
+  
+    </div>
+  </div>
+  <script>
+    function searchTable() {
+      console.log("check");
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("productTable");
+    tr = table.getElementsByTagName("tr");
+  
+    console.log("check");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[2];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+  
+  </script>
+    
 {% endblock %}
