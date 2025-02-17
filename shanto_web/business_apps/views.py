@@ -73,8 +73,8 @@ def dashboard(request):
         })
 
     # Optionally, print the inventory summary for verification
-    for item in inventory_summary:
-        print(item)
+    #for item in inventory_summary:
+    #    print(item)
 
         
     # Get the current date
@@ -111,21 +111,21 @@ def dashboard(request):
     total_sales_amount = sum(item['total_sold_amount'] for item in sales_summary_today)
 
     # Print the summaries for verification
-    print("Today's Purchase Summary:")
-    for item in purchase_summary_today:
-        print(item)
+    #print("Today's Purchase Summary:")
+    #for item in purchase_summary_today:
+    #    print(item)
 
-    print("\nTotal Purchase Orders:", total_purchase_orders)
-    print("Total Purchase Items:", total_purchase_items)
-    print("Total Purchase Amount:", total_purchase_amount)
+    #print("\nTotal Purchase Orders:", total_purchase_orders)
+    #print("Total Purchase Items:", total_purchase_items)
+    #print("Total Purchase Amount:", total_purchase_amount)
 
-    print("\nToday's Sales Summary:")
-    for item in sales_summary_today:
-        print(item)
+    #print("\nToday's Sales Summary:")
+    #for item in sales_summary_today:
+    #    print(item)
 
-    print("\nTotal Sales Orders:", total_sales_orders)
-    print("Total Sales Items:", total_sales_items)
-    print("Total Sales Amount:", total_sales_amount)
+    #print("\nTotal Sales Orders:", total_sales_orders)
+    #print("Total Sales Items:", total_sales_items)
+    #print("Total Sales Amount:", total_sales_amount)
 
     context = {
         'user': user,
@@ -394,7 +394,6 @@ def sales_update(request, pk):
         payment_form = SalesPaymentForm(instance=sorder_pay)
         sorder_id = SalesOrderItem.objects.filter(sorder_id_id=pk) 
         formset = CartItemFormSet(queryset=sorder_id)
-        print("Formset Errors:", formset)
     return render(request, 'business_apps/sales_update.html', {
         'form' : customer_form,
         'pay_form' : payment_form,
