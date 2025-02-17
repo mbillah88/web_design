@@ -1,0 +1,174 @@
+{% extends "business_apps/master.html" %}
+
+{% block title %}
+  SLT | Purchase List
+{% endblock %}
+
+{% block header %}
+Purchase List
+{% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+{% url 'slt:purchase' as urls %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page"> Service</li>
+  </ul>
+</div>
+{% endblock %}
+    
+{% block content %}
+<div class="main-content">
+  <div class="content">    
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Service Order</span>
+          <a class="nav-link" href="{% url 'slt:sales_new' %}">Received</a>
+        </div>
+        <div class="btn-group" style="gap: 2rem;align-items: center;">
+          <div>              
+            <!-- Filter form -->
+            <form id="filter-form" method="get">
+              {{ filterset.form.sorder_status }}
+            </form>
+          </div>
+          <div class="d-flex">             
+            <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;"onkeyup="searchTable()" placeholder="Search for names...">
+          </div>
+        </div>
+      </div>
+    </nav>
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;"> 
+    <div class="content">
+      <div class="d-flex gap-3">
+        <div class="content bg-primary">
+          Order : {{sorder.count}}
+        </div>
+        <div class="content bg-success">
+          Total Order : {{sorder.count}}
+        </div>
+        <div class="content bg-warning">
+          Total Due : {{sorder.count}}
+        </div>
+        <div class="content bg-danger">
+          Order Cancel : {{sorder.count}}
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <!-- Paginated list -->
+      <div id="list-container">
+        {% include "business_apps/sales_order_list.html" %}
+      </div>
+      <hr/>
+ 
+      <div class="content">
+        <!-- Pagination controls -->
+        <div class="pagination">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+  
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
+  
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+      </div>
+    </div>
+  </div>  
+</div>
+
+<div class="main-content">
+  <div class="content">    
+    <div class="form-header" style="display: flex;">      
+      <div>
+        <h3>Purchase Order Due</h3>
+      </div>
+      <div>        
+        <a href="{% url 'slt:purchase_new' %}">Purchase Order Due Payment</a>
+      </div>
+    </div>          
+      {% include "business_apps/purchase_order_due_list.html" %}
+    <hr/>
+  </div>
+  
+  <div class="content">    
+    <div class="form-header" style="display: flex;">      
+      <div>
+        <h3>Purchase Order Return</h3>
+      </div>
+      <div>        
+        <a href="{% url 'slt:purchase_new' %}">Purchase Order Return</a>
+      </div>
+    </div>   
+        
+    <table>
+        <tr>
+          <th scope="col">Product Brand</th>
+          <th scope="col">Product Model</th>
+          <th scope="col">Product description</th>
+          <th scope="col">Product Price</th>
+          <th scope="col">Action</th>
+        </tr>
+        {% for data in products %}
+        <tr>      
+          <td>{{ data.item_id.id }}</td>
+          <td>{{ data.item_id.item_name }}</td>
+          <td>{{ data.item_qty }}</td>
+          <td>{{ data.item_pprice }}</td>
+          <td>
+            <a href="{% url 'slt:purchase_update' data.pk %}">Edit</a>
+            <a href="">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <hr/>
+
+
+  </div>
+</div>
+<script>
+  // Handle filter change
+  $('#filter-form select, #filter-form input').on('change', function() {
+      submitForm();
+  });
+
+  // Handle pagination click
+  $(document).on('click', '.pagination-link', function(e) {
+      e.preventDefault();
+      const page = $(this).data('page');
+      submitForm(page);
+  });
+
+  function submitForm(page = 1) {
+      const form = $('#filter-form');
+      const formData = form.serializeArray();
+      formData.push({name: 'page', value: page});
+
+      $.ajax({
+          url: form.attr('action'),
+          data: $.param(formData),
+          success: function(data) {
+              $('#list-container').html($(data).find('#list-container').html());
+              $('.pagination').html($(data).find('.pagination').html());
+          }
+      });
+  }
+</script>
+{% endblock %}

@@ -358,12 +358,48 @@ def sales_new(request):
         'form' : customer_form,
         'pay_form' : payment_form,
         'formset' : formset,
-        'products' : products})
-            
-def sales_update(request):
-  return render(request, 'business_apps/sales_new.html')
+        'products' : products})            
+def sales_update(request, pk):
+    sorder_id = get_object_or_404(SalesOrder, id=pk)
+    sorder_pay = get_object_or_404(SalesPayment, sorder_id=pk)
+    CartItemFormSet = modelformset_factory(SalesOrderItem, form=SalesOrderItemForm, extra=0)
+    products = ItemProduct.objects.all() 
+    if request.method == 'POST':
+        customer_form = SalesOrderForm(request.POST, instance=sorder_id)
+        payment_form = SalesPaymentForm(request.POST, instance=sorder_pay)
+        formset = CartItemFormSet(request.POST)        
+        #for Data Check...
+        for name in request.POST:
+            print("{}: {}".format(name, request.POST.getlist(name)))        
+        # Print formset errors for debugging
+        if not formset.is_valid():
+            print("Formset Errors:", formset.errors)
+        
+        if customer_form.is_valid() and formset.is_valid() and payment_form.is_valid():
+            order = customer_form.save(commit=False)
+            order.sorder_create_by = request.user
+            order.save()
+            cart_items = formset.save(commit=False)
+            for item in cart_items:
+                item.sorder_id = order
+                item.save()
+            payment = payment_form.save(commit=False)
+            payment.sorder_id = order
+            payment.payment_create_by = request.user
+            payment.save()
+            return redirect('slt:sales')  # Redirect to a success page or another view
 
-
+    else:
+        customer_form = SalesOrderForm(instance=sorder_id)
+        payment_form = SalesPaymentForm(instance=sorder_pay)
+        sorder_id = SalesOrderItem.objects.filter(sorder_id_id=pk) 
+        formset = CartItemFormSet(queryset=sorder_id)
+        print("Formset Errors:", formset)
+    return render(request, 'business_apps/sales_update.html', {
+        'form' : customer_form,
+        'pay_form' : payment_form,
+        'formset' : formset,
+        'products' : products})      
 
 # Purchase ....
 @login_required
@@ -424,7 +460,6 @@ def purchase_new(request):
         'pay_form' : payment_form,
         'formset' : formset,
         'products' : products})
-
 def purchase_due_pay(request, pk):
     po = get_object_or_404(PurchaseOrder, id=pk)
     payo = get_object_or_404(PurchasePayment, order_id=pk)
@@ -453,7 +488,6 @@ def purchase_due_pay(request, pk):
             'form' : customer_form,
             'pay_form' : payment_form,
             'formset' : formset})
-
 def purchase_update(request, pk):
     po = get_object_or_404(PurchaseOrder, id=pk)
     payo = get_object_or_404(PurchasePayment, order_id=pk)
@@ -498,6 +532,10 @@ def item_delete_row(request, purchase_pk, row_id):
     obj = get_object_or_404(PurchaseOrderItem, id=row_id)
     obj.delete()
     return JsonResponse({'status': 'success', 'message': 'Row deleted successfully'})
+
+#Service.....
+def service(request):
+    return render(request, 'business_apps/service.html', {})
 # Tools_Unit_View...
 @login_required
 def settings(request):
@@ -643,6 +681,37 @@ def customer_details(request, customer_pk):
             return JsonResponse({'error': 'Clients Not found'}, status=404)
     else:
         return JsonResponse({'is_authenticated': False})
+@login_required
+def customer_details_sales(request, sales_pk, customer_pk):    
+    if request.user.is_authenticated:
+        try:
+            item = Clients.objects.get(pk=customer_pk)
+            data = {
+                'address': item.client_address,
+                'mobile': item.client_mobile,
+            }
+            return JsonResponse(data)
+        except Clients.DoesNotExist:
+            return JsonResponse({'error': 'Clients Not found'}, status=404)
+    else:
+        return JsonResponse({'is_authenticated': False})
+
+@login_required
+def products_details_sales(request, sales_pk, product_search_pk):    
+    if request.user.is_authenticated:
+        try:
+            item = ItemProduct.objects.get(pk=product_search_pk)
+            #data = {
+            #    'address': item.supplier_address,
+            #    'mobile': item.supplier_mobile,
+            #}
+            serializer = ItemProductSerializer(item)
+            return JsonResponse(serializer.data)
+            #return JsonResponse(data)
+        except ItemProduct.DoesNotExist:
+            return JsonResponse({'error': 'Product Not found'}, status=404)
+    else:
+        return JsonResponse({'is_authenticated': False})
 
 @login_required
 def pproducts_detail(request, product_search_pk):    
@@ -704,7 +773,120 @@ def save_table_data(request):
         formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
     
     return render(request, 'business_apps/purchase_new_order.html', {'formset': formset})
+# Reports panel...............
+@login_required
+def reports(request):
+    return render(request, 'business_apps/reports.html', {})
 
+def report_summary_daily(request):
+    # Get the purchase summary
+    purchase_summary = PurchaseOrderItem.objects.values('item_id__id', 'item_id__item_name') \
+        .annotate(total_purchased_quantity=Sum('item_qty')) \
+        .annotate(total_purchased_amount=Sum('item_pprice')) \
+        .order_by('item_id__id')
+
+    # Get the sales summary
+    sales_summary = SalesOrderItem.objects.values('item_id__id', 'item_id__item_name') \
+        .annotate(total_sold_quantity=Sum('item_qty')) \
+        .annotate(total_sold_amount=Sum('item_sprice')) \
+        .order_by('item_id__id')
+
+    # Convert purchase_summary and sales_summary to dictionaries for easier processing
+    purchase_dict = {item['item_id__id']: item for item in purchase_summary}
+    sales_dict = {item['item_id__id']: item for item in sales_summary}
+
+    # Calculate the inventory
+    inventory_summary = []
+    for item_id, purchase_item in purchase_dict.items():
+        item_name = purchase_item['item_id__item_name']
+        total_purchased_quantity = purchase_item['total_purchased_quantity']
+        total_purchased_amount = purchase_item['total_purchased_amount']
+
+        sales_item = sales_dict.get(item_id, {'total_sold_quantity': 0, 'total_sold_amount': 0})
+        total_sold_quantity = sales_item['total_sold_quantity']
+        total_sold_amount = sales_item['total_sold_amount']
+
+        remaining_quantity = total_purchased_quantity - total_sold_quantity
+
+        inventory_summary.append({
+            'item_id': item_id,
+            'item_name': item_name,
+            'total_purchased_quantity': total_purchased_quantity,
+            'total_purchased_amount': total_purchased_amount,
+            'total_sold_quantity': total_sold_quantity,
+            'total_sold_amount': total_sold_amount,
+            'remaining_quantity': remaining_quantity
+        })
+
+    # Optionally, print the inventory summary for verification
+    for item in inventory_summary:
+        print(item)
+
+        
+    # Get the current date
+    current_date = timezone.localtime().date()
+
+    # Define an ExpressionWrapper to calculate the total amount for purchases and sales
+    purchase_total_amount = ExpressionWrapper(F('item_qty') * F('item_pprice'), output_field=DecimalField())
+    sales_total_amount = ExpressionWrapper(F('item_qty') * F('item_sprice'), output_field=DecimalField())
+
+    # Get the purchase summary for the current date
+    purchase_summary_today = list(PurchaseOrderItem.objects.filter(porder_id__porder_create_time__date=current_date).values('item_id__id', 'item_id__item_name') \
+        .annotate(total_purchased_quantity=Sum('item_qty')) \
+        .annotate(total_purchased_amount=Sum(purchase_total_amount)) \
+        .annotate(total_orders=Count('porder_id', distinct=True)) \
+        .annotate(total_items=Count('item_id')) \
+        .order_by('item_id__id'))
+
+    # Get the total orders and total price for purchases
+    total_purchase_orders = len(set(item['total_orders'] for item in purchase_summary_today))
+    total_purchase_items = sum(item['total_purchased_quantity'] for item in purchase_summary_today)
+    total_purchase_amount = sum(item['total_purchased_amount'] for item in purchase_summary_today)
+
+    # Get the sales summary for the current date
+    sales_summary_today = list(SalesOrderItem.objects.filter(sorder_id__sorder_create_time__date=current_date).values('item_id__id', 'item_id__item_name') \
+        .annotate(total_sold_quantity=Sum('item_qty')) \
+        .annotate(total_sold_amount=Sum(sales_total_amount)) \
+        .annotate(total_orders=Count('sorder_id', distinct=True)) \
+        .annotate(total_items=Count('item_id')) \
+        .order_by('item_id__id'))
+
+    # Get the total orders and total price for sales
+    total_sales_orders = len(set(item['total_orders'] for item in sales_summary_today))
+    total_sales_items = sum(item['total_sold_quantity'] for item in sales_summary_today)
+    total_sales_amount = sum(item['total_sold_amount'] for item in sales_summary_today)
+
+    # Print the summaries for verification
+    print("Today's Purchase Summary:")
+    for item in purchase_summary_today:
+        print(item)
+
+    print("\nTotal Purchase Orders:", total_purchase_orders)
+    print("Total Purchase Items:", total_purchase_items)
+    print("Total Purchase Amount:", total_purchase_amount)
+
+    print("\nToday's Sales Summary:")
+    for item in sales_summary_today:
+        print(item)
+
+    print("\nTotal Sales Orders:", total_sales_orders)
+    print("Total Sales Items:", total_sales_items)
+    print("Total Sales Amount:", total_sales_amount)
+
+    context = {
+        'purchase_summary': purchase_summary,
+        'sales_summary': sales_summary,
+        'inventory_summary': inventory_summary,
+        'purchase_summary_today': purchase_summary_today,
+        'sales_summary_today': sales_summary_today,
+        'total_sales_orders': total_sales_orders,
+        'total_sales_items': total_sales_items,
+        'total_sales_amount': total_sales_amount,
+        'total_purchase_orders': total_purchase_orders,
+        'total_purchase_items': total_purchase_items,
+        'total_purchase_amount': total_purchase_amount,
+    }
+    return render(request, 'business_apps/reports/daily_reports_summary.html', context)
 #Printing page....
 def pinvoice(request, pk):
     po = get_object_or_404(PurchaseOrder, id=pk)

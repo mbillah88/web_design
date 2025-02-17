@@ -35,9 +35,9 @@ Dashboard
                 <h5 style="color: wheat; background-color: #700375; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Sales Todays</h5>
             </div>         
             <div style="flex: 50%;">
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Order :</span> </div><div><span>{{total_sales_orders}}</span></div></div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Item :</span> </div><div><span>{{total_sales_items}}</span></div> </div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Amount :</span> </div><div><span>{{total_sales_amount}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%;"><span>{{total_sales_orders}}</span></div></div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%;"><span>{{total_sales_items}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%;"><span>{{total_sales_amount}}</span></div> </div>
             </div> 
         </div>
         <div class="content col-sm-6">      
@@ -54,12 +54,10 @@ Dashboard
             <div style="flex: 50%;">
                 <h5 style="color: wheat; background-color: #8c4e06; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Service Todays</h5>
             </div>             
-            <div style="flex: 50%;">              
-                <div style="flex: 50%;">
-                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Order :</span> </div><div><span>{{total_purchase_orders}}</span></div></div>
-                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Item :</span> </div><div><span>{{total_purchase_items}}</span></div> </div>
-                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Amount :</span> </div><div><span>{{total_purchase_amount}}</span></div> </div>
-                </div>
+            <div style="flex: 50%;">      
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Recieved :</span> </div><div style="flex: 50%;"><span>{{total_purchase_orders}}</span></div></div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Delivery :</span> </div><div style="flex: 50%;"><span>{{total_purchase_items}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Pending :</span> </div><div style="flex: 50%;"><span>{{total_purchase_amount}}</span></div> </div>
             </div>
         </div>
         <div class="content col-sm-6">               
@@ -68,9 +66,9 @@ Dashboard
             </div>          
             <div style="flex: 50%;">              
                 <div style="flex: 50%;">
-                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Order :</span> </div><div><span>{{total_purchase_orders}}</span></div></div>
-                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Item :</span> </div><div><span>{{total_purchase_items}}</span></div> </div>
-                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem;"><div><span>Amount :</span> </div><div><span>{{total_purchase_amount}}</span></div> </div>                
+                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Running :</span> </div><div style="flex: 50%;"><span>{{total_purchase_orders}}</span></div></div>
+                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Complete :</span> </div><div style="flex: 50%;"><span>{{total_purchase_items}}</span></div> </div>
+                    <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Pending :</span> </div><div style="flex: 50%;"><span>{{total_purchase_amount}}</span></div> </div>                
                 </div>
             </div>
         </div>

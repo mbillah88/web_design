@@ -21,3 +21,7 @@ def addition(value, arg):
 def number_to_words(value):
     p = inflect.engine()
     return p.number_to_words(value)
+    
+@register.filter
+def startswith(value, arg):
+    return value.startswith(arg)
