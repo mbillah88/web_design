@@ -108,7 +108,7 @@ class PurchaseOrderItem(models.Model):
 
   def get_total_price(self):
     return self.item_qty * self.item_pprice
-
+    
 class PurchasePayment(models.Model):
   order_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
   payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
@@ -117,8 +117,6 @@ class PurchasePayment(models.Model):
   payment_update_time = models.DateTimeField(auto_now=True, null = True)   
   payment_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_create_user')
   payment_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_create_update')
-
-
   
 class SalesOrder(models.Model):
   customer = models.ForeignKey(Clients, on_delete=models.CASCADE, null = True)
@@ -153,4 +151,49 @@ class SalesPayment(models.Model):
   payment_update_time = models.DateTimeField(auto_now=True, null = True)   
   payment_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='s_create_user')
   payment_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='s_create_update')
+
+class Stock(models.Model):
+  item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
+  item_qty = models.PositiveBigIntegerField(default=1)
+  item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  item_sprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  item_alert_qty = models.CharField(max_length=255, null = True, blank =True, default=0)
+  item_status = models.CharField(max_length=255, null = True, blank =True, default='')
+  created_at = models.DateTimeField(auto_now_add=True, null = True)   
+  def __str__(self):         
+    return self.item_id.item_name
+
+class Service(models.Model):
+  service_name = models.CharField(max_length=255)
+  service_description = models.CharField(max_length=255, default='')
+  service_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  service_status = models.CharField(max_length=255, null = True, blank =True, default='')
+  created_at = models.DateTimeField(auto_now_add=True, null = True)   
+  def __str__(self):         
+    return self.service_name
+
+class ServiceOrder(models.Model):
+  customer = models.ForeignKey(Clients, on_delete=models.CASCADE, null = True)
+  service_id = models.ForeignKey(Service, on_delete=models.CASCADE, null = True)
+  sorder_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  sorder_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  sorder_due = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  sorder_status = models.CharField(max_length=1,choices=OrderChoice, default=3)
+  sorder_note = models.CharField(max_length=500, default='')
+  sorder_create_time = models.DateTimeField(auto_now_add=True,null = True)  
+  sorder_update_time = models.DateTimeField(auto_now=True,null = True)  
+  service_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='service_user')
+  service_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='service_update')
   
+  def __str__(self):
+    return str(self.id )
+    return self.get_porder_status_display()
+class ServicePayment(models.Model):
+  sorder_id = models.ForeignKey(ServiceOrder, on_delete=models.CASCADE, null = True)
+  payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  payment_type = models.CharField(max_length=1,choices=PaymentChoice, default=1)
+  payment_time = models.DateTimeField(auto_now_add=True, null = True)  
+  payment_update_time = models.DateTimeField(auto_now=True, null = True)   
+  payment_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_service_user')
+  payment_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_service_update')
+

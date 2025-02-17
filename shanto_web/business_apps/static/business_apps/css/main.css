@@ -123,7 +123,7 @@ aside:not(.nav-side-bar) .side-bar a.sidebar-link{
 aside > div.side-nav-body{
     display: grid;
     grid-template-rows: 0fr;
-    background-color: #3683f79d; 
+    /*background-color: #3683f79d; */
     transition: all 330ms ease-in-out;
 
     > div{
@@ -147,7 +147,7 @@ aside:not(.nav-side-bar):hover {
 aside .side-bar{    
   flex: 1 1 auto;
   margin-top: 1rem;
-  background-color: darkcyan;
+  /*background-color: darkcyan;*/
   padding-top: .5rem;
   padding-bottom: .5rem;
   overflow: hidden;
@@ -165,7 +165,9 @@ aside .side-bar{
 .side-item .sub-item.show{
     grid-template-rows: 1fr;
 }
-
+a{
+    text-decoration: none;
+}
 a.sidebar-link{
     padding: .625rem;
     color: #ffffff;

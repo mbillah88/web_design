@@ -14,6 +14,14 @@ def subtraction(value, arg):
 
 
 @register.filter
+def addition(value, arg):
+    return value + arg
+
+@register.filter
 def number_to_words(value):
     p = inflect.engine()
     return p.number_to_words(value)
+    
+@register.filter
+def startswith(value, arg):
+    return value.startswith(arg)
