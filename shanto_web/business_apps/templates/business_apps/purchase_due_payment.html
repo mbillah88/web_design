@@ -55,12 +55,7 @@
             <div style="flex: 3;">
               <label for="id_supplier_id">Supplier:</label>
               <div style="display: flex; gap: .5rem;">
-                {{ form.supplier_id }}
-                {% url 'slt:add_supplier_new' as url %}
-                <a href="{{url}}">
-                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>                
-                </a>
-                
+                <input type="text" value="{{ form.instance.supplier_id.supplier_name }} ({{ form.instance.supplier_id.id }})" readonly>
               </div>
             </div>
             <div style="flex: 1;">
