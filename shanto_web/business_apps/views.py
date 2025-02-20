@@ -460,33 +460,50 @@ def purchase_new(request):
         'formset' : formset,
         'products' : products})
 def purchase_due_pay(request, pk):
-    po = get_object_or_404(PurchaseOrder, id=pk)
-    payo = get_object_or_404(PurchasePayment, order_id=pk)
+    
+    # Get the purchase summary
+    purchase_summary = list(PurchasePayment.objects.filter(order_id=pk).values('order_id', 'payment_amount') \
+        .annotate(pay_id=Count('order_id')) \
+        .order_by('order_id'))
+    print(purchase_summary)
+    # Get the purchase summary    
+    total_payment = sum(item['payment_amount'] for item in purchase_summary)
+    print(total_payment)
+    
+    purchase_order_id = get_object_or_404(PurchaseOrder, id=pk)
+    #purchase_pay_order_id = get_object_or_404(PurchasePayment, order_id=pk)
+    payFormSet = modelformset_factory(PurchasePayment, form=PurchasePaymentForm, extra=0)
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
-
+    print(purchase_order_id)
     if request.method == 'POST':
-        customer_form = PurchaseOrderForm(request.POST, instance=po)
-        payment_form = PurchasePaymentForm(request.POST, instance=payo)
-        
-        if customer_form.is_valid() and payment_form.is_valid():
-            order = customer_form.save(commit=False)
-            order.porder_create_by = request.user
-            order.save()
+        customer_form = PurchaseOrderDueForm(request.POST, instance=purchase_order_id)
+        payment_form = PurchasePaymentForm(request.POST)      
+        #for Data Check...
+        print(purchase_order_id)
+        for name in request.POST:
+            print("{}: {}".format(name, request.POST.getlist(name)))    
+            
+        if payment_form.is_valid():
+            order = customer_form.save(request.POST)
             payment = payment_form.save(commit=False)
             payment.order_id = order
             payment.payment_create_by = request.user
             payment.save()
             return redirect('slt:purchase')  # Redirect to a success page or another view
-
+        
     else:
-        customer_form = PurchaseOrderForm(instance=po)
-        payment_form = PurchasePaymentForm(instance=payo)
-        porder = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
-        formset = CartItemFormSet(queryset=porder)
+        customer_form = PurchaseOrderForm(instance=purchase_order_id)
+        payment_form = PurchasePaymentForm()
+        pay_order_id = PurchasePayment.objects.filter(order_id=pk)
+        item_order_id = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
+        formset = CartItemFormSet(queryset=item_order_id)
+        pay_list_formset = payFormSet(queryset=pay_order_id)
         return render(request, 'business_apps/purchase_due_payment.html', {
             'form' : customer_form,
-            'pay_form' : payment_form,
+            'total_payment' : total_payment,
+            'pay_list_formset' : pay_list_formset,
             'formset' : formset})
+
 def purchase_update(request, pk):
     po = get_object_or_404(PurchaseOrder, id=pk)
     payo = get_object_or_404(PurchasePayment, order_id=pk)
@@ -886,19 +903,29 @@ def report_summary_daily(request):
         'total_purchase_amount': total_purchase_amount,
     }
     return render(request, 'business_apps/reports/daily_reports_summary.html', context)
+
 #Printing page....
 def pinvoice(request, pk):
+    # Get the purchase summary
+    purchase_summary = list(PurchasePayment.objects.filter(order_id=pk).values('order_id', 'payment_amount') \
+        .annotate(pay_id=Count('order_id')) \
+        .order_by('order_id'))
+    print(purchase_summary)
+    # Get the purchase summary    
+    total_payment = sum(item['payment_amount'] for item in purchase_summary)
+    print(total_payment)
+    
     po = get_object_or_404(PurchaseOrder, id=pk)
-    payo = get_object_or_404(PurchasePayment, order_id=pk)
+    #payo = get_object_or_404(PurchasePayment, order_id=pk)
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
     products = ItemProduct.objects.all() 
     customer_form = PurchaseOrderForm(instance=po)
-    payment_form = PurchasePaymentForm(instance=payo)
+    #payment_form = PurchasePaymentForm(instance=payo)
     porder = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
     formset = CartItemFormSet(queryset=porder)
     return render(request, 'business_apps/reports/pinvoice.html', {
         'form' : customer_form,
-        'pay_form' : payment_form,
+        'total_payment' : total_payment,
         'formset' : formset,
         'products' : products})
 

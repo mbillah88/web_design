@@ -31,11 +31,7 @@
     <nav class="navbar navbar-expand">
       <div class="container-fluid">
         <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
-          {% if form.instance.pk %}
-              <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : POI-{{ form.instance.pk}} Supplier: {{ form.instance.supplier_id.supplier_name}} </span>
-            {% else %}
-            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">New Purchase</span>
-            {% endif %}
+          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(146, 155, 20, 0.822);">Due Received : POI-{{ form.instance.pk}} Supplier: {{ form.instance.supplier_id.supplier_name}} </span>
         </div>
         <div>
           <a class="nav-link" href="{% url 'slt:purchase' %}">Purchase List</a>
@@ -47,39 +43,24 @@
     background-color: currentColor;
     border: 0;
     opacity: .75;">
-      <form class="form-container" enctype="multipart/form-data" method="post">
-        <!-- Security token -->
-        {% csrf_token %}
         <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: .5rem;">      
           <div class="d-flex w-100 gap-3" >
             <div style="flex: 3;">
-              <label for="id_supplier_id">Supplier:</label>
-              <div style="display: flex; gap: .5rem;">
-                {{ form.supplier_id }}
-                {% url 'slt:add_supplier_new' as url %}
-                <a href="{{url}}">
-                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>                
-                </a>
-                
-              </div>
+              <span style="font-weight: 600;">Supplier:  </span><span> {{ form.instance.supplier_id.supplier_name }} ({{ form.instance.supplier_id.id }})</span>              
             </div>
             <div style="flex: 1;">
-              <label for="id_porder_status">O Type:</label>
-              {{ form.porder_status }}
+              <span style="font-weight: 600;">Order Type:  </span><span> {{ form.instance.get_porder_status_display }}</span>
             </div>
           </div>            
-          <div class="d-flex w-100 gap-3" > 
+          <div class="d-flex w-100 gap-3" style="justify-content: space-between;" > 
             <div> 
-              <label for="supplier_address">Supplier Address:</label>
-              <input type="text" name="supplier_address" maxlength="255" required id="supplier_address" value="{{ form.instance.supplier_id.supplier_address }}" readonly>     
+              <span style="font-weight: 600;">Address:</span><span> {{ form.instance.supplier_id.supplier_address }}</span>
             </div>
             <div>
-              <label for="supplier_mobile">Supplier Mobile:</label>
-              <input type="text" name="supplier_mobile" maxlength="255" required id="supplier_mobile" value="{{ form.instance.supplier_id.supplier_mobile }}" readonly>    
+              <span style="font-weight: 600;">Supplier Mobile:</span><span> {{ form.instance.supplier_id.supplier_mobile }}</span>
             </div>
             <div>
-              <label for="id_porder_create_time">POrder Date:</label>
-              <input type="datetime-local" name="porder_create_time" maxlength="255" required id="id_porder_create_time" value="{{ form.instance.porder_create_time|date:'Y-m-d H:m'  }}">    
+              <span style="font-weight: 600;">POrder Date:</span><span> {{ form.instance.porder_create_time|date:'Y-m-d h:m A'  }}</span>
             </div>
           </div>
         </div>     
@@ -89,500 +70,172 @@
       
           <table id="purchaseOrderTable">
               <thead style="background-color: #008b8b75">
-                <th style="width: 10%;">Item Code</th>
-                <th style="width: 30%;">Item Name</th>
-                <th>Unit</th>
-                <th>Price</th>
-                <th>Qty</th>
-                <th>Total</th>
+                <th style="width: 10%;text-align: center;">Item Code</th>
+                <th style="width: 30%;text-align: center;">Item Name</th>
+                <th style="text-align: center;">Unit</th>
+                <th style="text-align: center;">Price</th>
+                <th style="text-align: center;">Qty</th>
+                <th style="text-align: center;">Total</th>
               </thead>
               <tbody style="background-color: rgb(181, 184, 183);">
                   <!-- Add more product rows here -->
                     {% for form in formset %}
                   <tr>
-                    <td>{{ form.instance.item_id.id }}</td>
+                    <td style="text-align: center;">{{ form.instance.item_id.id }}</td>
                     <td>{{form.instance.item_id.item_name}}</td>
-                    <td>{{ form.instance.item_id.item_unit }}</td>
-                    <td>{{ form.instance.item_qty }}</td>
-                    <td>{{ form.instance.item_pprice }}</td>
-                    <td>{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>         
+                    <td style="text-align: center;">{{ form.instance.item_id.item_unit }}</td>
+                    <td style="text-align: center;">{{ form.instance.item_qty }}</td>
+                    <td style="text-align: end;">{{ form.instance.item_pprice }}</td>
+                    <td style="text-align: end;">{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>         
                   </tr>
                    {% endfor %}
               </tbody>
           </table>
-        </div>        
-        <div class="content d-flex"> 
-          <div style="flex: 1;display: flex;flex-direction: column;justify-content: space-evenly;">
-            <div>
-              <span >Notes:</span>
-              <textarea  class="form-control col-xs-12" id="it_porder_note" name="porder_note" rows="3" cols="50" placeholder="Write your Purchase note here..." required>{{ form.instance.porder_note }}</textarea>          
-            </div>
-            <div class="d-flex" style="align-items: center;">
-              <div style="flex: 50%; text-align: end; flex: 50%;"><label for="id_payment_type">Pay Type:</label></div>
-              <div style="flex: 50%; text-align: center; flex: 50%; color: #000; font-weight: 600;">
-                {{ pay_form.payment_type }}
+        </div>         
+        <form class="form-container p-2" enctype="multipart/form-data" method="post">
+          <!-- Security token -->
+          {% csrf_token %}
+          <div class="content d-flex">   
+            <div style="flex: 1;display: flex;flex-direction: column;justify-content: space-between;gap: 1rem;">
+              <div>
+                <span style="font-weight: 600;">Notes:</span>
+                <input  class="form-control col-xs-12" id="it_porder_note" value="{{ form.instance.porder_note }}" readonly>          
+              </div>
+              <div>
+                <span style="font-weight: 600;">Payment Information:</span>
+                <table>
+                  <tr>
+                    <th>SL</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>User</th>
+                  </tr>
+                  {% for pay_list in pay_list_formset %}
+                  <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{pay_list.instance.payment_amount}}</td>
+                    <td>{{pay_list.instance.payment_time|date:'Y-m-d h:m A'}}</td>
+                    <td>{{pay_list.instance.payment_create_by}}</td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              </div>
+              <div class="d-flex p-2" style="align-items: center;background: burlywood; justify-content: center;"> 
+                <div class="p-2" style="  border: 1px solid;">      
+                    <table>
+                      <tr>
+                        <th>payment_amount</th>
+                        <th>payment_type</th>
+                      <tr>
+                        <td><input id="id_payment_amount" name="payment_amount" type="text"  onkeydown="moveToNextField_if(event, 'due_submit_id')" required></td>
+                        <td>{{pay_form.payment_type}}</td>
+                        
+                      </tr>
+                      
+                    </table>
+                    <div class="submit-row">
+                      <input id="due_submit_id" type="submit">
+                    </div>
+                </div>    
               </div>
             </div>
-          </div>
-          <div style="flex: 1;align-items: center;">
-            <div class="d-flex flex-column">
-              <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_total">Item Total:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_total" required id="id_porder_total" value="{{ form.instance.porder_total }}" readonly></div>              
+            <div style="flex: 1;align-items: center;">
+              <div class="d-flex flex-column">
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_total">Item Total:</label></div>
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_total" required id="id_porder_total" value="{{ form.instance.porder_total }}" readonly></div>              
+                </div>
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_discount">Discount (Amt):</label></div>
+                  <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}" readonly></div>              
+                </div>
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.disc_perc }}" readonly></div>              
+                </div>
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_total">Payable Total:</label></div>
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.pay_total }}" readonly></div>              
+                </div>
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_amount">Payment:</label></div>
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" required id="id_pay_amount" value="{{ total_payment }}" readonly></div>              
+                </div>
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_due">Due Amount:</label></div>
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_due"required id="id_porder_due" value="{{ form.instance.porder_due }}" readonly></div>              
+                </div>
               </div>
-              <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_discount">Discount (Amt):</label></div>
-                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_payment_amount')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
-              </div>
-              <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_payment_amount')" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.disc_perc }}"></div>              
-              </div>
-              <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_total">Payable Total:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.pay_total }}" readonly></div>              
-              </div>
-              <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_payment_amount">Payment:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" name="payment_amount"required id="id_payment_amount" value="{{ pay_form.instance.payment_amount }}"></div>              
-              </div>
-              <div class="d-flex" style="align-items: center;" >
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_due">Due Amount:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="porder_due"required id="id_porder_due" value="{{ form.instance.porder_due }}" readonly></div>              
-              </div>
-            </div>
 
-          </div>
-        </div> 
-        <div class="submit-row">
-          <input id="form_submit_id" type="submit">
-        </div>
+            </div>
+          </div> 
       </form>
     </div>
   </div>
 </div>
-<!--Serializer Select Options Searchable-->
-<script>
-    $(document).ready(function () {
-        $('select').selectize({
-            sortField: 'text'
-        });        
-        $('.selectize-control').addClass("w-100")
-    });
-
-  // to clear the selected value.
-   $('form').find('.selectized').each(function(index, element) { element.selectize && element.selectize.clear() })
-
-</script>
-<!--Supplier Search and Add -->
-<script>
-  function fetchData(supplier_pk) {
-    console.log("FETCH DATA"+supplier_pk);
-            //const pk = document.getElementById('data-id').value;
-            fetch(`./supplier/`+supplier_pk)
-                .then(response => response.json())
-                .then(data => {
-                  console.log(data);
-                    document.getElementById('supplier_address').value = data.address;  // Adjust field name as needed                    
-                    document.getElementById('supplier_mobile').value = data.mobile; 
-                  })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-</script>
-<script>
-  var e = document.getElementById("id_supplier_id");
-    function onChange() {
-      var value = e.value;
-      var text = e.options[e.selectedIndex].text;
-      console.log(value, text);
-        $("#item-id").val(value);
-        $("#item-description").val(text);
-        if (/^[0-9]+$/.test(value)) {
-            console.log('Input is a number.');
-            fetchData(value)
-        } else if (/^[a-zA-Z]+$/.test(value)) {
-          fetchData(value)
-            console.log('Input is a letter.');
-        } else {
-            console.log('Input ID is neither a pure number nor a pure letter.');
-        }
-    }
-    e.onchange = onChange;
-    onChange();
-</script>
-<!--Item Name Search Filed -->
-<script> 
-document.getElementById('mySelect').onchange = function(){
-      var value = this.value;
-      var text = this.options[e.selectedIndex].text;
-      console.log(value, text);
-      if (/^[0-9]+$/.test(value)) {
-            console.log('Input is a number.');
-            fetchProductData(value)
-        } else if (/^[a-zA-Z]+$/.test(value)) {
-          fetchProductData(value)
-            console.log('Input is a letter.');
-        } else {
-            console.log('Input ID is neither a pure number nor a pure letter.');
-        }
-  };
-</script> 
-<script>
-  function fetchProductData(product_search_pk) {
-    $.ajax({
-      url: './pproducts_details/' + product_search_pk ,
-      method: 'GET',
-      success: function(response) {
-        document.getElementById('id_expi').value = "";
-        document.getElementById('id_sprice').value = response.item_sprice;
-        document.getElementById('id_unit').value = response.item_unit.unit_name;
-        document.getElementById('id_pprice').value = response.item_pprice;
-        document.getElementById('id_qty').value = 1;
-      }
-    });
-  } 
-</script>
-<!--// Discount and Payment field key press... -->
-<script>
-  function calculateSum() {
-      var table = document.getElementById("purchaseOrderTable");
-      //for Row Counts....
-      rowCount = table.rows.length -1;
-      document.getElementById("rowCount").innerText = rowCount;
-      console.log(table.rows.length -1);
-      //for Total Sume ....
-      var totalSum = 0;
-        for (var i = 1, row; row = table.rows[i]; i++) {
-          var value = parseFloat(row.cells[5].getElementsByTagName('input')[0].value);
-          totalSum += value;
-      }
-      invoiceCalculate(totalSum);
-      return totalSum;
-  }
-  window.onload = calculateSum;
-</script>
+<!--// Calculate Discount and Payment field... 
+  window.onload = calculateSum; -->
 <!--// Calculate Discount and Payment field... -->
 <script>
-    function getDiscountPercentage(originalPrice, discountAmount) {
-      return (discountAmount / originalPrice) * 100;
+  function getDiscountPercentage(originalPrice, discountAmount) {
+    return (discountAmount / originalPrice) * 100;
+  }
+  function getDiscountAmount(originalPrice, discountPercentage) {
+    return (discountPercentage / 100) * originalPrice;
+  }
+  function invoiceCalculate(){
+    this.total_amt = document.getElementById('id_porder_total').value; 
+    var disc_amt = document.getElementById('id_porder_discount').value;
+    console.log(total_amt+"/"+disc_amt);
+    var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
+    var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
+    var paid_amt = document.getElementById('id_pay_amount').value; 
+    var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
+    document.getElementById('id_porder_total').value = total_amt;
+    document.getElementById('id_disc_perc').value = disc_perc;
+    document.getElementById('id_pay_total').value = payable_amt;
+    document.getElementById('id_porder_due').value = due_amt;
+  }
+  
+  function invoiceDueCalculate(paid_amt){
+    if (paid_amt === '') {
+      $(this).val(0);
     }
-    function getDiscountAmount(originalPrice, discountPercentage) {
-      return (discountPercentage / 100) * originalPrice;
-    }
-    function invoiceCalculate(total_amt){
-      this.total_amt = total_amt; 
-      var disc_amt = document.getElementById('id_porder_discount').value;
-      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
-      var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
-      var paid_amt = document.getElementById('id_payment_amount').value; 
-      var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
-      document.getElementById('id_porder_total').value = total_amt;
-      document.getElementById('id_disc_perc').value = disc_perc;
-      document.getElementById('id_pay_total').value = payable_amt;
-      document.getElementById('id_porder_due').value = due_amt;
-    }
-    
-    function invoiceDiscCalculate(disc_amt){
-      if (disc_amt === '') {
-        $(this).val(0);
-      }
-      if (due_amt < 0) {
-        alert("Error: Paid amount is greater than the payable amount.");
-      }
-      this.disc_amt = disc_amt; 
-      var total_amt = document.getElementById('id_porder_total').value;
-      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
-      var paid_amt = document.getElementById('id_payment_amount').value;
-      var payable_amt = parseFloat(total_amt-disc_amt);
-      var due_amt = parseFloat(payable_amt-paid_amt); 
-      document.getElementById('id_disc_perc').value = disc_perc;
-      document.getElementById('id_pay_total').value = payable_amt;
-      document.getElementById('id_porder_due').value = due_amt;
-    }
-    
-    function invoiceDueCalculate(paid_amt){
-      if (paid_amt === '') {
-        $(this).val(0);
-      }
-      this.paid_amt = paid_amt;
-      var payable_amt = document.getElementById('id_pay_total').value;
-      var paid_amt = document.getElementById('id_payment_amount').value;
-      var due_amt = parseFloat(payable_amt-paid_amt); 
-      document.getElementById('id_porder_due').value = due_amt;
-    }
+    this.paid_amt = paid_amt;
+    var payable_amt = document.getElementById('id_pay_total').value;
+    var paid_amt = document.getElementById('id_payment_amount').value;
+    var due_amt = parseFloat(payable_amt-paid_amt); 
+    document.getElementById('id_porder_due').value = due_amt;
+  }
+  window.onload = invoiceCalculate;
 </script>
 <!--// Discount and Payment field key press... -->
 <script>  
-  $(document).ready(function() {  
-    $("#id_porder_discount").on("input", function() {
-      var value = $(this).val();
-      invoiceDiscCalculate(value);
-      console.log(value)
-    }); 
-  });
-  $(document).ready(function() {  
-    $("#id_payment_amount").on("input", function() {
-      var value = $(this).val();
-      invoiceDueCalculate(value);
-      console.log(value);
-    }); 
-  });
+$(document).ready(function() {  
+  $("#id_payment_amount").on("input", function() {
+    var value = $(this).val();
+    invoiceDueCalculate(value);
+    console.log(value);
+  }); 
+});
 </script>
-<!--// Move to next field... -->
+
 <script>
   function moveToNextField_if(event, nextFieldID) {
     if (event.key === "Enter") {
-      let paid = parseFloat(document.getElementById('id_payment_amount').value);
-      let payable = parseFloat(document.getElementById('id_pay_total').value);
-      if (paid > payable) {
+      let paid = parseFloat(document.getElementById('id_paid_total').value);
+      let due = parseFloat(document.getElementById('id_porder_due').value);
+      console.log(due+":"+paid);
+      if (due < 0) {
         alert("Error: Paid amount is greater than the payable amount.");
       } else {
         document.getElementById(nextFieldID).focus();
       }
-
+  
       event.preventDefault();
     }
   }
-</script>
-<script>
-  $(document).ready(function() {
-    var table = document.getElementById('purchaseOrderTable');
-    // Get input values
-      var item = document.getElementById("mySelect");
-      var item_code = item.value;
-      var item_name = item.options[item.selectedIndex].text;
-      var item_unit = document.getElementById('id_unit');
-      var item_qty = document.getElementById('id_qty');
-      var item_price = document.getElementById('id_pprice');
-
-      var submitButton = document.getElementById('addItemToCart');
-      var selectedRow = null;
-
-    // Initialize Selectize
-    const selectizeInstance = $(item).selectize()[0].selectize;
-    // Add click event listeners to each row in the table
-    table.addEventListener('click', function(event) {        
-      var target = event.target;
-        if (target.tagName === 'TD') {
-            selectedRow = target.parentNode;
-            // Populate the input fields with the row data
-            itemId = selectedRow.cells[0].getElementsByTagName('input')[0].value;
-            selectizeInstance.setValue(itemId);
-            namevalue = selectedRow.cells[1].getElementsByTagName('input')[0].value;
-            item_unit.value = selectedRow.cells[2].getElementsByTagName('input')[0].value;
-            item_qty.value = selectedRow.cells[3].getElementsByTagName('input')[0].value;
-            item_price.value = selectedRow.cells[4].getElementsByTagName('input')[0].value;
-        }   
-        //submitButton.id = "updateButton"; // Change button id
-        submitButton.value = "update Item"; // Change button value
-        //submitButton.textContent = "Update Row"; // Update button text
-
-    // Handle the submit button click event
-    submitButton.addEventListener('click', function() {
-      const tables = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0]; 
-
-      var item = document.getElementById("mySelect");
-      var item_code = item.value;
-      var item_name = item.options[item.selectedIndex].text;
-    // Calculate Qty * Price values
-      var price = parseFloat(item_price.value);
-      var quantity = parseInt(item_qty.value);
-      var total = parseFloat(price * quantity);
-      var item_total = parseFloat(total).toFixed(2);
-      //var price = item_price.value;
-      //var quantity = item_qty.value;
-      //var item_total = price * quantity;
-
-    // Check if item already exists in the cart
-    //var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
-    var itemExists = false;
-    for (var i = 0, row; row = tables.rows[i]; i++) {
-        var code = row.cells[0].getElementsByTagName('input')[0].value;
-
-        if (code === item_code) {
-            itemExists = true;
-            alert('Item : ' + item_code + ' Already Exists.');
-            break;
-        }else{
-          submitButton.value = "Add Item"; // Change button value
-        }
-    }
-
-    console.log(item_total+'Item exists count: ' + itemExists); // Output the count
-    // If item does not exist, create a new row
-    if (itemExists) {
-        if (selectedRow) {
-            // Update the row with the new input values
-          selectedRow.cells[0].getElementsByTagName('input')[0].value = item_code;
-          selectedRow.cells[1].getElementsByTagName('input')[0].value = item_name;
-          selectedRow.cells[2].getElementsByTagName('input')[0].value = item_unit.value;
-          selectedRow.cells[3].getElementsByTagName('input')[0].value = item_qty.value;
-          selectedRow.cells[4].getElementsByTagName('input')[0].value = item_price.value;
-          selectedRow.cells[5].getElementsByTagName('input')[0].value = item_total;
-            
-      
-        }
-        
-    
-    // Clear the input fields    
-    var selectize = $('#mySelect')[0].selectize;
-    selectize.clear();
-    document.getElementById('id_expi').value='';
-    document.getElementById('id_sprice').value='';
-    document.getElementById('id_unit').value='';
-    document.getElementById('id_qty').value='';
-    document.getElementById('id_pprice').value='';
-
-      // Calculate data field.......... Reloads  
-    var total = calculateSum().toFixed(2);
-    document.getElementById('id_porder_total').value = total;
-    //document.getElementById("rowCount").innerText = countRows();
-    
-    invoiceCalculate(total);
-      }
-    });
-  
-    });
-});
-</script>
-<script>
-  document.getElementById('addItemToCart').addEventListener('click', function() {
-    var submitButton = document.getElementById('addItemToCart');
-    if(submitButton.value === "Add Item"){
-      console.log(submitButton.value);
-      const table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
-    // Get input values
-      var item = document.getElementById("mySelect");
-      var item_code = item.value;
-      var item_name = item.options[item.selectedIndex].text;
-      var item_unit = document.getElementById('id_unit').value;
-      var item_qty = document.getElementById('id_qty').value;
-      var item_price = document.getElementById('id_pprice').value;
-
-    // Calculate Qty * Price values
-      var price = parseFloat(item_price);
-      var quantity = parseInt(item_qty);
-      var total = parseFloat(price * quantity).toFixed(2);
-      var item_total = total;
-    
-    // Validate input
-    if (item_code === '' || item_qty === '' || item_price === '') {
-        alert('Please fill in all fields');
-        return;
-    }
-    // Check if item already exists in the cart
-    //var table = document.getElementById('purchaseOrderTable').getElementsByTagName('tbody')[0];
-      var itemExists = false;
-      for (var i = 0, row; row = table.rows[i]; i++) {
-        if (row.cells[0].getElementsByTagName('input')[0].value === item_code) {
-          console.log(item_code);
-          //row.cells[1].innerHTML = parseInt(row.cells[1].innerHTML) + parseInt(itemQuantity);
-          itemExists = true;
-          alert('Item : '+ item_code + ' Already Exists.');
-          break;
-        }
-      }
-    // If item does not exist, create a new row
-    if (!itemExists) {
-    // Create a new row for the table
-      const newRow = table.insertRow();
-      
-      // Get total form count and update it
-      const totalForms = document.querySelector('input[name="form-TOTAL_FORMS"]');
-      const formCount = parseInt(totalForms.value);
-      totalForms.value = formCount + 1;
-      
-      // Create new cells with input fields
-      const cell1 = newRow.insertCell(0);
-      const cell2 = newRow.insertCell(1);
-      const cell3 = newRow.insertCell(2);
-      const cell4 = newRow.insertCell(3);
-      const cell5 = newRow.insertCell(4);
-      const cell6 = newRow.insertCell(5);
-      const cell7 = newRow.insertCell(6);
-      const cell8 = newRow.insertCell(7);
-      
-      cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required readonly>`;        
-      cell2.innerHTML = `<input type="text"value="${item_name}" required readonly>`;
-      cell3.innerHTML = `<input type="text" value="${item_unit}" required readonly>`;
-      cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required readonly>`;
-      cell5.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required readonly>`;
-      cell6.innerHTML = `<input type="text" value="${item_total}" required readonly>`;
-      cell7.innerHTML = '<form>{% csrf_token %}<button value="{{ form.instance.id }}" type="button" class="removeRow"><span>X</span></button></form>';
-      cell8.innerHTML = 'Edit{{ form.id }}';
-    // Add a custom attribute to the new cell
-      cell8.setAttribute('data-type', 'hidden');
-    }
-    
-    // Clear the input fields    
-    var selectize = $('#mySelect')[0].selectize;
-    selectize.clear();
-    document.getElementById('id_expi').value='';
-    document.getElementById('id_sprice').value='';
-    document.getElementById('id_unit').value='';
-    document.getElementById('id_qty').value='';
-    document.getElementById('id_pprice').value='';
-
-      // Calculate data field.......... Reloads  
-    var total = calculateSum().toFixed(2);
-    document.getElementById('id_porder_total').value = total;
-    //document.getElementById("rowCount").innerText = countRows();
-    
-    invoiceCalculate(total);
-    
-    }else{
-      console.log(submitButton.value);
-
-    }
-    
-});
-  
-document.querySelectorAll('.removeRow').forEach(button => {
-  button.addEventListener('click', function() {
-    var rowId = button.value;
-    console.log(button.value);
-    const userConfirmed = confirm("Are you sure you want to delete this row?");
-       if (userConfirmed) {
-           deleteRow(rowId);     
-          const row = this.closest('tr');
-          row.parentNode.removeChild(row);
-                
-          const totalForms = document.querySelector('input[name="form-TOTAL_FORMS"]');
-          const formCount = parseInt(totalForms.value);
-          totalForms.value = formCount - 1;
-            // Calculate data field.......... Reloads  
-          var total = calculateSum().toFixed(2);
-          document.getElementById('id_porder_total').value = total;
-          //document.getElementById("rowCount").innerText = countRows();
-          
-          invoiceCalculate(total);       
-       }
-  });
-});
-</script>
-  
-<script>
- function deleteRow(rowId) {
-       fetch(`./item_delete_row/${rowId}/`, {
-           method: 'POST',
-           headers: {
-               'X-CSRFToken': '{{ csrf_token }}',
-               'Content-Type': 'application/json',
-           }
-       })
-       .then(response => response.json())
-       .then(data => {
-           if (data.status === 'success') {
-               const row = document.querySelector(`tr[data-id="${rowId}"]`);
-               row.remove();
-               alert(data.message);
-           } else {
-               alert('Failed to delete row');
-           }
-       })
-       .catch(error => console.error('Error:', error));
-   }
-</script>
+  </script>
 <!-- Be sure to put the links in the right position to avoid dependency issue.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
 
