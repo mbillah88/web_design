@@ -1,0 +1,20 @@
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Item Type</th>
+            <th>Specification Name</th>
+            <th>Specification Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for received_item_spec in received_item_specs %}
+            <tr>
+                <td>{{ received_item_spec.received_item.item_name }}</td>
+                <td>{{ received_item_spec.item_type_specification.item_type.type_name }}</td>
+                <td>{{ received_item_spec.item_type_specification.item_specification.spec_name }}</td>
+                <td>{{ received_item_spec.spec_value }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
