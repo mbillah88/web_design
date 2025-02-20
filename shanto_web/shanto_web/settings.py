@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "checks",
     "django_filters",
+    "service_receiver_digital",	
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

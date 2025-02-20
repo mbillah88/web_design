@@ -73,6 +73,11 @@ class PurchaseOrderForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['supplier_id'].empty_label = "Select Supplier..."
 
+class PurchaseOrderDueForm(forms.ModelForm):
+    class Meta:
+        model = PurchaseOrder
+        fields = ['porder_due']
+
 class PurchaseOrderItemForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrderItem
@@ -86,6 +91,11 @@ class PurchasePaymentForm(forms.ModelForm):
     class Meta:
         model = PurchasePayment
         fields = ['payment_amount','payment_type']
+
+class PurchasePaymentAllForm(forms.ModelForm):
+    class Meta:
+        model = PurchasePayment
+        fields = "__all__"
 
 # Settings Tools .........
 class ItemUnitForm(forms.ModelForm):    

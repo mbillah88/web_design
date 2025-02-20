@@ -319,3 +319,4 @@ input[type=text], input[type=number], input[type=datetime-local],select {
   tr:nth-child(even) {
     background-color: #dddddd;
   }
+  /*check the value*/
