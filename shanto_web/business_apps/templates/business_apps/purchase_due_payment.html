@@ -203,8 +203,9 @@
     }
     this.paid_amt = paid_amt;
     var payable_amt = document.getElementById('id_pay_total').value;
-    var paid_amt = document.getElementById('id_payment_amount').value;
-    var due_amt = parseFloat(payable_amt-paid_amt); 
+    var ppaid_amt = document.getElementById('id_pay_amount').value;
+    var pdue_amt = parseFloat(payable_amt-paid_amt); 
+    var due_amt = parseFloat(pdue_amt-ppaid_amt); 
     document.getElementById('id_porder_due').value = due_amt;
   }
   window.onload = invoiceCalculate;

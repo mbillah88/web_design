@@ -501,6 +501,7 @@ def purchase_due_pay(request, pk):
         return render(request, 'business_apps/purchase_due_payment.html', {
             'form' : customer_form,
             'total_payment' : total_payment,
+            'pay_form' : payment_form,
             'pay_list_formset' : pay_list_formset,
             'formset' : formset})
 
