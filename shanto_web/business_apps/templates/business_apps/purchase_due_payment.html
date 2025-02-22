@@ -192,7 +192,6 @@
   function invoiceCalculate(){
     this.total_amt = document.getElementById('id_porder_total').value; 
     var disc_amt = document.getElementById('id_porder_discount').value;
-    console.log(total_amt+"/"+disc_amt);
     var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
     var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
     var paid_amt = document.getElementById('id_pay_amount').value; 
