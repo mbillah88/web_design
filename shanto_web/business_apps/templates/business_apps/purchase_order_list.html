@@ -17,14 +17,14 @@
       <td>{{ data.total_items }}</td>
       <td>{{ data.porder_total }}</td>
       <td>{{ data.get_porder_status_display }}</td>
-      <td>{{ data.porder_create_time }}</td>
+      <td>{{ data.porder_create_time|date:'Y-m-d h:m A' }}</td>
       <td>{{ data.porder_create_by }}</td>
       <td>
         <a href="{% url 'slt:purchase_update' data.pk %}">Edit</a>
         <a href="">Delete</a>
       </td>
       <td>
-        <a href="{% url 'slt:pinvoice' data.pk %}" target="_blank">View</a>
+        <a href="{% url 'slt:purchase_invoice' data.pk %}" target="_blank">View</a>
       </td>
     </tr>
     {% endfor %}

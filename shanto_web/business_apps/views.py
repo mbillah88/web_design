@@ -459,7 +459,7 @@ def purchase_new(request):
         'pay_form' : payment_form,
         'formset' : formset,
         'products' : products})
-def purchase_due_pay(request, pk):
+def purchase_due_form(request, pk):
     
     # Get the purchase summary
     purchase_summary = list(PurchasePayment.objects.filter(order_id=pk).values('order_id', 'payment_amount') \
@@ -926,7 +926,7 @@ def report_summary_daily(request):
     return render(request, 'business_apps/reports/daily_reports_summary.html', context)
 
 #Printing page....
-def pinvoice(request, pk):
+def purchase_invoice(request, pk):
     # Get the purchase summary
     purchase_summary = list(PurchasePayment.objects.filter(order_id=pk).values('order_id', 'payment_amount') \
         .annotate(pay_id=Count('order_id')) \

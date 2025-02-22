@@ -47,7 +47,7 @@
     background-color: currentColor;
     border: 0;
     opacity: .75;">
-      <form class="form-container" enctype="multipart/form-data" method="post">
+      <form id="purchase_update_form" class="form-container" enctype="multipart/form-data" method="post">
         <!-- Security token -->
         {% csrf_token %}
         <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: .5rem;">      
@@ -151,8 +151,8 @@
                     <td><input id="id-form-{{ forloop.counter0 }}-item_id" type="number" name="form-{{ forloop.counter0 }}-item_id" value="{{ form.instance.item_id.id }}" required readonly></td>
                     <td><input id="id-itemname" type="text" value="{{form.instance.item_id.item_name}}" required readonly></td>
                     <td><input id="id-itemunit" type="text" value="{{ form.instance.item_id.item_unit }}" required readonly></td>
-                    <td><input id="id-form-{{ forloop.counter0 }}-item_qty" type="number" name="form-{{ forloop.counter0 }}-item_qty" value="{{ form.instance.item_qty }}" required readonly></td>
                     <td><input id="id-form-{{ forloop.counter0 }}-item_pprice" type="text" name="form-{{ forloop.counter0 }}-item_pprice" value="{{ form.instance.item_pprice }}" required readonly></td>
+                    <td><input id="id-form-{{ forloop.counter0 }}-item_qty" type="number" name="form-{{ forloop.counter0 }}-item_qty" value="{{ form.instance.item_qty }}" required readonly></td>
                     <td><input type="text" value="{{form.instance.item_qty|multiply:form.instance.item_pprice}}" required readonly></td>
                     <td>
                       <form>
@@ -218,7 +218,7 @@
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_amount">Payment:</label></div>
-                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_id')" style=" text-align: end; color: #000; font-weight: 600;" id="id_pay_amount" value="{{ total_payment }}"></div>              
+                <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'form_submit_btn')" style=" text-align: end; color: #000; font-weight: 600;" id="id_pay_amount" value="{{ total_payment }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_due">Due Amount:</label></div>
@@ -229,7 +229,7 @@
           </div>
         </div> 
         <div class="submit-row">
-          <input id="form_submit_id" type="submit">
+          <input id="form_submit_btn" type="submit">
         </div>
       </form>
     </div>
@@ -248,20 +248,19 @@
    $('form').find('.selectized').each(function(index, element) { element.selectize && element.selectize.clear() })
 
 </script>
+
 <!--Supplier Search and Add -->
 <script>
   function fetchData(supplier_pk) {
-    console.log("FETCH DATA"+supplier_pk);
-            //const pk = document.getElementById('data-id').value;
-            fetch(`./supplier/`+supplier_pk)
-                .then(response => response.json())
-                .then(data => {
-                  console.log(data);
-                    document.getElementById('supplier_address').value = data.address;  // Adjust field name as needed                    
-                    document.getElementById('supplier_mobile').value = data.mobile; 
-                  })
-                .catch(error => console.error('Error fetching data:', error));
-        }
+    fetch(`./supplier/`+supplier_pk)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      document.getElementById('supplier_address').value = data.address;  // Adjust field name as needed                    
+      document.getElementById('supplier_mobile').value = data.mobile; 
+    })
+    .catch(error => console.error('Error fetching data:', error));
+  }
 </script>
 <script>
   var e = document.getElementById("id_supplier_id");
@@ -288,7 +287,7 @@
 <script> 
 document.getElementById('mySelect').onchange = function(){
       var value = this.value;
-      var text = this.options[e.selectedIndex].text;
+      var text = this.options[this.selectedIndex].text;
       console.log(value, text);
       if (/^[0-9]+$/.test(value)) {
             console.log('Input is a number.');
@@ -490,8 +489,8 @@ document.getElementById('mySelect').onchange = function(){
           selectedRow.cells[0].getElementsByTagName('input')[0].value = item_code;
           selectedRow.cells[1].getElementsByTagName('input')[0].value = item_name;
           selectedRow.cells[2].getElementsByTagName('input')[0].value = item_unit.value;
-          selectedRow.cells[3].getElementsByTagName('input')[0].value = item_qty.value;
-          selectedRow.cells[4].getElementsByTagName('input')[0].value = item_price.value;
+          selectedRow.cells[3].getElementsByTagName('input')[0].value = item_price.value;
+          selectedRow.cells[4].getElementsByTagName('input')[0].value = item_qty.value;
           selectedRow.cells[5].getElementsByTagName('input')[0].value = item_total;
             
       
@@ -579,8 +578,8 @@ document.getElementById('mySelect').onchange = function(){
       cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required readonly>`;        
       cell2.innerHTML = `<input type="text"value="${item_name}" required readonly>`;
       cell3.innerHTML = `<input type="text" value="${item_unit}" required readonly>`;
-      cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required readonly>`;
-      cell5.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required readonly>`;
+      cell4.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required readonly>`;
+      cell5.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required readonly>`;
       cell6.innerHTML = `<input type="text" value="${item_total}" required readonly>`;
       cell7.innerHTML = '<form>{% csrf_token %}<button value="{{ form.instance.id }}" type="button" class="removeRow"><span>X</span></button></form>';
       cell8.innerHTML = 'Edit{{ form.id }}';
@@ -614,6 +613,11 @@ document.getElementById('mySelect').onchange = function(){
 document.querySelectorAll('.removeRow').forEach(button => {
   button.addEventListener('click', function() {
     var rowId = button.value;
+    if(rowId === '' || rowId === null){
+      console.log('New Row : '+rowId);
+    }else{
+      console.log('Existing Row : '+rowId);
+    }
     console.log(button.value);
     const userConfirmed = confirm("Are you sure you want to delete this row?");
        if (userConfirmed) {

@@ -443,7 +443,8 @@ document.getElementById('mySelect').onchange = function(){
     // Calculate Qty * Price values
       var price = parseFloat(item_srice);
       var quantity = parseInt(item_qty);
-      var item_total = parseFloat(price * quantity);
+      var total = parseFloat(price * quantity);
+      var item_total = parseFloat(total).toFixed(2);
     
     // Validate input
     if (item_code === '' || item_qty === '' || item_srice === '') {
@@ -484,8 +485,8 @@ document.getElementById('mySelect').onchange = function(){
       cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required readonly>`;        
       cell2.innerHTML = `<input type="text"value="${item_name}" required readonly>`;
       cell3.innerHTML = `<input type="text" value="${item_unit}" required readonly>`;
-      cell4.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required readonly>`;
-      cell5.innerHTML = `<input id="id-form-${formCount}-item_sprice" type="text" name="form-${formCount}-item_sprice" value="${item_srice}" required readonly>`;
+      cell4.innerHTML = `<input id="id-form-${formCount}-item_sprice" type="text" name="form-${formCount}-item_sprice" value="${item_srice}" required readonly>`;
+      cell5.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required readonly>`;
       cell6.innerHTML = `<input type="text" value="${item_total}" required readonly>`;
       cell7.innerHTML = '<button type="button" class="removeRow">Remove</button>';
       // Add event listener for remove button 
