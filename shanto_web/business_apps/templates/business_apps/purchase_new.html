@@ -298,61 +298,19 @@ document.getElementById('mySelect').onchange = function(){
   }
 </script>
 <!--Remove Cart Item frome Table row -->
-<!--// Calculate Discount and Payment field... -->
-<script>
-   function getDiscountPercentage(originalPrice, discountAmount) {
-      return (discountAmount / originalPrice) * 100;
-    }
-    function getDiscountAmount(originalPrice, discountPercentage) {
-      return (discountPercentage / 100) * originalPrice;
-    }
-    function invoiceCalculate(total_amt){
-      this.total_amt = total_amt.toFixed(2); ; 
-      var disc_amt = document.getElementById('id_porder_discount').value;
-      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
-      var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
-      var paid_amt = document.getElementById('id_payment_amount').value; 
-      var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
-      document.getElementById('id_porder_total').value = total_amt;
-      document.getElementById('id_disc_perc').value = disc_perc;
-      document.getElementById('id_pay_total').value = payable_amt;
-      document.getElementById('id_porder_due').value = due_amt;
-    }
-    
-    function invoiceDiscCalculate(disc_amt){
-      if (disc_amt === '') {
-        $(this).val(0);
-      }
-      if (due_amt < 0) {
-        alert("Error: Paid amount is greater than the payable amount.");
-      }
-      this.disc_amt = disc_amt; 
-      var total_amt = document.getElementById('id_porder_total').value;
-      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
-      var paid_amt = document.getElementById('id_payment_amount').value;
-      var payable_amt = parseFloat(total_amt-disc_amt);
-      var due_amt = parseFloat(payable_amt-paid_amt); 
-      document.getElementById('id_disc_perc').value = disc_perc;
-      document.getElementById('id_pay_total').value = payable_amt;
-      document.getElementById('id_porder_due').value = due_amt;
-    }
-    
-    function invoiceDueCalculate(paid_amt){
-      if (paid_amt === '') {
-        $(this).val(0);
-      }
-      this.paid_amt = paid_amt.toFixed(2);
-      var payable_amt = document.getElementById('id_pay_total').value;
-      var paid_amt = document.getElementById('id_payment_amount').value;
-      var due_amt = parseFloat(payable_amt-paid_amt); 
-      document.getElementById('id_porder_due').value = due_amt;
-    }
-</script>
 <script>  
   $(document).ready(function() {  
     $("#id_porder_discount").on("input", function() {
       var value = $(this).val();
       invoiceDiscCalculate(value);
+      console.log(value);
+    }); 
+  });
+  $(document).ready(function() {  
+    $("#id_disc_perc").on("input", function() {
+      var value = $(this).val();
+      invoiceDiscPercCalculate(value);
+      console.log(value);
     }); 
   });
   $(document).ready(function() {  
@@ -378,7 +336,13 @@ document.getElementById('mySelect').onchange = function(){
   }
 </script>
 <!--// Calculate Discount and Payment field... -->
-<script>
+<script>  
+  function getDiscountPercentage(originalPrice, discountAmount) {
+      return (discountAmount / originalPrice) * 100;
+    }
+  function getDiscountAmount(originalPrice, discountPercentage) {
+      return (discountPercentage / 100) * originalPrice;
+    }
   function invoiceCalculate(total_amt){
     this.total_amt = total_amt; 
     var disc_amt = 0;
@@ -393,20 +357,34 @@ document.getElementById('mySelect').onchange = function(){
     document.getElementById('id_payment_amount').value = paid_amt;
     document.getElementById('id_porder_due').value = due_amt;
   }
-  
   function invoiceDiscCalculate(disc_amt){
     if (disc_amt === '') {
       $(this).val(0);
     }
-    this.disc_amt = disc_amt; 
-    var total_amt = document.getElementById('id_porder_total').value;
-    var paid_amt = document.getElementById('id_payment_amount').value;
-    var payable_amt = parseFloat(total_amt-disc_amt);
-    var due_amt = parseFloat(payable_amt-paid_amt); 
-    document.getElementById('id_pay_total').value = payable_amt;
-    document.getElementById('id_porder_due').value = due_amt;
+      this.disc_amt = disc_amt; 
+      var total_amt = document.getElementById('id_porder_total').value;
+      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
+      var paid_amt = document.getElementById('id_payment_amount').value;
+      var payable_amt = parseFloat(total_amt-disc_amt);
+      var due_amt = parseFloat(payable_amt-paid_amt); 
+      document.getElementById('id_disc_perc').value = disc_perc;
+      document.getElementById('id_pay_total').value = payable_amt;
+      document.getElementById('id_porder_due').value = due_amt;
   }
-  
+  function invoiceDiscPercCalculate(disc_perc_amt){
+    if (disc_perc_amt === '') {
+      $(this).val(0);
+    }
+      this.disc_perc_amt = disc_perc_amt; 
+      var total_amt = document.getElementById('id_porder_total').value;
+      var disc_amt = getDiscountAmount(total_amt,disc_perc_amt).toFixed(2); 
+      var paid_amt = document.getElementById('id_payment_amount').value;
+      var payable_amt = parseFloat(total_amt-disc_amt);
+      var due_amt = parseFloat(payable_amt-paid_amt); 
+      document.getElementById('id_porder_discount').value = disc_amt;
+      document.getElementById('id_pay_total').value = payable_amt;
+      document.getElementById('id_porder_due').value = due_amt;
+  }
   function invoiceDueCalculate(paid_amt){
     if (paid_amt === '') {
       $(this).val(0);
@@ -432,7 +410,8 @@ document.getElementById('mySelect').onchange = function(){
     // Calculate Qty * Price values
       var price = parseFloat(item_price);
       var quantity = parseInt(item_qty);
-      var item_total = parseFloat(price * quantity);
+      var total = parseFloat(price * quantity);
+      var item_total = parseFloat(total).toFixed(2);
     
     // Validate input
     if (item_code === '' || item_qty === '' || item_price === '') {
@@ -508,8 +487,7 @@ document.getElementById('mySelect').onchange = function(){
     invoiceCalculate(total);
     
 });
-  
-document.querySelectorAll('.removeRow').forEach(button => {
+  document.querySelectorAll('.removeRow').forEach(button => {
   button.addEventListener('click', function() {
     const row = this.closest('tr');
     row.parentNode.removeChild(row);
