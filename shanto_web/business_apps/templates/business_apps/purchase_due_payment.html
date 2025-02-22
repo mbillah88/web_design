@@ -84,15 +84,15 @@
                     <td style="text-align: center;">{{ form.instance.item_id.id }}</td>
                     <td>{{form.instance.item_id.item_name}}</td>
                     <td style="text-align: center;">{{ form.instance.item_id.item_unit }}</td>
-                    <td style="text-align: center;">{{ form.instance.item_qty }}</td>
                     <td style="text-align: end;">{{ form.instance.item_pprice }}</td>
+                    <td style="text-align: center;">{{ form.instance.item_qty }}</td>
                     <td style="text-align: end;">{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>         
                   </tr>
                    {% endfor %}
               </tbody>
           </table>
         </div>         
-        <form class="form-container p-2" enctype="multipart/form-data" method="post">
+        <form id="due_form" class="form-container p-2" enctype="multipart/form-data" method="post">
           <!-- Security token -->
           {% csrf_token %}
           <div class="content d-flex">   
@@ -173,9 +173,15 @@
     </div>
   </div>
 </div>
-<!--// Calculate Discount and Payment field... 
-  window.onload = calculateSum; -->
-<!--// Calculate Discount and Payment field... -->
+<!--// Submit button Click ... -->
+<script>
+  $("#due_form input").not("#due_submit_id").keydown(function(event) {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+      return false;
+    }
+  });
+</script>
 <script>
   function getDiscountPercentage(originalPrice, discountAmount) {
     return (discountAmount / originalPrice) * 100;
@@ -216,7 +222,15 @@ $(document).ready(function() {
   $("#id_payment_amount").on("input", function() {
     var value = $(this).val();
     invoiceDueCalculate(value);
-    console.log(value);
+    due_amt = document.getElementById('id_porder_due').value;
+    if(due_amt < 0){
+      alert(due_amt);
+      document.getElementById('id_porder_due').style.background = "red";
+      document.getElementById('due_submit_id').style.display = "none";
+    }else{
+      document.getElementById('id_porder_due').style.background = "white";
+      document.getElementById('due_submit_id').style.display = "block";
+    }
   }); 
 });
 </script>
@@ -224,9 +238,7 @@ $(document).ready(function() {
 <script>
   function moveToNextField_if(event, nextFieldID) {
     if (event.key === "Enter") {
-      let paid = parseFloat(document.getElementById('id_paid_total').value);
       let due = parseFloat(document.getElementById('id_porder_due').value);
-      console.log(due+":"+paid);
       if (due < 0) {
         alert("Error: Paid amount is greater than the payable amount.");
       } else {

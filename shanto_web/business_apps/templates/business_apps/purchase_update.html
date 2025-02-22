@@ -47,7 +47,11 @@
     background-color: currentColor;
     border: 0;
     opacity: .75;">
+<<<<<<< HEAD
       <form id="purchase_update_form" class="form-container" enctype="multipart/form-data" method="post">
+=======
+      <form id="update_form" class="form-container" enctype="multipart/form-data" method="post">
+>>>>>>> 52f5b629904142ded4ad10cc11603ecd38d77c7d
         <!-- Security token -->
         {% csrf_token %}
         <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: .5rem;">      
@@ -206,7 +210,7 @@
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_porder_discount">Discount (Amt):</label></div>
-                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_payment_amount')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
+                <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" onkeydown="moveToNextField_if(event, 'id_pay_amount')" style=" text-align: end; color: #000; font-weight: 600;" name="porder_discount" required id="id_porder_discount" value="{{ form.instance.porder_discount }}"></div>              
               </div>
               <div class="d-flex" style="align-items: center;" >
                 <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
@@ -235,6 +239,15 @@
     </div>
   </div>
 </div>
+<!--// Submit button Click ... -->
+<script>
+  $("#update_form input").not("#form_submit_id").keydown(function(event) {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+      return false;
+    }
+  });
+</script>
 <!--Serializer Select Options Searchable-->
 <script>
     $(document).ready(function () {
@@ -252,6 +265,7 @@
 <!--Supplier Search and Add -->
 <script>
   function fetchData(supplier_pk) {
+<<<<<<< HEAD
     fetch(`./supplier/`+supplier_pk)
     .then(response => response.json())
     .then(data => {
@@ -261,17 +275,26 @@
     })
     .catch(error => console.error('Error fetching data:', error));
   }
+=======
+            //const pk = document.getElementById('data-id').value;
+            fetch(`./supplier/`+supplier_pk)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('supplier_address').value = data.address;  // Adjust field name as needed                    
+                    document.getElementById('supplier_mobile').value = data.mobile; 
+                  })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+>>>>>>> 52f5b629904142ded4ad10cc11603ecd38d77c7d
 </script>
 <script>
   var e = document.getElementById("id_supplier_id");
     function onChange() {
       var value = e.value;
       var text = e.options[e.selectedIndex].text;
-      console.log(value, text);
         $("#item-id").val(value);
         $("#item-description").val(text);
         if (/^[0-9]+$/.test(value)) {
-            console.log('Input is a number.');
             fetchData(value)
         } else if (/^[a-zA-Z]+$/.test(value)) {
           fetchData(value)
@@ -285,20 +308,28 @@
 </script>
 <!--Item Name Search Filed -->
 <script> 
+<<<<<<< HEAD
 document.getElementById('mySelect').onchange = function(){
       var value = this.value;
       var text = this.options[this.selectedIndex].text;
       console.log(value, text);
       if (/^[0-9]+$/.test(value)) {
             console.log('Input is a number.');
+=======
+  document.getElementById('mySelect').onchange = function(){
+        var value = this.value;
+        var text = this.options[e.selectedIndex].text;
+        if (/^[0-9]+$/.test(value)) {
+              console.log('Input is a number.');
+              fetchProductData(value)
+          } else if (/^[a-zA-Z]+$/.test(value)) {
+>>>>>>> 52f5b629904142ded4ad10cc11603ecd38d77c7d
             fetchProductData(value)
-        } else if (/^[a-zA-Z]+$/.test(value)) {
-          fetchProductData(value)
-            console.log('Input is a letter.');
-        } else {
-            console.log('Input ID is neither a pure number nor a pure letter.');
-        }
-  };
+              console.log('Input is a letter.');
+          } else {
+              console.log('Input ID is neither a pure number nor a pure letter.');
+          }
+    };
 </script> 
 <script>
   function fetchProductData(product_search_pk) {
@@ -322,7 +353,6 @@ document.getElementById('mySelect').onchange = function(){
       //for Row Counts....
       rowCount = table.rows.length -1;
       document.getElementById("rowCount").innerText = rowCount;
-      console.log(table.rows.length -1);
       //for Total Sume ....
       var totalSum = 0;
         for (var i = 1, row; row = table.rows[i]; i++) {
@@ -390,14 +420,12 @@ document.getElementById('mySelect').onchange = function(){
     $("#id_porder_discount").on("input", function() {
       var value = $(this).val();
       invoiceDiscCalculate(value);
-      console.log(value)
     }); 
   });
   $(document).ready(function() {  
     $("#id_payt_amount").on("input", function() {
       var value = $(this).val();
       invoiceDueCalculate(value);
-      console.log(value);
     }); 
   });
 </script>
@@ -491,27 +519,29 @@ document.getElementById('mySelect').onchange = function(){
           selectedRow.cells[2].getElementsByTagName('input')[0].value = item_unit.value;
           selectedRow.cells[3].getElementsByTagName('input')[0].value = item_price.value;
           selectedRow.cells[4].getElementsByTagName('input')[0].value = item_qty.value;
+<<<<<<< HEAD
           selectedRow.cells[5].getElementsByTagName('input')[0].value = item_total;
             
       
+=======
+          selectedRow.cells[5].getElementsByTagName('input')[0].value = item_total;   
+>>>>>>> 52f5b629904142ded4ad10cc11603ecd38d77c7d
         }
-        
-    
-    // Clear the input fields    
-    var selectize = $('#mySelect')[0].selectize;
-    selectize.clear();
-    document.getElementById('id_expi').value='';
-    document.getElementById('id_sprice').value='';
-    document.getElementById('id_unit').value='';
-    document.getElementById('id_qty').value='';
-    document.getElementById('id_pprice').value='';
+        // Clear the input fields    
+        var selectize = $('#mySelect')[0].selectize;
+        selectize.clear();
+        document.getElementById('id_expi').value='';
+        document.getElementById('id_sprice').value='';
+        document.getElementById('id_unit').value='';
+        document.getElementById('id_qty').value='';
+        document.getElementById('id_pprice').value='';
 
-      // Calculate data field.......... Reloads  
-    var total = calculateSum().toFixed(2);
-    document.getElementById('id_porder_total').value = total;
-    //document.getElementById("rowCount").innerText = countRows();
-    
-    invoiceCalculate(total);
+          // Calculate data field.......... Reloads  
+        var total = calculateSum().toFixed(2);
+        document.getElementById('id_porder_total').value = total;
+        //document.getElementById("rowCount").innerText = countRows();
+        
+        invoiceCalculate(total);
       }
     });
   
@@ -581,8 +611,8 @@ document.getElementById('mySelect').onchange = function(){
       cell4.innerHTML = `<input id="id-form-${formCount}-item_pprice" type="text" name="form-${formCount}-item_pprice" value="${item_price}" required readonly>`;
       cell5.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required readonly>`;
       cell6.innerHTML = `<input type="text" value="${item_total}" required readonly>`;
-      cell7.innerHTML = '<form>{% csrf_token %}<button value="{{ form.instance.id }}" type="button" class="removeRow"><span>X</span></button></form>';
-      cell8.innerHTML = 'Edit{{ form.id }}';
+      cell7.innerHTML = `<button id="remove_row_btn" value="{{ form.instance.id }}" type="button" class="removeRow"><span>X</span></button>`;
+      cell8.innerHTML = `Edit{{ form.id }}`; // Hidden ID field	
     // Add a custom attribute to the new cell
       cell8.setAttribute('data-type', 'hidden');
     }
@@ -605,20 +635,21 @@ document.getElementById('mySelect').onchange = function(){
     
     }else{
       console.log(submitButton.value);
-
     }
     
 });
-  
-document.querySelectorAll('.removeRow').forEach(button => {
+  document.querySelectorAll('.removeRow').forEach(button => {
   button.addEventListener('click', function() {
     var rowId = button.value;
+<<<<<<< HEAD
     if(rowId === '' || rowId === null){
       console.log('New Row : '+rowId);
     }else{
       console.log('Existing Row : '+rowId);
     }
     console.log(button.value);
+=======
+>>>>>>> 52f5b629904142ded4ad10cc11603ecd38d77c7d
     const userConfirmed = confirm("Are you sure you want to delete this row?");
        if (userConfirmed) {
            deleteRow(rowId);     
