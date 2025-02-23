@@ -14,21 +14,24 @@
     list-style: none;
 }
 /* Extra small devices (phones, 600px and down) */
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 767px) {
     .containers{
         flex-direction: column;
     }
     .containers > aside#sidebar.nav-side-bar{
         width: 100%;
-        height: auto;
-        transition: auto;
     }
     aside > .side-bar{
         margin-top: 0;
         margin-bottom: 0;
     }
-    main .main-content {
+   
+    main > .main-content {
         flex-wrap: wrap;
+        padding: 2px;
+    }
+    main .main-content > .content{
+        padding: 0px;
     }
     #sid-nav-btn1{
         display: none;
@@ -37,13 +40,18 @@
         display: block;
         transform: rotate(-90deg);
     }
+    table td, table th {       
+        font-size: xx-small;
+        padding: 2px;
+    }
 }
 
 body{
     background-color: var(--base-color);
     font-family: 'Courier New', Courier, monospace;
     min-height: 100dvh; 
-    height: 100vh;   
+    height: 100vh;  
+    line-height: 1.2; 
 }
 .containers{    
     display: flex;
@@ -103,14 +111,29 @@ aside:not(.nav-side-bar) .nav-header,
 aside:not(.nav-side-bar) .side-bar {
     justify-content: center;
 }
-aside:not(.nav-side-bar)  .nav-header >img,
-aside:not(.nav-side-bar) .side-bar a.sidebar-link span,
-aside:not(.nav-side-bar) .side-bar a.sidebar-link svg:last-child{
+aside:not(.nav-side-bar)  .nav-header >img{
     display: none;
 }
-aside:not(.nav-side-bar) .side-bar a.sidebar-link{
+aside:not(.nav-side-bar) .side-bar a.sidebar-link{ 
     gap: 0;
+    flex-direction: column;    
+    font-size: .5rem;
 }
+ 
+aside > div.side-nav-body{
+    display: grid;
+    grid-template-rows: 0fr;
+    /*background-color: #3683f79d; */
+    transition: all 330ms ease-in-out;
+
+    > div{
+        overflow: hidden;
+    }
+}
+
+.side-nav-body.colaps{    
+    grid-template-rows: 1fr;
+  }
 /*
 aside:not(.nav-side-bar):hover { 
     width: 100%;
@@ -124,13 +147,10 @@ aside:not(.nav-side-bar):hover {
 aside .side-bar{    
   flex: 1 1 auto;
   margin-top: 1rem;
-  background-color: darkcyan;
+  /*background-color: darkcyan;*/
   padding-top: .5rem;
   padding-bottom: .5rem;
   overflow: hidden;
-}
-.side-nav-body.colaps{    
-  display: none;
 }
 .side-item .sub-item{
     display: grid;
@@ -145,7 +165,9 @@ aside .side-bar{
 .side-item .sub-item.show{
     grid-template-rows: 1fr;
 }
-
+a{
+    text-decoration: none;
+}
 a.sidebar-link{
     padding: .625rem;
     color: #ffffff;
@@ -180,12 +202,6 @@ a.sidebar-link span{
     rotate: 180deg;
     color: #f81212;
 }
-aside > div.side-nav-body{
-    display: flex; 
-    flex-flow: column;
-    flex: auto;
-    transition: all 333ms ease-in-out;
-}
 /* Sidebar End*/
 
 main {    
@@ -194,7 +210,7 @@ main {
 main .main-container-head{    
     display: flex;
     flex-direction: row;
-    background-color: midnightblue;
+    background-color: #013d3d;
     padding: .5rem .5rem .5rem 1.5rem;
     height: 50px;
     align-content: center;
@@ -227,13 +243,14 @@ main .content{
     border: 1px solid var(--line-color);
     border-radius: 1rem;
     padding: .85em;
-    background-color: #f2f2;
-    flex: 1;
+    background-color: #008b8b75;
+    flex: 1;    
+    width: 100%;
 }
 .form-header{    
     display: flex;
-    background-color: blueviolet;
-    padding: .5rem;
+    background-color: #ffffff69;
+    padding: .1rem .5rem .1rem .5rem;
     justify-content: space-between;
     align-items: center;
 }
@@ -246,7 +263,7 @@ main .content{
 .add-container{
     margin: auto;
     max-width: 600px;
-    width: 600px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -255,22 +272,22 @@ main .content{
     width: -webkit-fill-available;
     border-radius: 1rem;
     padding: .5rem;
-    background-color: rgba(61, 226, 10, 0.678);
+    background-color: #12409b;
 }
-
 input[type=text], input[type=number], input[type=datetime-local],select {
     width: 100%;
-    padding: 6px 10px;
-    margin: 8px 0;
+    width: 100%;
+    padding: 6px 6px;
+    margin: 6px 0;
     display: inline-block;
     border: 1px solid #dff0bf;
     border-radius: 4px;
     box-sizing: border-box;
   }
   
-  input[type=submit] {
+  input[type=submit],input[type=button][class=sub_btn]  {
     width: 100%;
-    background-color: #4CAF50;
+    background-color: #12409b;
     color: white;
     padding: 14px 20px;
     margin: 8px 0;
@@ -280,22 +297,26 @@ input[type=text], input[type=number], input[type=datetime-local],select {
   }
   
   input[type=submit]:hover {
-    background-color: #45a049;
+    background-color: #14429f97;
+  }
+  label{    
+    font-weight: bold;
+    font-family: cursive;
   }
   table {
     font-family: arial, sans-serif;
     border-collapse: collapse;
     width: 100%;
-    font-size: 80%;
   }
   
   td, th {
     border: 1px solid #dddddd;
     text-align: left;
-    padding: 8px;
-    font-size: .8em;
+    padding: 5px;
+    font-size: .9em;
   }
   
   tr:nth-child(even) {
     background-color: #dddddd;
   }
+  /*check the value*/

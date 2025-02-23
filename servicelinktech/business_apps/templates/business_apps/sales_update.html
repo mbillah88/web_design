@@ -12,12 +12,12 @@
 
 {% block breadcrumbs %}
 {% url 'slt:business' as url %}
-{% url 'slt:purchase' as urls %}
+{% url 'slt:sales' as urls %}
 <div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
   <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
     <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{urls}}">Purchase</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Update Purchase</li>
+    <li class="breadcrumb-item"><a href="{{urls}}">Sales</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Update Sales</li>
   </ul>
 </div>
 {% endblock %}
@@ -38,7 +38,7 @@
             {% endif %}
         </div>
         <div>
-          <a class="nav-link" href="{% url 'slt:purchase' %}">Sales List</a>
+          <a class="nav-link" href="{% url 'slt:sales' %}">Sales List</a>
         </div>
       </div>
     </nav>
@@ -56,7 +56,7 @@
               <label for="id_customer">Customer:</label>
               <div style="display: flex; gap: .5rem;">
                 {{ form.customer }}
-                {% url 'slt:add_customer_new' as url %}
+                {% url 'slt:clients_new_instance' as url %}
                 <a href="{{url}}">
                   <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>                
                 </a>
@@ -260,25 +260,29 @@
 
 <!--Supplier Search and Add -->
 <script>
-  function fetchData(supplier_pk) {
+  function fetchData(customer_pk) {
+    console.log("FETCH DATA"+customer_pk);
             //const pk = document.getElementById('data-id').value;
-            fetch(`./supplier/`+supplier_pk)
+            fetch(`./customer/`+customer_pk)
                 .then(response => response.json())
                 .then(data => {
-                    document.getElementById('supplier_address').value = data.address;  // Adjust field name as needed                    
-                    document.getElementById('supplier_mobile').value = data.mobile; 
+                  console.log(data);
+                    document.getElementById('client_address').value = data.address;  // Adjust field name as needed                    
+                    document.getElementById('client_mobile').value = data.mobile; 
                   })
                 .catch(error => console.error('Error fetching data:', error));
         }
 </script>
 <script>
-  var e = document.getElementById("id_supplier_id");
+  var e = document.getElementById("id_customer");
     function onChange() {
       var value = e.value;
       var text = e.options[e.selectedIndex].text;
+      console.log(value, text);
         $("#item-id").val(value);
         $("#item-description").val(text);
         if (/^[0-9]+$/.test(value)) {
+            console.log('Input is a number.');
             fetchData(value)
         } else if (/^[a-zA-Z]+$/.test(value)) {
           fetchData(value)
@@ -292,30 +296,31 @@
 </script>
 <!--Item Name Search Filed -->
 <script> 
-  document.getElementById('mySelect').onchange = function(){
-        var value = this.value;
-        var text = this.options[e.selectedIndex].text;
-        if (/^[0-9]+$/.test(value)) {
-              console.log('Input is a number.');
-              fetchProductData(value)
-          } else if (/^[a-zA-Z]+$/.test(value)) {
+document.getElementById('mySelect').onchange = function(){
+      var value = this.value;
+      var text = this.options[e.selectedIndex].text;
+      console.log(value, text);
+      if (/^[0-9]+$/.test(value)) {
+            console.log('Input is a number.');
             fetchProductData(value)
-              console.log('Input is a letter.');
-          } else {
-              console.log('Input ID is neither a pure number nor a pure letter.');
-          }
-    };
+        } else if (/^[a-zA-Z]+$/.test(value)) {
+          fetchProductData(value)
+            console.log('Input is a letter.');
+        } else {
+            console.log('Input ID is neither a pure number nor a pure letter.');
+        }
+  };
 </script> 
 <script>
   function fetchProductData(product_search_pk) {
     $.ajax({
-      url: './pproducts_details/' + product_search_pk ,
+      url: './product_search/' + product_search_pk ,
       method: 'GET',
       success: function(response) {
         document.getElementById('id_expi').value = "";
-        document.getElementById('id_sprice').value = response.item_sprice;
-        document.getElementById('id_unit').value = response.item_unit.unit_name;
         document.getElementById('id_pprice').value = response.item_pprice;
+        document.getElementById('id_unit').value = response.item_unit.unit_name;
+        document.getElementById('id_sprice').value = response.item_sprice;
         document.getElementById('id_qty').value = 1;
       }
     });

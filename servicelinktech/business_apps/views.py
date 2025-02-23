@@ -476,6 +476,29 @@ def sales_due_form(request, pk):
 # Purchase ....
 @login_required
 def purchase(request):
+    # Get the purchase summary
+    purchase_summary = PurchaseOrderItem.objects.values('item_id__id', 'item_id__item_name') \
+        .annotate(total_purchased_quantity=Sum('item_qty')) \
+        .annotate(total_purchased_amount=Sum('item_pprice')) \
+        .order_by('item_id__id')
+    # Define an ExpressionWrapper to calculate the total amount for purchases and sales
+    purchase_total_amount = ExpressionWrapper(F('item_qty') * F('item_pprice'), output_field=DecimalField())
+    
+    # Get the current date
+    current_date = timezone.localtime().date()
+    # Get the purchase summary for the current date
+    purchase_summary_today = list(PurchaseOrderItem.objects.filter(porder_id__porder_create_time__date=current_date).values('item_id__id', 'item_id__item_name') \
+        .annotate(total_purchased_quantity=Sum('item_qty')) \
+        .annotate(total_purchased_amount=Sum(purchase_total_amount)) \
+        .annotate(total_orders=Count('porder_id', distinct=True)) \
+        .annotate(total_items=Count('item_id')) \
+        .order_by('item_id__id'))
+
+    # Get the total orders and total price for purchases
+    total_purchase_orders = len(set(item['total_orders'] for item in purchase_summary_today))
+    total_purchase_items = sum(item['total_purchased_quantity'] for item in purchase_summary_today)
+    total_purchase_amount = sum(item['total_purchased_amount'] for item in purchase_summary_today)
+
     #porder = PurchaseOrder.objects.all().order_by('-porder_create_time')
     products = PurchaseOrderItem.objects.all()
     orders = get_order_item_count().order_by('-porder_create_time')
@@ -493,6 +516,11 @@ def purchase(request):
         'filterset': filterset,
         'page_obj': page_obj,
         'orders': orders,
+        'purchase_summary': purchase_summary,
+        'purchase_summary_today': purchase_summary_today,
+        'total_purchase_orders': total_purchase_orders,
+        'total_purchase_items': total_purchase_items,
+        'total_purchase_amount': total_purchase_amount,
     })
 def purchase_new(request):
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)

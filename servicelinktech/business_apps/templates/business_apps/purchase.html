@@ -49,16 +49,28 @@ Purchase List
     <div class="content">
       <div class="d-flex gap-3">
         <div class="content bg-primary">
-          Order : {{porder.count}}
+          Order : {{total_purchase_orders}} <br>
+          Item : {{total_purchase_items}} <br>
+          Amount : {{total_purchase_amount}} <br>
+          Due : {{porder.count}}
         </div>
         <div class="content bg-success">
-          Total Order : {{porder.count}}
+          Order : {{total_purchase_orders}}
+          Total Amount : {{total_purchase_amount}}
+          Order Cancel : {{porder.count}}
+          Total Due : {{porder.count}}
         </div>
         <div class="content bg-warning">
+          Order : {{total_purchase_orders}}
+          Total Amount : {{total_purchase_amount}}
+          Order Cancel : {{porder.count}}
           Total Due : {{porder.count}}
         </div>
         <div class="content bg-danger">
+          Order : {{total_purchase_orders}}
+          Total Amount : {{total_purchase_amount}}
           Order Cancel : {{porder.count}}
+          Total Due : {{porder.count}}
         </div>
       </div>
     </div>
@@ -97,7 +109,7 @@ Purchase List
   <div class="content">    
     <div class="form-header" style="display: flex;">      
       <div>
-        <h3>Purchase Order Due</h3>
+        <h3>Purchase Due</h3>
       </div>
       <div>        
         <a href="{% url 'slt:purchase_new' %}">Purchase Order Due Payment</a>
