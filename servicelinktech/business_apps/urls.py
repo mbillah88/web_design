@@ -41,6 +41,7 @@ urlpatterns = [
     path('sales/', views.sales, name='sales'),
     path('sales/sales_new', views.sales_new, name='sales_new'),
     path('sales/sales_update/<int:pk>/', views.sales_update, name='sales_update'),
+    path('purchase/sales_due_form/<int:pk>/', views.sales_due_form, name='sales_due_form'),
     #path('sales/sales_due_pay/<int:pk>/', views.sales_due_pay, name='sales_due_pay'),
     path('sales/customer/<int:customer_pk>/', views.customer_details, name='customer_details'),
     path('sales/product_search/<int:pk>/', views.ItemListView.as_view(), name='ItemListView'),
@@ -48,7 +49,7 @@ urlpatterns = [
     path('sales/sales_update/<int:sales_pk>/product_search/<int:product_search_pk>/', views.products_details_sales, name='products_details_sales_for_sales'),
     #path('sales/sales_update/<int:sales_pk>/item_delete_row/<int:row_id>/', views.item_delete_row, name='item_delete_row_for_sales'),
     
-    path('sales/sinvoice/<int:pk>/', views.sinvoice, name='sinvoice'),
+    path('sales/sales_invoice/<int:pk>/', views.sales_invoice, name='sales_invoice'),
     
     path('purchase/', views.purchase, name='purchase'),
     path('purchase/purchase_new', views.purchase_new, name='purchase_new'),

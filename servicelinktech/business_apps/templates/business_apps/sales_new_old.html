@@ -11,12 +11,12 @@ SLT | New Purchase
 
 {% block breadcrumbs %}
 {% url 'slt:business' as url %}
-{% url 'slt:purchase' as urls %}
+{% url 'slt:sales' as urls %}
 <div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
   <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
     <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{urls}}">Purchase</a></li>
-    <li class="breadcrumb-item active" aria-current="page">New Purchase</li>
+    <li class="breadcrumb-item"><a href="{{urls}}">Sales</a></li>
+    <li class="breadcrumb-item active" aria-current="page">New Sales Order</li>
   </ul>
 </div>
 {% endblock %}
@@ -26,20 +26,20 @@ SLT | New Purchase
 <div class="main-content">
   <div class="add-container" style="max-width: 960px;">
     <div class="content">        
-      <nav class="navbar navbar-expand">
-        <div class="container-fluid">
-          <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
-            {% if form.instance.pk %}
-                <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : {{ form.instance.item_name}}</span>
-              {% else %}
-              <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">New Sales Order</span>
-              {% endif %}
-          </div>
-          <div>
-            <a class="nav-link" href="{% url 'slt:sales' %}">Sales Order List</a>
-          </div>
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+          {% if form.instance.pk %}
+              <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : {{ form.instance.item_name}}</span>
+            {% else %}
+            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">New Sales Order</span>
+            {% endif %}
         </div>
-      </nav>
+        <div>
+          <a class="nav-link" href="{% url 'slt:sales' %}">Sales Order List</a>
+        </div>
+      </div>
+    </nav>
     <hr style="margin: .0rem 0rem 1rem 0rem;
     color: inherit;
     background-color: currentColor;
@@ -51,7 +51,7 @@ SLT | New Purchase
         <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: .5rem;">      
           <div class="d-flex w-100 gap-3" >
             <div style="flex: 3;">
-              <label for="id_customer">Customer:</label>
+              <label for="customer">Customer:</label>
               <div style="display: flex; gap: .5rem;">
                 {{ form.customer }}
                 {% url 'slt:clients_new_instance' as url %}
@@ -62,7 +62,7 @@ SLT | New Purchase
               </div>
             </div>
             <div style="flex: 1;">
-              <label for="id_sorder_status">O Type:</label>
+              <label for="id_porder_status">O Type:</label>
               {{ form.sorder_status }}
             </div>
           </div>            
@@ -97,7 +97,7 @@ SLT | New Purchase
                 <input type="text" id="id_expi" readonly>    
               </div>
               <div>
-                <label for="id_pprice">P Price</label>
+                <label for="id_pprice">S Price</label>
                 <input type="text" id="id_pprice" value="" readonly>    
               </div>
               <div>
@@ -105,7 +105,7 @@ SLT | New Purchase
                 <input type="text" id="id_unit" value="" readonly>    
               </div>
               <div>
-                <label for="id_sprice">S Price</label>
+                <label for="id_sprice">Price</label>
                 <input type="text" id="id_sprice" value="" readonly>    
               </div>
               <div>
@@ -209,20 +209,20 @@ SLT | New Purchase
    $('form').find('.selectized').each(function(index, element) { element.selectize && element.selectize.clear() })
 
 </script>
-<!--Clients Search and Add -->
+<!--Supplier Search and Add -->
 <script>
   function fetchData(customer_pk) {
     console.log("FETCH DATA"+customer_pk);
             //const pk = document.getElementById('data-id').value;
-      fetch(`./customer/${customer_pk}`)
-      .then(response => response.json())
-      .then(data => {
-        console.log(data);
-        document.getElementById('client_address').value = data.address;  // Adjust field name as needed                    
-        document.getElementById('client_mobile').value = data.mobile; 
-      })
-      .catch(error => console.error('Error fetching data:', error));
-    }
+            fetch(`./customer/${customer_pk}`)
+                .then(response => response.json())
+                .then(data => {
+                  console.log(data);
+                    document.getElementById('client_address').value = data.address;  // Adjust field name as needed                    
+                    document.getElementById('client_mobile').value = data.mobile; 
+                  })
+                .catch(error => console.error('Error fetching data:', error));
+        }
 </script>
 <script>
   var e = document.getElementById("id_customer");
@@ -293,19 +293,76 @@ document.getElementById('mySelect').onchange = function(){
   }
 </script>
 <!--Remove Cart Item frome Table row -->
+<script>
+  function removeRow(button) {
+      // Get the parent row of the button
+      var row = button.parentNode.parentNode;
+      // Remove the row from the table
+      row.parentNode.removeChild(row);
+    
+      // Calculate data field.......... Reloads     
+    var total = calculateSum().toFixed(2);
+    document.getElementById('id_sorder_total').value = total;
+    document.getElementById("rowCount").innerText = countRows();
+    
+    invoiceCalculate(total);
+  }
+</script>
+<!--// Calculate Discount and Payment field... -->
+<script>
+   function getDiscountPercentage(originalPrice, discountAmount) {
+      return (discountAmount / originalPrice) * 100;
+    }
+    function getDiscountAmount(originalPrice, discountPercentage) {
+      return (discountPercentage / 100) * originalPrice;
+    }
+    function invoiceCalculate(total_amt){
+      this.total_amt = total_amt.toFixed(2); ; 
+      var disc_amt = document.getElementById('id_sorder_discount').value;
+      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
+      var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
+      var paid_amt = document.getElementById('id_payment_amount').value; 
+      var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
+      document.getElementById('id_sorder_total').value = total_amt;
+      document.getElementById('id_disc_perc').value = disc_perc;
+      document.getElementById('id_pay_total').value = payable_amt;
+      document.getElementById('id_sorder_due').value = due_amt;
+    }
+    
+    function invoiceDiscCalculate(disc_amt){
+      if (disc_amt === '') {
+        $(this).val(0);
+      }
+      if (due_amt < 0) {
+        alert("Error: Paid amount is greater than the payable amount.");
+      }
+      this.disc_amt = disc_amt; 
+      var total_amt = document.getElementById('id_sorder_total').value;
+      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
+      var paid_amt = document.getElementById('id_payment_amount').value;
+      var payable_amt = parseFloat(total_amt-disc_amt);
+      var due_amt = parseFloat(payable_amt-paid_amt); 
+      document.getElementById('id_disc_perc').value = disc_perc;
+      document.getElementById('id_pay_total').value = payable_amt;
+      document.getElementById('id_sorder_due').value = due_amt;
+    }
+    
+    function invoiceDueCalculate(paid_amt){
+      if (paid_amt === '') {
+        $(this).val(0);
+      }
+      this.paid_amt = paid_amt.toFixed(2);
+      var payable_amt = document.getElementById('id_pay_total').value;
+      var paid_amt = document.getElementById('id_payment_amount').value;
+      var due_amt = parseFloat(payable_amt-paid_amt); 
+      document.getElementById('id_sorder_due').value = due_amt;
+    }
+</script>
 <script>  
   $(document).ready(function() {  
     $("#id_sorder_discount").on("input", function() {
       var value = $(this).val();
       invoiceDiscCalculate(value);
-      console.log(value);
-    }); 
-  });
-  $(document).ready(function() {  
-    $("#id_disc_perc").on("input", function() {
-      var value = $(this).val();
-      invoiceDiscPercCalculate(value);
-      console.log(value);
     }); 
   });
   $(document).ready(function() {  
@@ -331,13 +388,7 @@ document.getElementById('mySelect').onchange = function(){
   }
 </script>
 <!--// Calculate Discount and Payment field... -->
-<script>  
-  function getDiscountPercentage(originalPrice, discountAmount) {
-      return (discountAmount / originalPrice) * 100;
-    }
-  function getDiscountAmount(originalPrice, discountPercentage) {
-      return (discountPercentage / 100) * originalPrice;
-    }
+<script>
   function invoiceCalculate(total_amt){
     this.total_amt = total_amt; 
     var disc_amt = 0;
@@ -352,34 +403,20 @@ document.getElementById('mySelect').onchange = function(){
     document.getElementById('id_payment_amount').value = paid_amt;
     document.getElementById('id_sorder_due').value = due_amt;
   }
+  
   function invoiceDiscCalculate(disc_amt){
     if (disc_amt === '') {
       $(this).val(0);
     }
-      this.disc_amt = disc_amt; 
-      var total_amt = document.getElementById('id_sorder_total').value;
-      var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
-      var paid_amt = document.getElementById('id_payment_amount').value;
-      var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
-      var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
-      document.getElementById('id_disc_perc').value = disc_perc;
-      document.getElementById('id_pay_total').value = payable_amt;
-      document.getElementById('id_sorder_due').value = due_amt;
+    this.disc_amt = disc_amt; 
+    var total_amt = document.getElementById('id_sorder_total').value;
+    var paid_amt = document.getElementById('id_payment_amount').value;
+    var payable_amt = parseFloat(total_amt-disc_amt);
+    var due_amt = parseFloat(payable_amt-paid_amt); 
+    document.getElementById('id_pay_total').value = payable_amt;
+    document.getElementById('id_sorder_due').value = due_amt;
   }
-  function invoiceDiscPercCalculate(disc_perc_amt){
-    if (disc_perc_amt === '') {
-      $(this).val(0);
-    }
-      this.disc_perc_amt = disc_perc_amt; 
-      var total_amt = document.getElementById('id_sorder_total').value;
-      var disc_amt = getDiscountAmount(total_amt,disc_perc_amt).toFixed(2); 
-      var paid_amt = document.getElementById('id_payment_amount').value;
-      var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
-      var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
-      document.getElementById('id_sorder_discount').value = disc_amt;
-      document.getElementById('id_pay_total').value = payable_amt;
-      document.getElementById('id_sorder_due').value = due_amt;
-  }
+  
   function invoiceDueCalculate(paid_amt){
     if (paid_amt === '') {
       $(this).val(0);
@@ -400,16 +437,16 @@ document.getElementById('mySelect').onchange = function(){
       var item_name = item.options[item.selectedIndex].text;
       var item_unit = document.getElementById('id_unit').value;
       var item_qty = document.getElementById('id_qty').value;
-      var item_price = document.getElementById('id_sprice').value;
+      var item_srice = document.getElementById('id_sprice').value;
 
     // Calculate Qty * Price values
-      var price = parseFloat(item_price);
+      var price = parseFloat(item_srice);
       var quantity = parseInt(item_qty);
       var total = parseFloat(price * quantity);
       var item_total = parseFloat(total).toFixed(2);
     
     // Validate input
-    if (item_code === '' || item_qty === '' || item_price === '') {
+    if (item_code === '' || item_qty === '' || item_srice === '') {
         alert('Please fill in all fields');
         return;
     }
@@ -447,21 +484,21 @@ document.getElementById('mySelect').onchange = function(){
       cell1.innerHTML = `<input id="id-form-${formCount}-item_id" type="number" name="form-${formCount}-item_id" value="${item_code}" required readonly>`;        
       cell2.innerHTML = `<input type="text"value="${item_name}" required readonly>`;
       cell3.innerHTML = `<input type="text" value="${item_unit}" required readonly>`;
-      cell4.innerHTML = `<input id="id-form-${formCount}-item_sprice" type="text" name="form-${formCount}-item_sprice" value="${item_price}" required readonly>`;
+      cell4.innerHTML = `<input id="id-form-${formCount}-item_sprice" type="text" name="form-${formCount}-item_sprice" value="${item_srice}" required readonly>`;
       cell5.innerHTML = `<input id="id-form-${formCount}-item_qty" type="number" name="form-${formCount}-item_qty" value="${item_qty}" required readonly>`;
       cell6.innerHTML = `<input type="text" value="${item_total}" required readonly>`;
       cell7.innerHTML = '<button type="button" class="removeRow">Remove</button>';
       // Add event listener for remove button 
       cell7.querySelector('.removeRow').addEventListener('click', function() {
-        table.removeChild(newRow);
-        totalForms.value = formCount;  // Decrement the form count
-          // Calculate data field.......... Reloads     
-        var total = calculateSum().toFixed(2);
-        document.getElementById('id_sorder_total').value = total;
-        document.getElementById("rowCount").innerText = countRows();
-        
-        invoiceCalculate(total);
-      });
+      table.removeChild(newRow);
+      totalForms.value = formCount;  // Decrement the form count
+    // Calculate data field.......... Reloads  
+    var total = calculateSum().toFixed(2);
+    document.getElementById('id_sorder_total').value = total;
+    document.getElementById("rowCount").innerText = countRows();
+
+    invoiceCalculate(total);
+    });
 
     }
     
@@ -472,7 +509,7 @@ document.getElementById('mySelect').onchange = function(){
     document.getElementById('id_sprice').value='';
     document.getElementById('id_unit').value='';
     document.getElementById('id_qty').value='';
-    document.getElementById('id_pprice').value='';
+    document.getElementById('id_sprice').value='';
 
       // Calculate data field.......... Reloads  
     var total = calculateSum().toFixed(2);
@@ -482,7 +519,8 @@ document.getElementById('mySelect').onchange = function(){
     invoiceCalculate(total);
     
 });
-  document.querySelectorAll('.removeRow').forEach(button => {
+  
+document.querySelectorAll('.removeRow').forEach(button => {
   button.addEventListener('click', function() {
     const row = this.closest('tr');
     row.parentNode.removeChild(row);
@@ -490,6 +528,7 @@ document.getElementById('mySelect').onchange = function(){
     const totalForms = document.querySelector('input[name="form-TOTAL_FORMS"]');
     const formCount = parseInt(totalForms.value);
     totalForms.value = formCount - 1;
+
   });
 });
 </script>

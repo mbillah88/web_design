@@ -1,0 +1,254 @@
+{% extends "business_apps/master.html" %}
+{% load i18n %}
+{% load multiply %}
+
+{% block title %}
+SLT | New Purchase
+{% endblock %}
+
+{% block header %}
+  New Purchase
+{% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+{% url 'slt:purchase' as urls %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{urls}}">Purchase</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Purchase Due Payment</li>
+  </ul>
+</div>
+{% endblock %}
+
+    
+{% block content %}
+<div class="main-content">
+  <div class="add-container" style="max-width: 960px;">
+    <div class="content">
+        
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(146, 155, 20, 0.822);">Due Received : SOI-{{ form.instance.pk}} Customer: {{ form.instance.customer}} </span>
+        </div>
+        <div>
+          <a class="nav-link" href="{% url 'slt:sales' %}">Sales List</a>
+        </div>
+      </div>
+    </nav>
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;">
+        <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: .5rem;">      
+          <div class="d-flex w-100 gap-3" >
+            <div style="flex: 3;">
+              <span style="font-weight: 600;">Customer:  </span><span> {{ form.instance.customer }} ({{ form.instance.customer.id}})</span>              
+            </div>
+            <div style="flex: 1;">
+              <span style="font-weight: 600;">Order Type:  </span><span> {{ form.instance.get_sorder_status_display }}</span>
+            </div>
+          </div>            
+          <div class="d-flex w-100 gap-3" style="justify-content: space-between;" > 
+            <div> 
+              <span style="font-weight: 600;">Address:</span><span> {{ form.instance.customer.client_address }}</span>
+            </div>
+            <div>
+              <span style="font-weight: 600;">Mobile:</span><span> {{ form.instance.customer.client_mobile }}</span>
+            </div>
+            <div>
+              <span style="font-weight: 600;">Order Date:</span><span> {{ form.instance.sorder_create_time|date:'Y-m-d h:m A'  }}</span>
+            </div>
+          </div>
+        </div>     
+        <div class="content">
+          <span style="font-size: 1.3rem; font-weight: bolder;">Product Item</span>
+          <span id="rowCount" style="font-size: 1.3rem; font-weight: bolder;">0</span>          
+      
+          <table id="purchaseOrderTable">
+              <thead style="background-color: #008b8b75">
+                <th style="width: 10%;text-align: center;">Item Code</th>
+                <th style="width: 30%;text-align: center;">Item Name</th>
+                <th style="text-align: center;">Unit</th>
+                <th style="text-align: center;">Price</th>
+                <th style="text-align: center;">Qty</th>
+                <th style="text-align: center;">Total</th>
+              </thead>
+              <tbody style="background-color: rgb(181, 184, 183);">
+                  <!-- Add more product rows here -->
+                    {% for form in formset %}
+                  <tr>
+                    <td style="text-align: center;">{{ form.instance.item_id.id }}</td>
+                    <td>{{form.instance.item_id.item_name}}</td>
+                    <td style="text-align: center;">{{ form.instance.item_id.item_unit }}</td>
+                    <td style="text-align: end;">{{ form.instance.item_sprice }}</td>
+                    <td style="text-align: center;">{{ form.instance.item_qty }}</td>
+                    <td style="text-align: end;">{{form.instance.item_qty|multiply:form.instance.item_sprice}}</td>         
+                  </tr>
+                   {% endfor %}
+              </tbody>
+          </table>
+        </div>         
+        <form id="due_form" class="form-container p-2" enctype="multipart/form-data" method="post">
+          <!-- Security token -->
+          {% csrf_token %}
+          <div class="content d-flex">   
+            <div style="flex: 1;display: flex;flex-direction: column;justify-content: space-between;gap: 1rem;">
+              <div>
+                <span style="font-weight: 600;">Notes:</span>
+                <input  class="form-control col-xs-12" id="it_sorder_note" value="{{ form.instance.sorder_note }}" readonly>          
+              </div>
+              <div>
+                <span style="font-weight: 600;">Payment Information:</span>
+                <table>
+                  <tr>
+                    <th>SL</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>User</th>
+                  </tr>
+                  {% for pay_list in pay_list_formset %}
+                  <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{pay_list.instance.payment_amount}}</td>
+                    <td>{{pay_list.instance.payment_time|date:'Y-m-d h:m A'}}</td>
+                    <td>{{pay_list.instance.payment_create_by}}</td>
+                  </tr>
+                  {% endfor %}
+                </table>
+              </div>
+              <div class="d-flex p-2" style="align-items: center;background: burlywood; justify-content: center;"> 
+                <div class="p-2" style="  border: 1px solid;">      
+                    <table>
+                      <tr>
+                        <th>payment_amount</th>
+                        <th>payment_type</th>
+                      <tr>
+                        <td><input id="id_payment_amount" name="payment_amount" type="text"  onkeydown="moveToNextField_if(event, 'due_submit_id')" required></td>
+                        <td>{{pay_form.payment_type}}</td>
+                        
+                      </tr>
+                      
+                    </table>
+                    <div class="submit-row">
+                      <input id="due_submit_id" type="submit">
+                    </div>
+                </div>    
+              </div>
+            </div>
+            <div style="flex: 1;align-items: center;">
+              <div class="d-flex flex-column">
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_sorder_total">Item Total:</label></div>
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="sorder_total" required id="id_sorder_total" value="{{ form.instance.sorder_total }}" readonly></div>              
+                </div>
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_sorder_discount">Discount (Amt):</label></div>
+                  <div style="flex: 50%; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="sorder_discount" required id="id_sorder_discount" value="{{ form.instance.sorder_discount }}" readonly></div>              
+                </div>
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_disc_perc">Discount (%):</label></div>
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="disc_perc"required id="id_disc_perc" value="{{ form.instance.disc_perc }}" readonly></div>              
+                </div>
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_total">Payable Total:</label></div>
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="pay_total"required id="id_pay_total" value="{{ form.instance.pay_total }}" readonly></div>              
+                </div>
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_pay_amount">Payment:</label></div>
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" required id="id_pay_amount" value="{{ total_payment }}" readonly></div>              
+                </div>
+                <div class="d-flex" style="align-items: center;" >
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_sorder_due">Due Amount:</label></div>
+                  <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" style=" text-align: end; color: #000; font-weight: 600;" name="sorder_due"required id="id_sorder_due" value="{{ form.instance.sorder_due }}" readonly></div>              
+                </div>
+              </div>
+
+            </div>
+          </div> 
+      </form>
+    </div>
+  </div>
+</div>
+<!--// Submit button Click ... -->
+<script>
+  $("#due_form input").not("#due_submit_id").keydown(function(event) {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+      return false;
+    }
+  });
+</script>
+<script>
+  function getDiscountPercentage(originalPrice, discountAmount) {
+    return (discountAmount / originalPrice) * 100;
+  }
+  function getDiscountAmount(originalPrice, discountPercentage) {
+    return (discountPercentage / 100) * originalPrice;
+  }
+  function invoiceCalculate(){
+    this.total_amt = document.getElementById('id_sorder_total').value; 
+    var disc_amt = document.getElementById('id_sorder_discount').value;
+    var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
+    var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
+    var paid_amt = document.getElementById('id_pay_amount').value; 
+    var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
+    document.getElementById('id_sorder_total').value = total_amt;
+    document.getElementById('id_disc_perc').value = disc_perc;
+    document.getElementById('id_pay_total').value = payable_amt;
+    document.getElementById('id_sorder_due').value = due_amt;
+  }
+  
+  function invoiceDueCalculate(paid_amt){
+    if (paid_amt === '') {
+      $(this).val(0);
+    }
+    this.paid_amt = paid_amt;
+    var payable_amt = document.getElementById('id_pay_total').value;
+    var ppaid_amt = document.getElementById('id_pay_amount').value;
+    var pdue_amt = parseFloat(payable_amt-paid_amt); 
+    var due_amt = parseFloat(pdue_amt-ppaid_amt); 
+    document.getElementById('id_sorder_due').value = due_amt;
+  }
+  window.onload = invoiceCalculate;
+</script>
+<!--// Discount and Payment field key press... -->
+<script>  
+$(document).ready(function() {  
+  $("#id_payment_amount").on("input", function() {
+    var value = $(this).val();
+    invoiceDueCalculate(value);
+    due_amt = document.getElementById('id_sorder_due').value;
+    if(due_amt < 0){
+      alert(due_amt);
+      document.getElementById('id_sorder_due').style.background = "red";
+      document.getElementById('due_submit_id').style.display = "none";
+    }else{
+      document.getElementById('id_sorder_due').style.background = "white";
+      document.getElementById('due_submit_id').style.display = "block";
+    }
+  }); 
+});
+</script>
+
+<script>
+  function moveToNextField_if(event, nextFieldID) {
+    if (event.key === "Enter") {
+      let due = parseFloat(document.getElementById('id_porder_due').value);
+      if (due < 0) {
+        alert("Error: Paid amount is greater than the payable amount.");
+      } else {
+        document.getElementById(nextFieldID).focus();
+      }
+  
+      event.preventDefault();
+    }
+  }
+  </script>
+<!-- Be sure to put the links in the right position to avoid dependency issue.-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+
+{% endblock %}

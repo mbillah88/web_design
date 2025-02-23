@@ -122,6 +122,10 @@ class SalesOrderForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['customer'].empty_label = "Select customer..."
 
+class SalesOrderDueForm(forms.ModelForm):
+    class Meta:
+        model = SalesOrder
+        fields = ['sorder_due']
 class SalesOrderItemForm(forms.ModelForm):
     class Meta:
         model = SalesOrderItem

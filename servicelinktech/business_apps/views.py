@@ -324,7 +324,7 @@ def sales(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'business_apps/sales.html', {
+    return render(request, 'business_apps/sales_list.html', {
         #'porder' : porder,
         'products' : products,
         'filterset': filterset,
@@ -370,45 +370,108 @@ def sales_new(request):
         'formset' : formset,
         'products' : products})            
 def sales_update(request, pk):
-    sorder_id = get_object_or_404(SalesOrder, id=pk)
-    sorder_pay = get_object_or_404(SalesPayment, sorder_id=pk)
+    po = get_object_or_404(SalesOrder, id=pk)
+    #payo = get_object_or_404(PurchasePayment, order_id=pk)
     CartItemFormSet = modelformset_factory(SalesOrderItem, form=SalesOrderItemForm, extra=0)
     products = ItemProduct.objects.all() 
+    
+    # Get the purchase summary
+    sales_summary = list(SalesPayment.objects.filter(sorder_id=pk).values('sorder_id', 'payment_amount') \
+        .annotate(pay_id=Count('sorder_id')) \
+        .order_by('sorder_id'))
+    # Get the purchase summary    
+    total_payment = sum(item['payment_amount'] for item in sales_summary)
+    payFormSet = modelformset_factory(SalesPayment, form=SalesPaymentForm, extra=0)
+
     if request.method == 'POST':
-        customer_form = SalesOrderForm(request.POST, instance=sorder_id)
-        payment_form = SalesPaymentForm(request.POST, instance=sorder_pay)
+        customer_form = SalesOrderForm(request.POST, instance=po)
+        payment_form = payFormSet(request.POST, prefix='payment')
         formset = CartItemFormSet(request.POST)        
         #for Data Check...
         for name in request.POST:
             print("{}: {}".format(name, request.POST.getlist(name)))        
         # Print formset errors for debugging
         if not formset.is_valid():
-            print("Formset Errors:", formset.errors)
-        
+            print("Formset Errors:", formset.errors)     
+        # Print formset errors for debugging
+        if not payment_form.is_valid():
+            print("payment_form Errors:", payment_form.errors)
+        # Print formset errors for debugging
+        if not customer_form.is_valid():
+            print("customer_form Errors:", customer_form.errors)
+    
+    
+    
         if customer_form.is_valid() and formset.is_valid() and payment_form.is_valid():
             order = customer_form.save(commit=False)
-            order.sorder_create_by = request.user
+            order.sorder_update_by = request.user
             order.save()
             cart_items = formset.save(commit=False)
             for item in cart_items:
                 item.sorder_id = order
                 item.save()
             payment = payment_form.save(commit=False)
+            for pay in payment:
+                pay.order_id = order
+                pay.payment_update_by = request.user
+                pay.save()
+            return redirect('slt:sales')  # Redirect to a success page or another view
+
+    else:
+        customer_form = SalesOrderForm(instance=po)
+        porder = SalesOrderItem.objects.filter(sorder_id_id=pk) 
+        formset = CartItemFormSet(queryset=porder)
+        #pay_form = PurchasePaymentForm()
+        pay_id = SalesPayment.objects.filter(sorder_id=pk)
+        pay_list_formset = payFormSet(queryset=pay_id, prefix='payment')
+        return render(request, 'business_apps/sales_update.html', {
+            'form' : customer_form,
+            'total_payment' : total_payment,
+            #'pay_form' : pay_form,
+            'pay_list_formset' : pay_list_formset,
+            'formset' : formset,
+            'products' : products})   
+def sales_due_form(request, pk):
+    
+    # Get the purchase summary
+    sales_summary = list(SalesPayment.objects.filter(sorder_id=pk).values('sorder_id', 'payment_amount') \
+        .annotate(pay_id=Count('sorder_id')) \
+        .order_by('sorder_id'))
+    # Get the purchase summary    
+    total_payment = sum(item['payment_amount'] for item in sales_summary)
+    
+    sales_order_id = get_object_or_404(SalesOrder, id=pk)
+    #purchase_pay_order_id = get_object_or_404(PurchasePayment, order_id=pk)
+    payFormSet = modelformset_factory(SalesPayment, form=SalesPaymentForm, extra=0)
+    CartItemFormSet = modelformset_factory(SalesOrderItem, form=SalesOrderItemForm, extra=0)
+    print(sales_order_id)
+    if request.method == 'POST':
+        customer_form = SalesOrderDueForm(request.POST, instance=sales_order_id)
+        payment_form = SalesPaymentForm(request.POST)
+        for name in request.POST:
+            print("{}: {}".format(name, request.POST.getlist(name)))    
+            
+        if payment_form.is_valid():
+            order = customer_form.save(request.POST)
+            payment = payment_form.save(commit=False)
             payment.sorder_id = order
             payment.payment_create_by = request.user
             payment.save()
             return redirect('slt:sales')  # Redirect to a success page or another view
-
+        
     else:
-        customer_form = SalesOrderForm(instance=sorder_id)
-        payment_form = SalesPaymentForm(instance=sorder_pay)
-        sorder_id = SalesOrderItem.objects.filter(sorder_id_id=pk) 
-        formset = CartItemFormSet(queryset=sorder_id)
-    return render(request, 'business_apps/sales_update.html', {
-        'form' : customer_form,
-        'pay_form' : payment_form,
-        'formset' : formset,
-        'products' : products})      
+        customer_form = SalesOrderForm(instance=sales_order_id)
+        payment_form = SalesPaymentForm()
+        pay_order_id = SalesPayment.objects.filter(sorder_id=pk)
+        item_order_id = SalesOrderItem.objects.filter(sorder_id_id=pk) 
+        formset = CartItemFormSet(queryset=item_order_id)
+        pay_list_formset = payFormSet(queryset=pay_order_id)
+        return render(request, 'business_apps/sales_due_payment.html', {
+            'form' : customer_form,
+            'total_payment' : total_payment,
+            'pay_form' : payment_form,
+            'pay_list_formset' : pay_list_formset,
+            'formset' : formset})
 
 # Purchase ....
 @login_required
@@ -961,15 +1024,26 @@ def purchase_invoice(request, pk):
         'products' : products})
 
 #Printing page....
-def sinvoice(request, pk):
+def sales_invoice(request, pk):
+     # Get the purchase summary
+    sales_summary = list(SalesPayment.objects.filter(sorder_id=pk).values('sorder_id', 'payment_amount') \
+        .annotate(pay_id=Count('sorder_id')) \
+        .order_by('sorder_id'))
+    print(sales_summary)
+    # Get the purchase summary    
+    total_payment = sum(item['payment_amount'] for item in sales_summary)
+    print(total_payment)
+    
     po = get_object_or_404(SalesOrder, id=pk)
-    payo = get_object_or_404(SalesPayment, sorder_id_id=pk)
+    #payo = get_object_or_404(PurchasePayment, order_id=pk)
     CartItemFormSet = modelformset_factory(SalesOrderItem, form=SalesOrderItemForm, extra=0)
+    products = ItemProduct.objects.all() 
     customer_form = SalesOrderForm(instance=po)
-    payment_form = SalesPaymentForm(instance=payo)
-    porder = SalesOrderItem.objects.filter(sorder_id_id=pk) 
-    formset = CartItemFormSet(queryset=porder)
+    #payment_form = PurchasePaymentForm(instance=payo)
+    sorder = SalesOrderItem.objects.filter(sorder_id_id=pk) 
+    formset = CartItemFormSet(queryset=sorder)
     return render(request, 'business_apps/reports/sinvoice.html', {
         'form' : customer_form,
-        'pay_form' : payment_form,
-        'formset' : formset})
+        'total_payment' : total_payment,
+        'formset' : formset,
+        'products' : products})
