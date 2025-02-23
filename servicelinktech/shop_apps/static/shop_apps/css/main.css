@@ -1,0 +1,301 @@
+:root{
+    --base-color: #201e1e36;
+    --text-color: #e9e3e3;
+    --text-color-other: #ccc9c9;
+    --line-color: #f5f5f5;
+    --hover-color: #c1fad4;
+    --menu-color: #04a08b;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+}
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .containers{
+        flex-direction: column;
+    }
+    .containers > aside#sidebar.nav-side-bar{
+        width: 100%;
+        height: auto;
+        transition: auto;
+    }
+    aside > .side-bar{
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    main .main-content {
+        flex-wrap: wrap;
+    }
+    #sid-nav-btn1{
+        display: none;
+    }
+    #sid-nav-btn2.toggle-btn1{
+        display: block;
+        transform: rotate(-90deg);
+    }
+}
+
+body{
+    background-color: var(--base-color);
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100dvh; 
+    height: 100vh;   
+}
+.containers{    
+    display: flex;
+    margin: 0 auto;
+    width: 100%;
+    min-height: 100dvh; 
+    
+    > main{
+        flex: 1;
+    }
+}
+aside#sidebar{
+    display: flex;
+    flex-direction: column;
+    width: 70px; 
+    padding: .5rem;
+    background-color:  #013d3d; 
+    transition: all 330ms ease-in-out;
+    top: 0;
+}
+aside#sidebar.nav-side-bar{
+    width: 250px;  
+    padding: .5rem;
+}
+.nav-header{    
+    display: flex;
+    height: 50px;
+    justify-content: space-between;
+    align-items: center;
+    flex-flow: row nowrap;
+}
+.nav-header >button, 
+.nav-header >img{    
+    height: 40px;
+    max-width: 100%;
+    border-radius: .5rem;
+    transition: all 2s;
+}
+.nav-header >button{
+    width: 40px;
+    cursor: pointer;
+}
+.nav-header >button:hover{
+    background-color: rgb(177, 221, 16);
+}
+#sid-nav-btn2{
+    display: none;
+}
+
+
+aside:not(.nav-side-bar) .nav-header >#sid-nav-btn1{
+    rotate: 180deg;
+    transition: all 1s;
+    justify-content: center;
+}
+aside:not(.nav-side-bar) .nav-header,
+aside:not(.nav-side-bar) .side-bar {
+    justify-content: center;
+}
+aside:not(.nav-side-bar)  .nav-header >img,
+aside:not(.nav-side-bar) .side-bar a.sidebar-link span,
+aside:not(.nav-side-bar) .side-bar a.sidebar-link svg:last-child{
+    display: none;
+}
+aside:not(.nav-side-bar) .side-bar a.sidebar-link{
+    gap: 0;
+}
+/*
+aside:not(.nav-side-bar):hover { 
+    width: 100%;
+
+    .nav-header >img,
+    .side-bar a.sidebar-link span{
+        display: block;
+    }
+}
+*/
+aside .side-bar{    
+  flex: 1 1 auto;
+  margin-top: 1rem;
+  background-color: darkcyan;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  overflow: hidden;
+}
+.side-nav-body.colaps{    
+  display: none;
+}
+.side-item .sub-item{
+    display: grid;
+    grid-template-rows: 0fr;
+    background-color: #3683f79d; 
+    transition: all 330ms ease-in-out;
+
+    > div{
+        overflow: hidden;
+    }
+}
+.side-item .sub-item.show{
+    grid-template-rows: 1fr;
+}
+
+a.sidebar-link{
+    padding: .625rem;
+    color: #ffffff;
+    display: flex; 
+    align-items: center; 
+    gap: .5rem;
+    font-size: 1rem;
+    white-space: nowrap;
+    border-left: 3px solid transparent;
+    border: 1px solid white;
+    border-radius: .5rem;
+}
+a.sidebar-link:hover{
+    background-color: rgba(78, 9, 105, 0.651);
+    border-left: 5px solid #3b7ddd;
+    border-right: 3px solid #70fa64;
+    box-shadow: 0 4px 8px 0 rgb(248, 246, 109), 0 6px 20px 0 rgba(253, 252, 252, 0.562);
+}
+a.sidebar-link.active{
+    background-color: rgba(8, 247, 135, 0.651);
+    border-left: 5px solid #f73949;
+    border-right: 3px solid #0e0af0;
+    box-shadow: 0 4px 8px 0 rgb(248, 246, 109), 0 6px 20px 0 rgba(253, 252, 252, 0.562);
+}
+a.sidebar-link span{
+    flex-grow: 1;
+}
+.toggle-btn svg{
+    transition: 200ms ease;
+}
+.rotate svg:last-child{    
+    rotate: 180deg;
+    color: #f81212;
+}
+aside > div.side-nav-body{
+    display: flex; 
+    flex-flow: column;
+    flex: auto;
+    transition: all 333ms ease-in-out;
+}
+/* Sidebar End*/
+
+main {    
+   flex: 1;
+}
+main .main-container-head{    
+    display: flex;
+    flex-direction: row;
+    background-color: midnightblue;
+    padding: .5rem .5rem .5rem 1.5rem;
+    height: 50px;
+    align-content: center;
+    justify-content: space-between;
+    align-items: center;
+    color: cornflowerblue;
+    
+    > div{
+        display: flex;
+        align-items: center;     
+        gap: 1rem;   
+    }
+}
+
+.logout_btn{
+    display: flex;
+    align-items: center;
+    background: none;
+    border: 1px solid wheat;
+    color: wheat;
+    padding: .1rem .2rem .1rem .2rem;       
+}
+main .main-content{
+    margin: .5rem;
+    padding: .5rem;
+    display: flex;
+    gap: 1rem;
+}
+main .content{
+    border: 1px solid var(--line-color);
+    border-radius: 1rem;
+    padding: .85em;
+    background-color: #f2f2;
+    flex: 1;
+}
+.form-header{    
+    display: flex;
+    background-color: blueviolet;
+    padding: .5rem;
+    justify-content: space-between;
+    align-items: center;
+}
+.form-container{    
+    gap: 1rem;
+    display: flex;
+    flex-flow: column;    
+    padding-top: 1rem;
+}
+.add-container{
+    margin: auto;
+    max-width: 600px;
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.add-item-btn{
+    width: -webkit-fill-available;
+    border-radius: 1rem;
+    padding: .5rem;
+    background-color: rgba(61, 226, 10, 0.678);
+}
+
+input[type=text], input[type=number], input[type=datetime-local],select {
+    width: 100%;
+    padding: 6px 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #dff0bf;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+  
+  input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  input[type=submit]:hover {
+    background-color: #45a049;
+  }
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 80%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    font-size: .8em;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
