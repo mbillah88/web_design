@@ -459,16 +459,14 @@ def purchase_new(request):
         'pay_form' : payment_form,
         'formset' : formset,
         'products' : products})
-def purchase_due_pay(request, pk):
+def purchase_due_form(request, pk):
     
     # Get the purchase summary
     purchase_summary = list(PurchasePayment.objects.filter(order_id=pk).values('order_id', 'payment_amount') \
         .annotate(pay_id=Count('order_id')) \
         .order_by('order_id'))
-    print(purchase_summary)
     # Get the purchase summary    
     total_payment = sum(item['payment_amount'] for item in purchase_summary)
-    print(total_payment)
     
     purchase_order_id = get_object_or_404(PurchaseOrder, id=pk)
     #purchase_pay_order_id = get_object_or_404(PurchasePayment, order_id=pk)
@@ -507,42 +505,64 @@ def purchase_due_pay(request, pk):
 
 def purchase_update(request, pk):
     po = get_object_or_404(PurchaseOrder, id=pk)
-    payo = get_object_or_404(PurchasePayment, order_id=pk)
+    #payo = get_object_or_404(PurchasePayment, order_id=pk)
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
     products = ItemProduct.objects.all() 
+    
+    # Get the purchase summary
+    purchase_summary = list(PurchasePayment.objects.filter(order_id=pk).values('order_id', 'payment_amount') \
+        .annotate(pay_id=Count('order_id')) \
+        .order_by('order_id'))
+    # Get the purchase summary    
+    total_payment = sum(item['payment_amount'] for item in purchase_summary)
+    payFormSet = modelformset_factory(PurchasePayment, form=PurchasePaymentForm, extra=0)
+
     if request.method == 'POST':
         customer_form = PurchaseOrderForm(request.POST, instance=po)
-        payment_form = PurchasePaymentForm(request.POST, instance=payo)
+        payment_form = payFormSet(request.POST, prefix='payment')
         formset = CartItemFormSet(request.POST)        
         #for Data Check...
         for name in request.POST:
             print("{}: {}".format(name, request.POST.getlist(name)))        
         # Print formset errors for debugging
         if not formset.is_valid():
-            print("Formset Errors:", formset.errors)
+            print("Formset Errors:", formset.errors)     
+        # Print formset errors for debugging
+        if not payment_form.is_valid():
+            print("payment_form Errors:", payment_form.errors)
+        # Print formset errors for debugging
+        if not customer_form.is_valid():
+            print("customer_form Errors:", customer_form.errors)
+    
+    
     
         if customer_form.is_valid() and formset.is_valid() and payment_form.is_valid():
             order = customer_form.save(commit=False)
-            order.porder_create_by = request.user
+            order.porder_update_by = request.user
             order.save()
             cart_items = formset.save(commit=False)
             for item in cart_items:
                 item.porder_id = order
                 item.save()
             payment = payment_form.save(commit=False)
-            payment.order_id = order
-            payment.payment_create_by = request.user
-            payment.save()
+            for pay in payment:
+                pay.order_id = order
+                pay.payment_update_by = request.user
+                pay.save()
             return redirect('slt:purchase')  # Redirect to a success page or another view
 
     else:
         customer_form = PurchaseOrderForm(instance=po)
-        payment_form = PurchasePaymentForm(instance=payo)
         porder = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
         formset = CartItemFormSet(queryset=porder)
+        #pay_form = PurchasePaymentForm()
+        pay_id = PurchasePayment.objects.filter(order_id=pk)
+        pay_list_formset = payFormSet(queryset=pay_id, prefix='payment')
         return render(request, 'business_apps/purchase_update.html', {
             'form' : customer_form,
-            'pay_form' : payment_form,
+            'total_payment' : total_payment,
+            #'pay_form' : pay_form,
+            'pay_list_formset' : pay_list_formset,
             'formset' : formset,
             'products' : products})
 def item_delete_row(request, purchase_pk, row_id):
@@ -906,7 +926,7 @@ def report_summary_daily(request):
     return render(request, 'business_apps/reports/daily_reports_summary.html', context)
 
 #Printing page....
-def pinvoice(request, pk):
+def purchase_invoice(request, pk):
     # Get the purchase summary
     purchase_summary = list(PurchasePayment.objects.filter(order_id=pk).values('order_id', 'payment_amount') \
         .annotate(pay_id=Count('order_id')) \

@@ -1,0 +1,83 @@
+{% extends "business_apps/master.html" %}
+
+{% block title %}
+SLT | Settings
+{% endblock %}
+
+{% block header %}
+  Settings
+{% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Reports</li>
+  </ul>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+  <div class="add-container" style="max-width: 960px;">
+    <div class="content" style="display: flex; flex-direction: column; align-content: center; gap: 1rem; flex-wrap: wrap;">
+       
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Reports List</span>
+        </div>
+        <div class="btn-group" style="gap: 2rem;align-items: center;">  
+              <div style="display: flex; width: 100%; justify-content: space-evenly;">
+                <div>From : <input type="date" style=" padding: .2rem;background-color: cadetblue;" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}"></div>
+                <div>To : <input type="date" style=" padding: .2rem;background-color: cadetblue;" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}"></div>
+              </div>
+              <div style=" width: 150px;"><input type="text" id="id_reports" placeholder="Report ID..."></div>
+        </div>
+      </div>
+    </nav>
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;">       
+      <div class="content d-flex  pt-3" style="gap: 1rem;">
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+          {% url 'slt:report_summary_daily' as url %}          
+          <div><a href="{{url}}" target="_blank"><input type="button" value="Daily Summary" class="btn bg-light" style="width: 100%;"></a></div>
+          <div><input type="button" value="Summary Reports" class="btn bg-light" style="width: 100%;"></div>
+          <div><input type="button" value="Sales Invoice" class="btn bg-light" style="width: 100%;"></div>
+          <div><input type="button" value="Purchase Invoice" class="btn bg-light" style="width: 100%;"></div>      
+        </div> 
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+          <div><input type="button" value="Sales Reports" class="btn bg-light" style="width: 100%;"></div>
+          <div><input type="button" value="Sales Due Reports" class="btn bg-light" style="width: 100%;"></div>
+          <div><input type="button" value="Sales Return" class="btn bg-light" style="width: 100%;"></div>
+          <div><input type="button" value="Sales Summary" class="btn bg-light" style="width: 100%;"></div>              
+        </div>  
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+            <div><input type="button" value="Purchase Reports" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Purchase Due Reports" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Purchase Return" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Purchase Summary" class="btn bg-light" style="width: 100%;"></div>            
+        </div>  
+      </div>   
+      <div class="content d-flex  pt-3" style="gap: 1rem;">
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+            <div><input type="button" value="Product List" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Product Available" class="btn bg-light" style="width: 100%;"></div>
+            
+        </div> 
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+            
+        </div>  
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+            <div><input type="button" value="Expense" class="btn bg-light" style="width: 100%;"></div>           
+        </div>  
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

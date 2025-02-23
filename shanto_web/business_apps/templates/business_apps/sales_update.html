@@ -3,21 +3,21 @@
 {% load multiply %}
 
 {% block title %}
-  SLT | New Purchase
+  SST | New Sales
 {% endblock %}
 
 {% block header %}
-  New Purchase
+  New Sales
 {% endblock %}
 
 {% block breadcrumbs %}
 {% url 'slt:business' as url %}
-{% url 'slt:purchase' as urls %}
+{% url 'slt:sales' as urls %}
 <div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
   <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
     <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{urls}}">Purchase</a></li>
-    <li class="breadcrumb-item active" aria-current="page">New Purchase</li>
+    <li class="breadcrumb-item"><a href="{{urls}}">Sales</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit Sales</li>
   </ul>
 </div>
 {% endblock %}
@@ -151,8 +151,8 @@
                     <td><input id="id-form-{{ forloop.counter0 }}-item_id" type="number" name="form-{{ forloop.counter0 }}-item_id" value="{{ form.instance.item_id.id }}" required readonly></td>
                     <td><input id="id-itemname" type="text" value="{{form.instance.item_id.item_name}}" required readonly></td>
                     <td><input id="id-itemunit" type="text" value="{{ form.instance.item_id.item_unit }}" required readonly></td>
-                    <td><input id="id-form-{{ forloop.counter0 }}-item_qty" type="number" name="form-{{ forloop.counter0 }}-item_qty" value="{{ form.instance.item_qty }}" required readonly></td>
                     <td><input id="id-form-{{ forloop.counter0 }}-item_sprice" type="text" name="form-{{ forloop.counter0 }}-item_sprice" value="{{ form.instance.item_sprice }}" required readonly></td>
+                    <td><input id="id-form-{{ forloop.counter0 }}-item_qty" type="number" name="form-{{ forloop.counter0 }}-item_qty" value="{{ form.instance.item_qty }}" required readonly></td>
                     <td><input type="text" value="{{form.instance.item_qty|multiply:form.instance.item_sprice}}" required readonly></td>
                     <td>
                       <form>
@@ -598,7 +598,7 @@ document.querySelectorAll('.removeRow').forEach(button => {
     console.log(button.value);
     const userConfirmed = confirm("Are you sure you want to delete this row?");
        if (userConfirmed) {
-           deleteRow(rowId);     
+          deleteRow(rowId);     
           const row = this.closest('tr');
           row.parentNode.removeChild(row);
                 

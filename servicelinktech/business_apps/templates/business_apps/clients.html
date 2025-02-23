@@ -1,23 +1,44 @@
 {% extends "business_apps/master.html" %}
 
 {% block title %}
-  SLT | Clients List
+SLT | Clients List
 {% endblock %}
 
 {% block header %}
 Clients List
 {% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page"> Clients List</li>
+  </ul>
+</div>
+{% endblock %}
+
 {% block content %}
 <div class="main-content">
-  <div class="content">      
-    <div class="form-header" style="display: flex; background-color: blueviolet;">      
-      <div>        
-        <h3>Clients List</h3>
+  <div class="content">  
+       
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
+          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Clients List</span>
+          <a class="nav-link" href="{% url 'slt:clients_new' %}">Add</a>
+          
+          <div class="d-flex">             
+            <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;"onkeyup="searchTable()" placeholder="Search for names...">
+          </div>
+        </div>
       </div>
-      <div>        
-        <a href="{% url 'slt:clients_new' %}">New Clients</a>
-      </div>
-    </div>   
+    </nav>
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;"> 
         
     <table>
         <tr>

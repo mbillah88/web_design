@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "business_apps",
-    #"social_django",
+    "shop_apps",
 ]
 
 #AUTHENTICATION_BACKENDS = [

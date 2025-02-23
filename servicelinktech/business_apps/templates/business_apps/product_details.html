@@ -1,7 +1,7 @@
 {% extends "business_apps/master.html" %}
 
 {% block title %}
-  SLT | Product Details
+SLT | Product Details
 {% endblock %}
 
 {% block header %}
@@ -13,31 +13,17 @@
   <div class="add-container">
     <div class="content" style="justify-content: center;">
       <div class="content">
-        <h1> {{ prod.item_name}} </h1>
-        <h3> {{ prod.category_name}} </h3>
-        <h3> {{ prod.brand_name}} </h3>
-        <img src="{{ prod.item_image.url }}" style="height: 100%; width: 100%;">
+        <span style="font-size: 1.3rem; font-weight: bolder;"> {{ prod.item_name}} </span>
+        <p> {{ prod.category_name}} </p>
+        <p style="font-size: 1.3rem; font-weight: bolder;"> {{ prod.brand_name}} </p>
+        <img src="{{ prod.item_image.url }}" style="height: 200px; width: 100%;">
       </div>
       <div class="content">
-        <h3> {{ prod.item_model}} </h3>
-        <h3> {{ prod.item_sprice}} </h3>
+        <p style="font-size: 1.3rem; font-weight: bolder;"> {{ prod.item_model}} </p>
+        <p> {{ prod.item_sprice}} </p>
       </div>
       <div class="content">
         <a href="{% url 'slt:product' %}">Backt ot List</a>
-      </div>
-    </div>
-    <div class="card mb-3" style="max-width: 540px;">
-      <div class="row g-0">
-        <div class="col-md-4">
-          <img src="..." class="img-fluid rounded-start" alt="...">
-        </div>
-        <div class="col-md-8">
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-          </div>
-        </div>
       </div>
     </div>
   </div>
