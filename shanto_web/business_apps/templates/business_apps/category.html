@@ -1,12 +1,24 @@
 {% extends "business_apps/master.html" %}
 
 {% block title %}
-  SLT | Category List
+  SST | Category List
 {% endblock %}
 
 {% block header %}
   Category List
 {% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+{% url 'slt:category' as urls %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Category</li>
+  </ul>
+</div>
+{% endblock %}
+
 {% block content %}
 <div class="main-content">
   <div class="content">   

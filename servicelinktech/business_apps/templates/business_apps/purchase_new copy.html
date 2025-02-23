@@ -1,0 +1,300 @@
+{% extends "business_apps/master.html" %}
+{% load i18n %}
+
+{% block title %}
+  SLT | New Purchase
+{% endblock %}
+
+{% block header %}
+  New Purchase
+{% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+{% url 'slt:purchase' as urls %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{urls}}">Purchase</a></li>
+    <li class="breadcrumb-item active" aria-current="page">New Purchase</li>
+  </ul>
+</div>
+{% endblock %}
+
+    
+{% block content %}
+<div class="main-content">
+  <div class="add-container" style="max-width: 960px;">
+    <div class="content">
+      <div class="form-header">
+        <div>
+            {% if form.instance.pk %}
+              <span style="font-size: 1.3rem; font-weight: bolder; background-color: rgba(255, 17, 0, 0.822);">Edit Purchase : {{ form.instance.item_name}}</span>
+            {% else %}
+            <span style="font-size: 1.3rem; font-weight: bolder;">New Purchase</span>
+            {% endif %}
+        </div>
+        <div>        
+          <a href="{% url 'slt:purchase' %}">Purchase List</a>
+        </div>
+
+      </div>
+      <form class="form-container" enctype="multipart/form-data" method="post">
+        <!-- Security token -->
+        {% csrf_token %}
+        <div class="content flex-column" style="display: flex; align-items: center; justify-content: center; gap: .5rem;">      
+          <div class="d-flex w-100 gap-3" >
+            <div style="flex: 3;">
+              <label for="supplier_id">Supplier:</label>
+              <div style="display: flex; gap: .5rem;">
+                {{ form.supplier_id }}
+               <!--{% for Supplier in form.fields.Supplier.queryset %} 
+                <option  value="{{ Supplier.id }}" {% if Supplier.id == form.Supplier.value %}selected{% endif %}> {{ Supplier.supplier_name }} </option> 
+                {% endfor %}--> 
+                {% url 'slt:add_supplier_new' as url %}
+                <a href="{{url}}">
+                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">+</button>                
+                </a>
+                
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <label for="id_brand_name">O Type:</label>
+              {{ form.porder_status }}
+              {% for PurchaseOrder in form.fields.PurchaseOrder.queryset %} 
+              <option value="{{ PurchaseOrder.id }}" {% if PurchaseOrder.id == form.PurchaseOrder.value %}selected{% endif %}> {{ PurchaseOrder.porder_status }} </option> 
+              {% endfor %}
+            </div>
+          </div>            
+          <div class="d-flex w-100 gap-3" > 
+            <div> 
+              <label for="supplier_address">Supplier Address:</label>
+              <input type="text" name="supplier_address" maxlength="255" required id="supplier_address">     
+            </div>
+            <div>
+              <label for="supplier_mobile">Supplier Mobile:</label>
+              <input type="text" name="supplier_mobile" maxlength="255" required id="supplier_mobile">    
+            </div>
+            <div>
+              <label for="id_item_description">POrder Date:</label>
+              <input type="datetime-local" name="item_description" maxlength="255" required id="id_item_description" value="{{ form.instance.item_description }}">    
+            </div>
+          </div>
+        </div>     
+        <div class="content d-flex" style="gap: 1.3rem;text-align: center; flex-flow: column-reverse;;">          
+          <div style="width: 50%; margin: 0 auto;"><select name="mySelect" id="mySelect">
+            {% for item in products %}
+                <option value="{{ item.id }}">{{ item.item_name }}</option>
+            {% endfor %}
+        </select>                
+          </div>                
+          <div class="content" style="display: flex;align-items: center;gap: 1rem;justify-content: space-evenly;"> 
+            <div class="d-flex" style="gap: 2rem;">
+              <div>
+                <label for="id_item_expi">Expired:</label>
+                <input type="text" name="item_expi"required id="id_item_expi" value="{{ form.instance.item_sprice }}">    
+              </div>
+              <div>
+                <label for="id_item_pprice">S Price</label>
+                <input type="text" name="item_pprice" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+              </div>
+              <div>
+                <label for="id_item_unit">Unit:</label>
+                <input type="text" name="item_unit"required id="id_item_unit" value="{{ form.instance.item_sprice }}">    
+              </div>
+              <div>
+                <label for="id_item_pprice">Price</label>
+                <input type="text" name="item_pprice" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
+              </div>
+              <div>
+                <label for="id_item_qty">Qty</label>
+                <input type="number" name="item_qty" min="1" required id="id_item_qty">    
+              </div>
+            </div>
+            
+            <div>
+              <input type="submit">
+            </div>
+          </div>       
+        </div>
+        <div class="content">
+          <span style="font-size: 1.3rem; font-weight: bolder;">Product Item</span>
+          <span style="font-size: 1.3rem; font-weight: bolder;">5</span>
+          <table id="purchaseOrderTable">
+              <thead>
+                <th>Check</th>
+                <th>Check</th>
+                <th>Check</th>
+                <th>Check</th>
+              </thead>
+              <tbody>
+                  <!-- Add more product rows here -->
+              </tbody>
+          </table>
+        </div>        
+        <div class="content d-flex"> 
+          <div style="flex: 1;align-items: center;">
+            <div>
+              <span >Notes:</span>
+              <textarea class="p-2" id="w3review" name="w3review" rows="3" cols="50">At w3schools.com you will learn how to make a website. They offer free tutorials in all web development technologies.</textarea>          
+            </div>
+            <div class="d-flex" style="align-items: center;" >
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Discount (%):</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
+            </div>
+            <div class="d-flex" style="align-items: center;" >
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Pay Type:</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;">
+                <select name="" id="">
+                  <option value="">Cash</option>
+                  <option value="">Card</option>
+                  <option value="">Others</option>
+                </select>
+              </div>              
+            </div>
+          </div>
+          <div class="d-flex flex-column">
+            <div class="d-flex" style="align-items: center;" >
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Item Total:</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
+            </div>
+            <div class="d-flex" style="align-items: center;" >
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Discount (Amt):</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
+            </div>
+            <div class="d-flex" style="align-items: center;" >
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Discount (%):</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
+            </div>
+            <div class="d-flex" style="align-items: center;" >
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Payable Total:</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
+            </div>
+            <div class="d-flex" style="align-items: center;" >
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Payment:</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
+            </div>
+            <div class="d-flex" style="align-items: center;" >
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><label for="id_item_sprice">Due Amount:</label></div>
+              <div style="flex: 50%; text-align: end; flex: 50%; padding-right: 1rem;"><input type="text" name="item_sprice"required id="id_item_sprice" value="{{ form.instance.item_sprice }}"></div>              
+            </div>
+          </div>
+        </div> 
+        <div class="submit-row">
+          <input type="submit">
+        </div>
+      </form>
+    </div>
+  </div>
+  
+</div>
+<!-- Supplier Select Options Searchable-->
+<script>
+    $(document).ready(function () {
+        $('select').selectize({
+            sortField: 'text'
+        });        
+        $('.selectize-control').addClass("w-100")
+    });
+
+  // to clear the selected value.
+   $('form').find('.selectized').each(function(index, element) { element.selectize && element.selectize.clear() })
+
+</script>
+<script>
+  $(document).ready(function() {
+      $("#search-input").on("input", function() {
+          var query = $(this).val();
+          $.ajax({
+              url: "{% url 'slt:product_search' %}",
+              method: "GET",
+              data: { query: query },
+              success: function(data) {
+                  var searchResults = $("#search-results");
+                  searchResults.empty();
+                  data.forEach(function(item) {
+                      searchResults.append(
+                          "<li data-id='" + item.id + "'>" + item.name + "</li>"
+                      );
+                  });
+              },
+              error: function(error) {
+                  console.log("Error:", error);
+              }
+          });
+      });
+      
+    });
+</script>
+<script>
+  var e = document.getElementById("id_supplier_id");
+    function onChange() {
+      var value = e.value;
+      var text = e.options[e.selectedIndex].text;
+      console.log(value, text);
+        $("#item-id").val(value);
+        $("#item-description").val(text);
+        if (/^[0-9]+$/.test(value)) {
+            console.log('Input is a number.');
+            fetchData(value)
+        } else if (/^[a-zA-Z]+$/.test(value)) {
+          fetchData(value)
+            console.log('Input is a letter.');
+        } else {
+            console.log('Input ID is neither a pure number nor a pure letter.');
+        }
+    }
+    e.onchange = onChange;
+    onChange();
+</script>
+<script>
+  function pdata(pk){
+          $.ajax({
+              url: "./product_search/ + pk",
+              method: "GET",
+              data: { query: query },
+              success: function(data) {
+                  data.forEach(function(item) {
+                    console.log(item);
+                  });
+              },
+              error: function(error) {
+                  console.log("Error:", error);
+              }
+          });
+  }
+</script>
+<script>
+  document.getElementById('mySelect').onchange = function(){
+      var value = this.value;
+      var text = this.options[e.selectedIndex].text;
+      console.log(value, text);
+      if(value != null){
+        //fetchProductData(value);
+        fetchProductData(value);
+      }else{
+        console.log("No Value");
+      }
+  };
+</script>
+<script>
+  function fetchData(pk) {
+    console.log(pk);
+            //const pk = document.getElementById('data-id').value;
+            fetch(`./product_search/${pk}`)
+                .then(response => response.json())
+                .then(data => {
+                  console.log(data);
+                    document.getElementById('id_item_unit').value = data.id;  // Adjust field name as needed
+                })
+                .catch(error => console.error('Error fetching data:', error));
+        }
+
+        // Call fetchData function when the button is clicked
+        //document.getElementById('fetchButton').addEventListener('click', fetchData);
+    
+</script>
+<!-- Be sure to put the links in the right position to avoid dependency issue.-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
+
+{% endblock %}

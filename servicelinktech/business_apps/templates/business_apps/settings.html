@@ -1,0 +1,75 @@
+{% extends "business_apps/master.html" %}
+
+{% block title %}
+SLT | Settings
+{% endblock %}
+
+{% block header %}
+  Settings
+{% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Settings</li>
+  </ul>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="main-content">
+  <div class="add-container" style="max-width: 960px;">
+    <div class="content" style="display: flex; flex-direction: column; align-content: center; gap: 1rem; flex-wrap: wrap;">
+      <div class="form-header">
+        <div>
+            <span style="font-size: 1.3rem; font-weight: bolder;">Setting Tools</span>
+        </div>
+      </div>       
+      <div class="content d-flex  pt-3" style="gap: 1rem;">
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+            <div>
+              {% url 'slt:tools_unit' as url %}
+              <a href="{{url}}"><input type="button" value="Item Units" class="btn bg-light" style="width: 100%;"></a>
+            </div>
+            <div>
+              <input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;">
+            </div>
+            
+        </div> 
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            
+        </div>  
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>            
+        </div>  
+      </div>   
+      <div class="content d-flex  pt-3" style="gap: 1rem;">
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Particular" class="btn bg-light" style="width: 100%;"></div>
+            
+        </div> 
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            
+        </div>  
+        <div class="content pt-3" style="gap: 1rem;display: grid;">  
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>
+            <div><input type="button" value="Item Unit" class="btn bg-light" style="width: 100%;"></div>            
+        </div>  
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

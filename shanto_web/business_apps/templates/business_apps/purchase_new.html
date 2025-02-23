@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block title %}
-  SLT | New Purchase
+  SST | New Purchase
 {% endblock %}
 
 {% block header %}
@@ -365,8 +365,8 @@ document.getElementById('mySelect').onchange = function(){
       var total_amt = document.getElementById('id_porder_total').value;
       var disc_perc = getDiscountPercentage(total_amt,disc_amt).toFixed(2); 
       var paid_amt = document.getElementById('id_payment_amount').value;
-      var payable_amt = parseFloat(total_amt-disc_amt);
-      var due_amt = parseFloat(payable_amt-paid_amt); 
+      var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
+      var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
       document.getElementById('id_disc_perc').value = disc_perc;
       document.getElementById('id_pay_total').value = payable_amt;
       document.getElementById('id_porder_due').value = due_amt;
@@ -379,8 +379,8 @@ document.getElementById('mySelect').onchange = function(){
       var total_amt = document.getElementById('id_porder_total').value;
       var disc_amt = getDiscountAmount(total_amt,disc_perc_amt).toFixed(2); 
       var paid_amt = document.getElementById('id_payment_amount').value;
-      var payable_amt = parseFloat(total_amt-disc_amt);
-      var due_amt = parseFloat(payable_amt-paid_amt); 
+      var payable_amt = parseFloat(total_amt-disc_amt).toFixed(2); 
+      var due_amt = parseFloat(payable_amt-paid_amt).toFixed(2); 
       document.getElementById('id_porder_discount').value = disc_amt;
       document.getElementById('id_pay_total').value = payable_amt;
       document.getElementById('id_porder_due').value = due_amt;

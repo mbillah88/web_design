@@ -1,33 +1,53 @@
 {% extends "business_apps/master.html" %}
 
 {% block title %}
-  SLT | Add Product
+SLT | Add Product
 {% endblock %}
 
 {% block header %}
   Add Product
 {% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+{% url 'slt:product' as urls %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{urls}}"> Product</a></li>
+    {% if form.instance.pk %}
+    <li class="breadcrumb-item active" aria-current="page">Update Product</li> 
+    {% else %}
+    <li class="breadcrumb-item active" aria-current="page">New Product</li> 
+    {% endif %}
+  </ul>
+</div>
+{% endblock %}
+
 {% block content %}
 
 <div class="main-content">
   <div class="add-container">
     <div class="content">
-      <div class="form-header">
-        <div>
-          <h3>
+        
+    <nav class="navbar navbar-expand">
+      <div class="container-fluid">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
             {% if form.instance.pk %}
-              <span style="background-color: rgba(255, 17, 0, 0.822);">Edit Product : {{ form.instance.item_name}}</span>
+              <span style="font-size: 1.3rem; font-weight: bolder;  margin-right: 2rem; background-color: rgba(255, 17, 0, 0.822);">Edit Product : {{ form.instance.item_name}}</span>
             {% else %}
-            <span>Add Product</span>
+            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Add Product</span>
             {% endif %}
-          </h3>
-
+          <a class="nav-link" href="{% url 'slt:product' %}">Product List</a>
         </div>
-        <div>        
-          <a href="{% url 'slt:product' %}">Product List</a>
-        </div>
-
+        
       </div>
+    </nav>
+    <hr style="margin: .0rem 0rem 1rem 0rem;
+    color: inherit;
+    background-color: currentColor;
+    border: 0;
+    opacity: .75;">
       {% if form.errors %}
         <p>{{form.errors}}</p>
       {% endif %}
@@ -39,22 +59,22 @@
           <div>    
             <label for="id_category_name">Category name:</label>
             {{form.category_name}}       
-              {% for ItemCategory in form.fields.ItemCategory.queryset %} 
+             <!--   {% for ItemCategory in form.fields.ItemCategory.queryset %} 
               <option value="{{ ItemCategory.id }}" {% if ItemCategory.id == form.ItemCategory.value %}selected{% endif %}> {{ ItemBrand.category_name }} </option> 
-              {% endfor %}
+              {% endfor %} -->
           </div>
           <div>
             <label for="id_brand_name">Brand name:</label>
             {{ form.brand_name }}
-            {% for ItemBrand in form.fields.ItemBrand.queryset %} 
+             <!-- {% for ItemBrand in form.fields.ItemBrand.queryset %} 
             <option value="{{ ItemBrand.id }}" {% if ItemBrand.id == form.ItemBrand.value %}selected{% endif %}> {{ ItemBrand.brand_name }} </option> 
-            {% endfor %}
+            {% endfor %} -->
           </div>
         </div>
         <div class="content" > 
           <div> 
             <label for="id_item_name">Item name:</label>
-            <input type="text" name="item_name" maxlength="255" required id="id_item_name" value="{{ form.instance.item_name }}">     
+            <input class="form-control me-2" type="text" name="item_name" maxlength="255" required id="id_item_name" value="{{ form.instance.item_name }}">     
           </div>
           <div>
             <label for="id_item_model">Item model:</label>
@@ -66,10 +86,13 @@
           </div>
         </div>
         <div class="content">
-          <div style="display: flex; align-items: center; justify-content: center; gap: 2rem;">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 2rem;">            
             <div>
               <label for="id_itme_unit">Itme unit:</label>
-              <input type="text" name="itme_unit" maxlength="255" id="id_itme_unit" value="{{ form.instance.itme_unit }}">
+              {{ form.item_unit }}
+              <!--{% for ItemUnit in form.fields.ItemUnit.queryset %} 
+              <option value="{{ ItemUnit.id }}" {% if ItemUnit.id == form.ItemUnit.value %}selected{% endif %}> {{ ItemUnit.unit_name }} </option> 
+              {% endfor %}-->
             </div>
             <div>
               <label for="id_itme_sku">Itme sku:</label>
@@ -97,9 +120,11 @@
             <input type="number" name="item_pprice" step="0.01" required id="id_item_pprice" value="{{ form.instance.item_pprice }}">    
           </div>
         </div>
-        <div class="content" style="display: flex; align-items: center; justify-content: center;"> 
+        <div class="content" style="display: flex; flex-direction: column; align-items: center; justify-content: center;"> 
           <div>
             <label for="imageInput">Item image:</label>
+          </div>
+          <div>
             {{form.item_image}}
             <!--<input id="imageInput" type="file" name="item_image" accept="image/*" required id="id_item_image" value="">-->
           </div>

@@ -1,6 +1,8 @@
 # forms.py
 from django import forms
 from .models import *
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 # iterable 
 PaymentChoice =( 
@@ -40,13 +42,17 @@ class ItemProductForm(forms.ModelForm):
         model = ItemProduct
         fields = "__all__"
 
-        readonly_fields = ('created_at')
-
         widgets = { 
             'item_image': forms.ClearableFileInput(attrs={ 'id': 'imageInput' }),   
-            'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),   
-            # 'status' = forms.ChoiceField(choices = OrderChoice),  
-         }
+            'created_at': forms.DateTimeInput(attrs={'type': 'datetime-local'}),           
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['item_name'].empty_label = "Select Item..."
+        self.fields['category_name'].empty_label = "Select Category..."
+        self.fields['brand_name'].empty_label = "Select Brand..."
+        self.fields['item_unit'].empty_label = "Select Unit..."
 
 class ClientsForm(forms.ModelForm):
     class Meta:
@@ -56,26 +62,76 @@ class ClientsForm(forms.ModelForm):
 class SupplierForm(forms.ModelForm):
     class Meta:
         model = Supplier
-        fields = "__all__"
-
-class SupplierForm(forms.ModelForm):
-    class Meta:
-        model = Supplier
-        fields = "__all__"
+        fields = "__all__" 
 
 class PurchaseOrderForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrder
-        fields = "__all__"
+        fields = ['supplier_id','porder_total','porder_discount','porder_due','porder_status','porder_note']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['supplier_id'].empty_label = "Select Supplier..."
+
+class PurchaseOrderDueForm(forms.ModelForm):
+    class Meta:
+        model = PurchaseOrder
+        fields = ['porder_due']
 
 class PurchaseOrderItemForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrderItem
-        fields = "__all__"
+        fields = ['item_id','item_qty','item_pprice']
+
+    helper = FormHelper()
+    helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))
+    helper.form_method = 'POST'
 
 class PurchasePaymentForm(forms.ModelForm):
     class Meta:
         model = PurchasePayment
+        fields = ['payment_amount','payment_type']
+
+class PurchasePaymentAllForm(forms.ModelForm):
+    class Meta:
+        model = PurchasePayment
         fields = "__all__"
 
+# Settings Tools .........
+class ItemUnitForm(forms.ModelForm):    
+    class Meta:
+        model = ItemUnit
+        fields = "__all__"
+
+
+    helper = FormHelper()
+    helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))
+    helper.form_method = 'POST'
         #min_value=1, max_value=10, initial=1
+
+class SearchForm(forms.Form):
+    pk = forms.IntegerField(label='Primary Key', required=True)
+
+
+class SalesOrderForm(forms.ModelForm):
+    class Meta:
+        model = SalesOrder
+        fields = ['customer','sorder_total','sorder_discount','sorder_due','sorder_status','sorder_note']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['customer'].empty_label = "Select customer..."
+
+class SalesOrderItemForm(forms.ModelForm):
+    class Meta:
+        model = SalesOrderItem
+        fields = ['item_id','item_qty','item_sprice']
+
+    helper = FormHelper()
+    helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))
+    helper.form_method = 'POST'
+
+class SalesPaymentForm(forms.ModelForm):
+    class Meta:
+        model = SalesPayment
+        fields = ['payment_amount','payment_type']
