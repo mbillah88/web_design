@@ -98,7 +98,7 @@
             <thead>
                 <tr>
                     <th>SL</th>
-                    <th style="width: 10%;">Item Code</th>
+                    <th style="width: 10%;">Code</th>
                     <th style="width: 30%;">Item Name</th>
                     <th>Unit</th>
                     <th>Price</th>
@@ -110,10 +110,10 @@
                 {% for form in formset %}
                 <tr>
                     <td style="text-align: center;">{{ forloop.counter }}</td>
-                    <td>{{ form.instance.item_id.id }}</td>
+                    <td style="text-align: center;">{{ form.instance.item_id.id }}</td>
                     <td>{{form.instance.item_id.item_name}}</td>
                     <td style="text-align: center;">{{ form.instance.item_id.item_unit }}</td>
-                    <td style="text-align: center;">{{ form.instance.item_pprice }}</td>
+                    <td style="text-align: right;">{{ form.instance.item_pprice }}</td>
                     <td style="text-align: center;">{{ form.instance.item_qty }}</td>
                     <td style="text-align: right;">{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>
                 </tr>
@@ -123,6 +123,27 @@
         <div style="display: flex;">
             <div style=" flex: 50%; ">                
                 <h5>(In Word : {{form.instance.porder_total|subtraction:form.instance.porder_discount|number_to_words }} taka only.)</h5>
+                <span>Payment History:</span>
+                <table style="font-size: .8rem; margin-top: 5px;">
+                    <thead>
+                        <tr>
+                            <th style="padding: 3px;">Pay Date</th>
+                            <th style="padding: 3px;">Amount</th>
+                            <th style="padding: 3px;">Type</th>
+                            <th style="padding: 3px;">User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in purchase_list %}
+                        <tr>
+                            <td style="padding: 3px; text-align: center;">{{ payment.payment_time|date:'Y-m-d' }}</td>
+                            <td style="padding: 3px; text-align: right;">{{ payment.payment_amount }}</td>
+                            <td style="padding: 3px; text-align: center;">{{ payment.get_payment_type_display }}</td>
+                            <td style="padding: 3px; text-align: center;">{{ payment.payment_create_by }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
             <div style=" flex: 30%; margin: 0 auto; display: flex ; justify-content: center; align-items: center;">
                 {% if form.instance.porder_due > 0 %}

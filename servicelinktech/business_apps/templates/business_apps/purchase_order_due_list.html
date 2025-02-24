@@ -5,10 +5,11 @@
       <th scope="col">Supplier</th>
       <th scope="col">Total Item</th>
       <th scope="col">Total Amount</th>
-      <th scope="col">Order Status</th>
+      <th scope="col">Due Amt</th>
       <th scope="col">Create Time</th>
       <th scope="col">Created By</th>
       <th scope="col">Action</th>
+      <th scope="col">View</th>
     </tr>
     {% for data in page_obj %}
       {% if data.porder_due > 0 %}
@@ -17,8 +18,8 @@
         <td>{{ data.supplier_id }}</td>
         <td>{{ data.total_items }}</td>
         <td>{{ data.porder_total }}</td>
-        <td>{{ data.get_porder_status_display }}</td>
-        <td>{{ data.porder_create_time|date:'Y-m-d h:m A' }}</td>
+        <td style="color: rgb(110, 3, 3); font-weight: 600;">{{ data.porder_due }}</td>
+        <td>{{ data.porder_create_time|date:'Y-m-d' }}</td>
         <td>{{ data.porder_create_by }}</td>
         <td>
           <a href="{% url 'slt:purchase_due_form' data.pk %}">Payment</a>

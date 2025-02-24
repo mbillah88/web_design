@@ -1,0 +1,30 @@
+
+<table>
+    <tr>
+      <th scope="col">P Order Code</th>
+      <th scope="col">Supplier</th>
+      <th scope="col">Amount</th>
+      <th scope="col">Type</th>
+      <th scope="col">Pay Time</th>
+      <th scope="col">Usre</th>
+      <th scope="col">Action</th>
+      <th scope="col">View</th>
+    </tr>
+    {% for data in p_payment %}
+    <tr>       
+      <td>POI-{{ data.order_id }}</td>
+      <td>{{ data.order_id.supplier_id }}</td>
+      <td>{{ data.payment_amount }}</td>
+      <td>{{ data.get_payment_type_display }}</td>
+      <td>{{ data.payment_time|date:'Y-m-d h:m A' }}</td>
+      <td>{{ data.payment_create_by }}</td>
+      <td>
+        <a href="{% url 'slt:purchase_update' data.pk %}">Edit</a>
+        <a href="">Delete</a>
+      </td>
+      <td>
+        <a href="{% url 'slt:purchase_invoice' data.pk %}" target="_blank">View</a>
+      </td>
+    </tr>
+    {% endfor %}
+</table>

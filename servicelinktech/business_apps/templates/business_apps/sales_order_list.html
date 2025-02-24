@@ -1,14 +1,16 @@
 
 <table>
     <tr>
-      <th scope="col">S Order Code</th>
+      <th scope="col">S Order ID</th>
       <th scope="col">Cutomer</th>
       <th scope="col">Total Item</th>
       <th scope="col">Total Amount</th>
+      <th scope="col">Due Amount</th>
       <th scope="col">Order Status</th>
       <th scope="col">Create Time</th>
       <th scope="col">Created By</th>
       <th scope="col">Action</th>
+      <th scope="col">View</th>
     </tr>
     {% for data in page_obj %}
     <tr>       
@@ -16,8 +18,9 @@
       <td>{{ data.customer }}</td>
       <td>{{ data.total_items }}</td>
       <td>{{ data.sorder_total }}</td>
+      <td>{{ data.sorder_due }}</td>
       <td>{{ data.get_sorder_status_display }}</td>
-      <td>{{ data.sorder_create_time }}</td>
+      <td>{{ data.sorder_create_time|date:'Y-m-d h:m A' }}</td>
       <td>{{ data.sorder_create_by }}</td>
       <td>
         <a href="{% url 'slt:sales_update' data.pk %}">Edit</a>
