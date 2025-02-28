@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 from django.utils import timezone
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 
 # Create your models here.
 def imageFilePath(request, filename):
@@ -110,14 +112,28 @@ class PurchaseOrderItem(models.Model):
     return self.item_qty * self.item_pprice
     
 class PurchasePayment(models.Model):
+  payment_status_choices = [
+        ('cash', 'Cash'),
+        ('due', 'Due'),
+    ]
   order_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
   payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   payment_type = models.CharField(max_length=1,choices=PaymentChoice, default=1)
+  payment_status = models.CharField(max_length=10, choices=payment_status_choices, default='cash')  
   payment_time = models.DateTimeField(auto_now_add=True, null = True)  
   payment_update_time = models.DateTimeField(auto_now=True, null = True)   
   payment_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_create_user')
   payment_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='p_create_update')
-  
+
+@receiver(pre_save, sender=PurchasePayment)
+def set_payment_status(sender, instance, **kwargs):
+    current_date = timezone.now().date()
+    order_date = instance.order_id.porder_create_time.date()
+    if order_date == current_date:
+        instance.payment_status = 'cash'
+    else:
+        instance.payment_status = 'due'
+
 class SalesOrder(models.Model):
   customer = models.ForeignKey(Clients, on_delete=models.CASCADE, null = True)
   sorder_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)

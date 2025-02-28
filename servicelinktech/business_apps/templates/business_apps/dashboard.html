@@ -39,7 +39,10 @@ Dashboard
                 <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%;"><span>{{total_sales_items}}</span></div> </div>
                 <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%;"><span>{{total_sales_items_qty}}</span></div> </div>
                 <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%;"><span>{{total_sales_amount|floatformat:2}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Discount :</span> </div><div style="flex: 50%;"><span>{{total_sales_due|floatformat:2}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Collection :</span> </div><div style="flex: 50%;"><span>{{total_sales_due|floatformat:2}}</span></div> </div>
                 <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%;"><span>{{total_sales_due|floatformat:2}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>P Due Collection:</span> </div><div style="flex: 50%;"><span>{{total_sales_due|floatformat:2}}</span></div> </div>
             </div> 
         </div>
         <div class="content col-sm-6">      
@@ -86,12 +89,63 @@ Dashboard
 <div class="main-content">
     <div class="content"> 
         
+    <h1>Today's Purchase Orders</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Create Time</th>
+                <th>Order Due</th>
+                <th>Supplier Name</th>
+                <th>Total Orders</th>
+                <th>Total Items</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in purchase_order_today %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.porder_create_time }}</td>
+                <td>{{ order.porder_due }}</td>
+                <td>{{ order.supplier_id__supplier_name }}</td>
+                <td>{{ order.total_orders }}</td>
+                <td>{{ order.total_items }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Today's Purchased Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Item ID</th>
+                <th>Item Name</th>
+                <th>Total Purchased Quantity</th>
+                <th>Total Purchased Amount</th>
+                <th>Total Purchased Due</th>
+                <th>Total Items</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in purchase_summary_today %}
+            <tr>
+                <td>{{ item.item_id__id }}</td>
+                <td>{{ item.item_id__item_name }}</td>
+                <td>{{ item.total_purchased_quantity }}</td>
+                <td>{{ item.total_purchased_amount }}</td>
+                <td>{{ item.total_purchased_due }}</td>
+                <td>{{ item.total_items }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
         <div class="form-header" style="display: flex;">      
             <div>        
                 <span style="font-size: 1.3rem; font-weight: bolder;">Todays Sales</span>
             </div>
             <div>        
-                <a href="#">Sales List</a>
+                <a href="{% url 'slt:sales' %}">Sales List</a>
             </div>
         </div> 
         <hr>
@@ -124,7 +178,7 @@ Dashboard
                 <span style="font-size: 1.3rem; font-weight: bolder;">Todays Purchase</span>
             </div>
             <div>        
-                <a href="#">Purchase List</a>
+                <a href="{% url 'slt:purchase' %}">Purchase List</a>
             </div>
         </div> 
         <hr>

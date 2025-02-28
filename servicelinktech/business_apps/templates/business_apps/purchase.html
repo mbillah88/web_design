@@ -1,5 +1,5 @@
 {% extends "business_apps/master.html" %}
-
+{% load multiply %}
 {% block title %}
   SST | Purchase List
 {% endblock %}
@@ -47,93 +47,164 @@ Purchase List
     border: 0;
     opacity: .75;"> 
     
-  <div class="main-content">
-    <div style=" gap: 1rem;" class="content row">
-      <div class="content col-sm-6">      
-          <div style="flex: 50%;">
-              <h5 style="color: wheat; background-color: #6f00ff; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Purc. Todays</h5>
-          </div>              
-          <div style="flex: 50%;">
-              <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%;"><span>{{total_purchase_orders}}</span></div></div>
-              <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%;"><span>{{total_purchase_items}}</span></div> </div>
-              <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%;"><span>{{total_purchase_items_qty}}</span></div> </div>
-              <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%;"><span>{{total_purchase_amount|floatformat:2}}</span></div> </div>
-              <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%;"><span>{{total_purchase_due|floatformat:2}}</span></div> </div>
+    <div class="main-content">
+      <div style=" gap: 1rem;" class="content row">
+        <div class="content col-sm-6">      
+            <div style="flex: 50%;">
+                <h5 style="color: wheat; background-color: #6f00ff; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Purc. Todays</h5>
+            </div>              
+            <div style="flex: 50%;">
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%;"><span>{{total_purchase_order}}</span></div></div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%;"><span>{{total_purchase_items}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%;"><span>{{total_purchase_items_qty}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%;"><span>{{total_purchase_amount|floatformat:2}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Discount :</span> </div><div style="flex: 50%;"><span>{{total_purchase_discount|floatformat:2}}</span></div> </div>
+                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%;"><span>{{total_purchase_due|floatformat:2}}</span></div> </div>
+            </div>
+        </div>
+          <div class="content col-sm-6" >     
+              <div style="flex: 50%;">
+                  <h5 style="color: wheat; background-color: #700375; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Purc. Payment</h5>
+              </div>         
+              <div style="flex: 50%;">
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Payment :</span> </div><div style="flex: 50%;"><span>{{cash_payments}}</span></div></div>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due Payment :</span> </div><div style="flex: 50%;"><span>{{due_payments}}</span></div> </div>
+                  <hr>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Total Payment:</span> </div><div style="flex: 50%;"><span>{{cash_payments|addition:due_payments}}</span></div> </div> 
+                  <hr>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due Order:</span> </div><div style="flex: 50%;"><span>{{cash_payments|addition:due_payments}}</span></div> </div>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due Amount:</span> </div><div style="flex: 50%;"><span>{{cash_payments|addition:due_payments}}</span></div> </div>
+              
+              </div> 
+          </div>
+          <div class="content col-sm-6">               
+              <div style="flex: 50%;">
+                  <h5 style="color: wheat; background-color: #8c4e06; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Purc. Return</h5>
+              </div>         
+              <div style="flex: 50%;">
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%;"><span>{{total_sales_orders}}</span></div></div>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%;"><span>{{total_sales_items}}</span></div> </div>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%;"><span>{{total_sales_items_qty}}</span></div> </div>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%;"><span>{{total_sales_amount|floatformat:2}}</span></div> </div>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%;"><span>{{total_sales_due|floatformat:2}}</span></div> </div>
+              </div> 
+          </div>
+          <div class="content col-sm-6">               
+              <div style="flex: 50%;">
+                  <h5 style="color: wheat; background-color: #3a5b00; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Purc. Cancel</h5>
+              </div>        
+              <div style="flex: 50%;">
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%;"><span>{{total_sales_orders}}</span></div></div>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%;"><span>{{total_sales_items}}</span></div> </div>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%;"><span>{{total_sales_items_qty}}</span></div> </div>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%;"><span>{{total_sales_amount|floatformat:2}}</span></div> </div>
+                  <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%;"><span>{{total_sales_due|floatformat:2}}</span></div> </div>
+              </div> 
           </div>
       </div>
-        <div class="content col-sm-6" >     
-            <div style="flex: 50%;">
-                <h5 style="color: wheat; background-color: #700375; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Purc. Summary</h5>
-            </div>         
-            <div style="flex: 50%;">
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%;"><span>{{total_sales_orders}}</span></div></div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%;"><span>{{total_sales_items}}</span></div> </div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%;"><span>{{total_sales_items_qty}}</span></div> </div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%;"><span>{{total_sales_amount|floatformat:2}}</span></div> </div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%;"><span>{{total_sales_due|floatformat:2}}</span></div> </div>
-            </div> 
-        </div>
-        <div class="content col-sm-6">               
-            <div style="flex: 50%;">
-                <h5 style="color: wheat; background-color: #8c4e06; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Purc. Return</h5>
-            </div>         
-            <div style="flex: 50%;">
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%;"><span>{{total_sales_orders}}</span></div></div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%;"><span>{{total_sales_items}}</span></div> </div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%;"><span>{{total_sales_items_qty}}</span></div> </div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%;"><span>{{total_sales_amount|floatformat:2}}</span></div> </div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%;"><span>{{total_sales_due|floatformat:2}}</span></div> </div>
-            </div> 
-        </div>
-        <div class="content col-sm-6">               
-            <div style="flex: 50%;">
-                <h5 style="color: wheat; background-color: #3a5b00; padding: .5rem; border: 1px solid wheat; margin: -20px 20px 10px 20px; text-align: center;border-radius: 1.8rem;">Purc. Cancel</h5>
-            </div>        
-            <div style="flex: 50%;">
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%;"><span>{{total_sales_orders}}</span></div></div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%;"><span>{{total_sales_items}}</span></div> </div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%;"><span>{{total_sales_items_qty}}</span></div> </div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%;"><span>{{total_sales_amount|floatformat:2}}</span></div> </div>
-                <div style="display: flex ; align-items: center; justify-content: center; gap: 1rem; font-size: 1.2em; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%;"><span>{{total_sales_due|floatformat:2}}</span></div> </div>
-            </div> 
-        </div>
     </div>
-  </div>
-    <div class="content">   
-      <div style="display: flex;align-items: center;justify-content: space-between;padding-bottom: 1rem;">      
-        <div>
-          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Purchase List</span>
-        </div>
-        <div>             
-          <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;"onkeyup="searchTable()" placeholder="Search for names...">
-        </div>
-      </div> 
-      <!-- Paginated list -->
-      <div id="list-container">
-        {% include "business_apps/purchase_order_list.html" %}
+    <div class="content d-flex" style="gap: 1rem;">
+      <div style="flex: 70%;">
+        
+        <div style="display: flex;align-items: center;justify-content: space-between;padding-bottom: 1rem;">      
+          <div>
+            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Today's Purchase Order</span>
+          </div>
+        </div> 
+      <table>
+          <thead>
+              <tr>
+                  <th>Order ID</th>
+                  <th>Supplier Name</th>
+                  <th>Create Time</th>
+                  <th>Order Amount</th>
+                  <th>Order Discount</th>
+                  <th>Order Due</th>
+                  <th>Total Items</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for order in purchase_order_today %}
+              <tr>
+                  <td>{{ order.id }}</td>
+                  <td>{{ order.supplier_id__supplier_name }}</td>
+                  <td>{{ order.porder_create_time }}</td>
+                  <td>{{ order.porder_total }}</td>
+                  <td>{{ order.porder_discount }}</td>
+                  <td>{{ order.porder_due }}</td>
+                  <td>{{ order.total_items }}</td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+
       </div>
-      <hr/>
- 
-      <div class="content">
-        <!-- Pagination controls -->
-        <div class="pagination">
-            <span class="step-links">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1">&laquo; first</a>
-                    <a href="?page={{ page_obj.previous_page_number }}">previous</a>
-                {% endif %}
-  
-                <span class="current">
-                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                </span>
-  
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">next</a>
-                    <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
-                {% endif %}
-            </span>
+      <div style="flex: 30%;">
+        <div style="display: flex;align-items: center;justify-content: space-between;padding-bottom: 1rem;">      
+          <div>
+            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Today's Purchase Item</span>
+          </div>
         </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item ID</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in purchase_summary_today %}
+                <tr>
+                    <td>{{ item.item_id__id }}</td>
+                    <td>{{ item.item_id__item_name }}</td>
+                    <td>{{ item.total_purchased_quantity }}</td>
+                    <td>{{ item.total_purchased_amount }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
       </div>
+      
+    </div>
+    <br>
+    <div class="content"> 
+        <div style="display: flex;align-items: center;justify-content: space-between;padding-bottom: 1rem;">      
+          <div>
+            <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Purchase List</span>
+          </div>
+          <div>             
+            <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;"onkeyup="searchTable()" placeholder="Search for names...">
+          </div>
+        </div> 
+        <!-- Paginated list -->
+        <div id="list-container">
+          {% include "business_apps/purchase_order_list.html" %}
+        </div>
+        <hr/>
+  
+        <div class="content">
+          <!-- Pagination controls -->
+          <div class="pagination">
+              <span class="step-links">
+                  {% if page_obj.has_previous %}
+                      <a href="?page=1">&laquo; first</a>
+                      <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                  {% endif %}
+    
+                  <span class="current">
+                      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                  </span>
+    
+                  {% if page_obj.has_next %}
+                      <a href="?page={{ page_obj.next_page_number }}">next</a>
+                      <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                  {% endif %}
+              </span>
+          </div>
+        </div>
     </div>
   </div>  
 </div>
@@ -156,6 +227,15 @@ Purchase List
     <div style="display: flex;align-items: center;justify-content: space-between;padding-bottom: 1rem;">      
       <div>
         <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Payment List</span>
+      </div>
+      <div>
+        <select id="filter-select" onchange="filterPayments()">
+          <option value="all" {% if filter == 'all' %}selected{% endif %}>All</option>
+          <option value="today" {% if filter == 'today' %}selected{% endif %}>Today's Payments</option>
+          <option value="yesterday" {% if filter == 'yesterday' %}selected{% endif %}>Yesterday's Payments</option>
+          <option value="this_month" {% if filter == 'this_month' %}selected{% endif %}>This Month's Payments</option>
+          <option value="last_month" {% if filter == 'last_month' %}selected{% endif %}>Last Month's Payments</option>
+        </select>
       </div>
       <div>             
         <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;"onkeyup="searchTable()" placeholder="Search for names...">
@@ -193,6 +273,12 @@ Purchase List
               $('.pagination').html($(data).find('.pagination').html());
           }
       });
+  }
+</script>
+<script>
+  function filterPayments() {
+      var filter = document.getElementById("filter-select").value;
+      window.location.href = "?filter=" + filter;
   }
 </script>
 {% endblock %}

@@ -21,6 +21,7 @@ from django.db.models import Sum
 from django.db.models import Sum, F, Q, Value, Count, ExpressionWrapper, DecimalField
 from django.db.models.functions import Coalesce
 from django.utils import timezone
+from datetime import timedelta
 
 # Create your views here.
 @login_required
@@ -38,7 +39,7 @@ def dashboard(request):
         .annotate(total_purchased_quantity=Sum('item_qty')) \
         .annotate(total_purchased_amount=Sum('item_pprice')) \
         .order_by('item_id__id')
-
+  
     # Get the sales summary
     sales_summary = SalesOrderItem.objects.values('item_id__id', 'item_id__item_name') \
         .annotate(total_sold_quantity=Sum('item_qty')) \
@@ -48,7 +49,7 @@ def dashboard(request):
     # Convert purchase_summary and sales_summary to dictionaries for easier processing
     purchase_dict = {item['item_id__id']: item for item in purchase_summary}
     sales_dict = {item['item_id__id']: item for item in sales_summary}
-
+    
     # Calculate the inventory
     inventory_summary = []
     for item_id, purchase_item in purchase_dict.items():
@@ -79,22 +80,27 @@ def dashboard(request):
         
     # Get the current date
     current_date = timezone.localtime().date()
-
     # Define an ExpressionWrapper to calculate the total amount for purchases and sales
     purchase_total_amount = ExpressionWrapper(F('item_qty') * F('item_pprice'), output_field=DecimalField())
     sales_total_amount = ExpressionWrapper(F('item_qty') * F('item_sprice'), output_field=DecimalField())
-
+    
+    # Get the purchase summary for the current date
+    purchase_order_today = PurchaseOrder.objects.filter(porder_create_time__date=current_date).values('id', 'porder_create_time', 'porder_due', 'supplier_id__supplier_name') \
+        .annotate(total_orders=Count('item_sl', distinct=True)) \
+        .annotate(total_items=Count('id', distinct=True)) \
+        .order_by('porder_create_time__date')
+    #print(purchase_order_today)
+    for item in purchase_order_today:
+        print(item)
     # Get the purchase summary for the current date
     purchase_summary_today = list(PurchaseOrderItem.objects.filter(porder_id__porder_create_time__date=current_date).values('item_id__id', 'item_id__item_name') \
         .annotate(total_purchased_quantity=Sum('item_qty')) \
         .annotate(total_purchased_amount=Sum(purchase_total_amount)) \
         .annotate(total_purchased_due=Sum('porder_id__porder_due')) \
-        .annotate(total_orders=Count('porder_id', distinct=True)) \
         .annotate(total_items=Count('item_id')) \
         .order_by('item_id__id'))
-
+    print(purchase_summary_today)
     # Get the total orders and total price for purchases
-    total_purchase_orders = len(set(item['total_orders'] for item in purchase_summary_today))
     total_purchase_items = len(set(item['total_items'] for item in purchase_summary_today))
     total_purchase_items_qty = sum(item['total_purchased_quantity'] for item in purchase_summary_today)
     total_purchase_amount = sum(item['total_purchased_amount'] for item in purchase_summary_today)
@@ -110,7 +116,6 @@ def dashboard(request):
         .order_by('item_id__id'))
 
     # Get the total orders and total price for sales
-    total_sales_orders = len(set(item['total_orders'] for item in sales_summary_today))
     total_sales_items = sum(item['total_items'] for item in sales_summary_today)
     total_sales_items_qty = sum(item['total_sold_quantity'] for item in sales_summary_today)
     total_sales_amount = sum(item['total_sold_amount'] for item in sales_summary_today)
@@ -134,19 +139,17 @@ def dashboard(request):
     #print("Total Sales Amount:", total_sales_amount)
 
     context = {
-        'user': user,
+        'purchase_order_today': purchase_order_today,
         'orders': orders,
         'purchase_summary': purchase_summary,
         'sales_summary': sales_summary,
         'inventory_summary': inventory_summary,
         'purchase_summary_today': purchase_summary_today,
         'sales_summary_today': sales_summary_today,
-        'total_sales_orders': total_sales_orders,
         'total_sales_items': total_sales_items,
         'total_sales_items_qty': total_sales_items_qty,
         'total_sales_amount': total_sales_amount,
         'total_sales_due': total_sales_due,
-        'total_purchase_orders': total_purchase_orders,
         'total_purchase_items': total_purchase_items,
         'total_purchase_items_qty': total_purchase_items_qty,
         'total_purchase_amount': total_purchase_amount,
@@ -509,34 +512,56 @@ def sales_due_form(request, pk):
 # Purchase ....
 @login_required
 def purchase(request):
-    # Get the purchase summary
-    purchase_summary = PurchaseOrderItem.objects.values('item_id__id', 'item_id__item_name') \
-        .annotate(total_purchased_quantity=Sum('item_qty')) \
-        .annotate(total_purchased_amount=Sum('item_pprice')) \
-        .order_by('item_id__id')
-    # Define an ExpressionWrapper to calculate the total amount for purchases and sales
+    current_date = timezone.localtime().date()
+    today = timezone.localtime().date()
+    yesterday = today - timedelta(days=1)
+    start_of_month = today.replace(day=1)
+    last_month = start_of_month - timedelta(days=1)
+        
+    
+    # Get the filter parameter from the request
+    filter_param = request.GET.get('filter', 'all')
+
+    if filter_param == 'today':
+        p_payment = PurchasePayment.objects.filter(payment_time__date=today).order_by('-payment_time')
+    elif filter_param == 'yesterday':
+        p_payment = PurchasePayment.objects.filter(payment_time__date=yesterday).order_by('-payment_time')
+    elif filter_param == 'this_month':
+        p_payment = PurchasePayment.objects.filter(payment_time__date__gte=start_of_month).order_by('-payment_time')
+    elif filter_param == 'last_month':
+        p_payment = PurchasePayment.objects.filter(payment_time__date__gte=last_month.replace(day=1), payment_time__date__lt=start_of_month).order_by('-payment_time')
+    else:
+        p_payment = PurchasePayment.objects.all().order_by('-payment_time')
+
+    purchase_order_today = PurchaseOrder.objects.filter(porder_create_time__date=current_date).values('id', 'porder_create_time','porder_total', 'porder_due', 'supplier_id__supplier_name','porder_discount') \
+        .annotate(total_items=Count('item_sl', distinct=True)) \
+        .annotate(total_orders=Count('id', distinct=True)) \
+        .order_by('-porder_create_time')
+    total_purchase_order = sum(item['total_orders'] for item in purchase_order_today)
+    total_purchase_amount = sum(item['porder_total'] for item in purchase_order_today)
+    total_purchase_due = sum(item['porder_due'] for item in purchase_order_today)
+    total_purchase_discount = sum(item['porder_discount'] for item in purchase_order_today)
+
+      # Define an ExpressionWrapper to calculate the total amount for purchases and sales
     purchase_total_amount = ExpressionWrapper(F('item_qty') * F('item_pprice'), output_field=DecimalField())
     
-    # Get the current date
-    current_date = timezone.localtime().date()
-    # Get the purchase summary for the current date
     purchase_summary_today = list(PurchaseOrderItem.objects.filter(porder_id__porder_create_time__date=current_date).values('item_id__id', 'item_id__item_name') \
         .annotate(total_purchased_quantity=Sum('item_qty')) \
         .annotate(total_purchased_amount=Sum(purchase_total_amount)) \
-        .annotate(total_purchased_due=Sum('porder_id__porder_due')) \
-        .annotate(total_orders=Count('porder_id', distinct=True)) \
         .annotate(total_items=Count('item_id')) \
         .order_by('item_id__id'))
-
+    #print(purchase_summary_today)
     # Get the total orders and total price for purchases
-    total_purchase_orders = len(set(item['total_orders'] for item in purchase_summary_today))
     total_purchase_items = len(set(item['total_items'] for item in purchase_summary_today))
     total_purchase_items_qty = sum(item['total_purchased_quantity'] for item in purchase_summary_today)
-    total_purchase_amount = sum(item['total_purchased_amount'] for item in purchase_summary_today)
-    total_purchase_due = sum(item['total_purchased_due'] for item in purchase_summary_today)
+ 
+    todays_payments = PurchasePayment.objects.filter(payment_time__date=current_date)
+    cash_payments = todays_payments.filter(payment_status='cash').aggregate(total_amount=Sum('payment_amount'))['total_amount'] or 0
+    due_payments = todays_payments.filter(payment_status='due').aggregate(total_amount=Sum('payment_amount'))['total_amount'] or 0
 
-    p_payment = PurchasePayment.objects.all().order_by('-payment_time')
+    #p_payment = PurchasePayment.objects.all().order_by('-payment_time')
     orders = get_order_item_count().order_by('-porder_create_time')
+   
     # Get the queryset and apply filtering
     filterset = PurchaseOrderFilter(request.GET, queryset=orders)
     filtered_queryset = filterset.qs
@@ -550,13 +575,16 @@ def purchase(request):
         'filterset': filterset,
         'page_obj': page_obj,
         'orders': orders,
-        'purchase_summary': purchase_summary,
+        'total_purchase_discount' : total_purchase_discount,
+        'purchase_order_today': purchase_order_today,
         'purchase_summary_today': purchase_summary_today,
-        'total_purchase_orders': total_purchase_orders,
+        'total_purchase_order': total_purchase_order,
         'total_purchase_items': total_purchase_items,
         'total_purchase_items_qty': total_purchase_items_qty,
         'total_purchase_amount': total_purchase_amount,
         'total_purchase_due': total_purchase_due,
+        'cash_payments': cash_payments,
+        'due_payments': due_payments,
     })
 def purchase_new(request):
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
