@@ -127,12 +127,22 @@ class PurchasePayment(models.Model):
 
 @receiver(pre_save, sender=PurchasePayment)
 def set_payment_status(sender, instance, **kwargs):
-    current_date = timezone.now().date()
+    current_date = timezone.localtime().date()
     order_date = instance.order_id.porder_create_time.date()
     if order_date == current_date:
         instance.payment_status = 'cash'
     else:
         instance.payment_status = 'due'
+class PurchaseReturn(models.Model):
+    purchase = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    return_quantity = models.IntegerField()
+    return_date = models.DateTimeField(default=timezone.now)
+    reason = models.TextField()
+
+class PurchaseCancel(models.Model):
+    purchase = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
+    cancel_date = models.DateTimeField(default=timezone.now)
+    reason = models.TextField()
 
 class SalesOrder(models.Model):
   customer = models.ForeignKey(Clients, on_delete=models.CASCADE, null = True)

@@ -9,12 +9,13 @@
     <title>Invoice</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: monospace, Arial, sans-serif;
             margin: 0 auto;
             padding: 0;
             width: 210mm;
             height: 297mm;
             box-sizing: border-box;
+            font-size: .85em;
         }
         .header, .footer {
             background-color: #f2f2f2;
@@ -40,7 +41,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            /*margin-top: 20px;*/
         }
         th, td {
             border: 1px solid #ddd;
@@ -86,40 +87,52 @@
         
     </div>
     <div class="container">
-        <div style="display: flex;">
+        <div style="display: flex; justify-content: space-between;">
             <div>
-                <div> <span><h3>Invoice # POI-{{ form.instance.id }}</h3></span> <span>PO Date : {{ form.instance.porder_create_time|date:'Y-m-d H:m a'  }}</span></div>
+                <div> <span><h3>Invoice # POI-{{ form.instance.id }}</h3></span> <span>PO Date : {{ form.instance.porder_create_time|date:'Y-m-d h:m A'  }}</span></div>
                
                 <span>Supplier Name : {{ form.instance.supplier_id.supplier_name }}</span><br>
                 <span>Contact No: {{ form.instance.supplier_id.supplier_mobile }}</span><br>
             </div>
-        </div><h3>Item List</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>SL</th>
-                    <th style="width: 10%;">Code</th>
-                    <th style="width: 30%;">Item Name</th>
-                    <th>Unit</th>
-                    <th>Price</th>
-                    <th>Qty</th>
-                    <th>Total</th>
-                </tr>
-            </thead>
-            <tbody>                
-                {% for form in formset %}
-                <tr>
-                    <td style="text-align: center;">{{ forloop.counter }}</td>
-                    <td style="text-align: center;">{{ form.instance.item_id.id }}</td>
-                    <td>{{form.instance.item_id.item_name}}</td>
-                    <td style="text-align: center;">{{ form.instance.item_id.item_unit }}</td>
-                    <td style="text-align: right;">{{ form.instance.item_pprice }}</td>
-                    <td style="text-align: center;">{{ form.instance.item_qty }}</td>
-                    <td style="text-align: right;">{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>
-                </tr>
-                {% endfor%}
-            </tbody>
-        </table>
+            <div>
+                <div> 
+                    <img src="{{ form.barcode.url }}" alt="Barcode">    
+                    <span>Print Time : Date.now()</span>
+                </div>               
+                <span>Supplier Name : {{ form.instance.supplier_id.supplier_name }}</span><br>
+                <span>Contact No: {{ form.instance.supplier_id.supplier_mobile }}</span><br>
+            </div>
+        </div>
+        <br>
+        <div>
+            <span>Item List</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SL</th>
+                        <th style="width: 10%;">Code</th>
+                        <th style="width: 40%;">Item Name</th>
+                        <th>Unit</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>                
+                    {% for form in formset %}
+                    <tr>
+                        <td style="text-align: center;">{{ forloop.counter }}</td>
+                        <td style="text-align: center;">{{ form.instance.item_id.id }}</td>
+                        <td>{{form.instance.item_id.item_name}}</td>
+                        <td style="text-align: center;">{{ form.instance.item_id.item_unit }}</td>
+                        <td style="text-align: right;">{{ form.instance.item_pprice }}</td>
+                        <td style="text-align: center;">{{ form.instance.item_qty }}</td>
+                        <td style="text-align: right;">{{form.instance.item_qty|multiply:form.instance.item_pprice}}</td>
+                    </tr>
+                    {% endfor%}
+                </tbody>
+            </table>
+        </div>
         <div style="display: flex;">
             <div style=" flex: 50%; ">                
                 <h5>(In Word : {{form.instance.porder_total|subtraction:form.instance.porder_discount|number_to_words }} taka only.)</h5>

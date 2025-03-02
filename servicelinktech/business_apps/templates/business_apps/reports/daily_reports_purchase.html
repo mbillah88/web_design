@@ -1,0 +1,342 @@
+{% load i18n %}
+{% load multiply %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> 
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0 auto;
+            padding: 0;
+            width: 210mm;
+            height: 297mm;
+            box-sizing: border-box;
+        }
+        .header, .footer {
+            background-color: #f2f2f2;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+            width: 100%;
+        }
+        .header {
+            top: 0;
+        }
+        .footer {
+            height: 15px;
+            font-size: 11px;
+            bottom: 0;
+        }
+        .container {
+            padding: 60px 20px 20px 20px; /* Adjust padding to account for fixed header/footer */
+            margin: 0 auto;
+            width: 100%;
+            max-width: 200mm; /* Adjust width to fit A4 page with margins */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: .8em;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            /*padding: 8px;
+            font-size: .8em;*/
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .summary {
+            margin-top: 20px;
+        }
+        @media print {
+        body {
+            width: 210mm;
+            height: 297mm;
+            margin: 0;
+        }
+        .header, .footer {
+            position: fixed;
+        }
+        .container {
+            padding-top: 70px; /* Adjust padding to account for fixed header */
+            padding-bottom: 40px; /* Adjust padding to account for fixed footer */
+        }
+        table, th, td {
+            border: 1px solid #000;
+        }
+    }
+    .dash-head  {
+        color: wheat;
+        background-color: #037551;
+        padding: .3rem .3rem .3rem .3rem;
+        border: 1px solid wheat;
+        margin: -10px 0px 5px 0px;
+        text-align: center;
+        border-radius: .4rem;
+    }
+    </style>
+</head>
+<body>
+    <div class="header" style="display: flex; gap: 1rem; justify-content: space-between; align-items: center;">
+        <div style=" display: flex ; gap: 1rem; align-items: center; flex-direction: row; padding-left: 1rem;">
+            <img style="width: 200px; height:70px;"  class="rounded-img" src="{% static 'business_apps/img/slt_bannar.jpg' %}" alt="SLT Logo">
+         
+        </div>
+        <div style=" display: flex ; font-size: 11px; align-items: flex-end; flex-direction: column; padding-right: 1rem; font-family: 'Courier New', Courier, monospace;">
+            <span>Jahaj Company mor, Rangpur</span>
+            <span>mobile :01719-244186, 01909-101991 </span>
+            <span>email : sevicelinktec201@gmail.com</span>
+            <span>www : sevicelinktechbd.com</span>
+        </div>
+        
+    </div>
+    <br><br><br>
+    <div class="container">        
+        <div class="main-content">
+            <div class="content">
+                <span style="font-weight: bolder; margin-right: 2rem;">Purchase Order Details : {{current_date}}</span>
+              <hr style="margin: .0rem 0rem 1rem 0rem;
+              color: inherit;
+              background-color: currentColor;
+              border: 0;
+              opacity: .75;"> 
+              
+              <div class="main-content">
+                <div style="display:flex; font-size: .75em; gap: .5rem;" class="content row">
+                  <div class="content col border">      
+                    <div class="dash-head">
+                        <span>Summary</span>
+                    </div>             
+                      <div>
+                          <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_order}}</span></div></div>
+                          <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_items}}</span></div> </div>
+                          <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_items_qty}}</span></div> </div>
+                          <hr style="margin: 10px 0px;">
+                          <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_amount|floatformat:2}}</span></div> </div>
+                          <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Discount :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_discount|floatformat:2}}</span></div> </div>
+                          <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_due|floatformat:2}}</span></div> </div>
+                      </div>
+                  </div>
+                    <div class="conten col border" >     
+                        <div class="dash-head">
+                            <span>Payment</span>
+                        </div>         
+                        <div style="flex: 40%;">
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Payment :</span> </div><div style="flex: 50%; text-align: end;"><span>{{cash_payments|floatformat:2}}</span></div></div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due Pay :</span> </div><div style="flex: 50%; text-align: end;"><span>{{due_payments|floatformat:2}}</span></div> </div>
+                            <hr style="margin: 10px 0px;">
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Total Pay :</span> </div><div style="flex: 50%; text-align: end;"><span>{{cash_payments|addition:due_payments|floatformat:2}}</span></div> </div> 
+                            <hr style="margin: 10px 0px;">
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due Order :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_due_order}}</span></div> </div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due Amt :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_due_amt|floatformat:2}}</span></div> </div>
+                        
+                        </div> 
+                    </div>
+                    <div class="content col border">      
+                        <div class="dash-head">
+                            <span>Return</span>
+                        </div>           
+                        <div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_order}}</span></div></div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_items}}</span></div> </div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_items_qty}}</span></div> </div>
+                            <hr style="margin: 10px 0px;">
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_amount|floatformat:2}}</span></div> </div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Discount :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_discount|floatformat:2}}</span></div> </div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_due|floatformat:2}}</span></div> </div>
+                        </div>
+                    </div>
+                    <div class="content col border">      
+                        <div class="dash-head">
+                            <span>Cancel</span>
+                        </div>           
+                        <div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Order :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_order}}</span></div></div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Item :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_items}}</span></div> </div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Qty :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_items_qty}}</span></div> </div>
+                            <hr style="margin: 10px 0px;">
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Amount :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_amount|floatformat:2}}</span></div> </div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Discount :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_discount|floatformat:2}}</span></div> </div>
+                            <div style="display: flex ; align-items: center; justify-content: center; gap: .5rem; font-weight: 700;"><div style="flex: 50%; text-align: right;"><span>Due :</span> </div><div style="flex: 50%; text-align: end;"><span>{{total_purchase_due|floatformat:2}}</span></div> </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <br>
+              <div class="content d-flex" style="gap: 1rem; font-size: .75em;">
+                <div style="flex: 70%;">                  
+                <span style="font-weight: bolder; margin-right: 2rem;">Purchase Order</span>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Supplier</th>
+                            <th>Time</th>
+                            <th>Amount</th>
+                            <th>Discount</th>
+                            <th>Due</th>
+                            <th>Items</th>
+                            <th>User</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in purchase_order_today %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.supplier_id__supplier_name }}</td>
+                            <td>{{ order.porder_create_time|date:'Y-m-d h:m A' }}</td>
+                            <td>{{ order.porder_total }}</td>
+                            <td>{{ order.porder_discount }}</td>                  
+                            <td style="color: rgb(110, 3, 3); font-weight: 600;">{{ order.porder_due }}</td>
+                            <td>{{ order.total_items }}</td>
+                            <td>{{ order.porder_create_by__username }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+          
+                </div>
+                <div style="flex: 30%;">
+                      <span style="font-weight: bolder; margin-right: 2rem;">Purchase Item</span>
+                  <table>
+                      <thead>
+                          <tr>
+                              <th>Item ID</th>
+                              <th>Item Name</th>
+                              <th>Qty</th>
+                              <th>Amount</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for item in purchase_summary_today %}
+                          <tr>
+                              <td>{{ item.item_id__id }}</td>
+                              <td>{{ item.item_id__item_name }}</td>
+                              <td>{{ item.total_purchased_quantity }}</td>
+                              <td>{{ item.total_purchased_amount }}</td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+          
+                </div>                
+              </div>
+              <br>
+              <div class="content d-flex" style="gap: 1rem; font-size: .75em;"> 
+                <div style="flex: 50%;">
+                    <span style="color: rgb(110, 3, 3); font-weight: bolder; margin-right: 2rem;">Purchase Due</span>
+                    
+                    <table>
+                        <tr>
+                        <th scope="col">Order Code</th>
+                        <th scope="col">Supplier</th>
+                        <th scope="col">Total Item</th>
+                        <th scope="col">Total Amount</th>
+                        <th scope="col">Due Amt</th>
+                        </tr>
+                        {% for data in purchase_order_today %}
+                        <!-- {% if data.porder_due > 0 %}-->
+                        <tr>       
+                            <td>POI-{{ data.id }}</td>
+                            <td>{{ data.supplier_id__supplier_name }}</td>
+                            <td>{{ data.total_items }}</td>
+                            <td>{{ data.porder_total }}</td>
+                            <td style="color: rgb(110, 3, 3); font-weight: 600;">{{ data.porder_due }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% endfor %}
+                    </table>
+                  <hr/> 
+                </div> 
+                <div style="flex: 50%;">
+                    <span style="font-weight: bolder; margin-right: 2rem;">Payment List</span>
+                    
+                    <table>
+                        <tr>
+                        <th scope="col">Order</th>
+                        <th scope="col">Supplier</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
+                        </tr>
+                        {% for data in todays_payments %}
+                        <tr>       
+                        <td>POI-{{ data.order_id }}</td>
+                        <td>{{ data.order_id.supplier_id }}</td>
+                        <td>{{ data.payment_amount }}</td>
+                        <td>{{ data.get_payment_type_display }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                  <hr/>
+          
+                </div> 
+              </div>
+              <div class="content d-flex" style="gap: 1rem; font-size: .75em;"> 
+                <div style="flex: 50%;">
+                    <span style="color: rgb(110, 3, 3); font-weight: bolder; margin-right: 2rem;">Order Return</span>
+                    
+                    <table>
+                        <tr>
+                        <th scope="col">Order Code</th>
+                        <th scope="col">Supplier</th>
+                        <th scope="col">Total Item</th>
+                        <th scope="col">Total Amount</th>
+                        <th scope="col">Due Amt</th>
+                        </tr>
+                        {% for data in purchase_order_today %}
+                        <!-- {% if data.porder_due > 0 %}-->
+                        <tr>       
+                            <td>POI-{{ data.id }}</td>
+                            <td>{{ data.supplier_id__supplier_name }}</td>
+                            <td>{{ data.total_items }}</td>
+                            <td>{{ data.porder_total }}</td>
+                            <td style="color: rgb(110, 3, 3); font-weight: 600;">{{ data.porder_due }}</td>
+                        </tr>
+                        {% endif %}
+                        
+                        {% endfor %}
+                    </table>
+                  <hr/> 
+                </div> 
+                <div style="flex: 50%;">
+                    <span style="font-weight: bolder; margin-right: 2rem;">Order Cancel</span>
+                    
+                    <table>
+                        <tr>
+                        <th scope="col">Order</th>
+                        <th scope="col">Supplier</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Status</th>
+                        </tr>
+                        {% for data in todays_payments %}
+                        <tr>       
+                        <td>POI-{{ data.order_id }}</td>
+                        <td>{{ data.order_id.supplier_id }}</td>
+                        <td>{{ data.payment_amount }}</td>
+                        <td>{{ data.get_payment_type_display }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                  <hr/>
+          
+                </div> 
+              </div>
+            </div>  
+        </div>
+        <div class="d-flex justify-content-between" style="margin-top: 20px;">
+            <div><span>clients sign</span></div>
+            <div><span>creator sign</span></div>
+        </div>
+    </div>
+    <div class="footer">
+        <span>Dhumketu Web @2025 - Thank you for your business!</span>
+    </div>
+</body>
+</html>

@@ -516,24 +516,31 @@ def purchase(request):
     today = timezone.localtime().date()
     yesterday = today - timedelta(days=1)
     start_of_month = today.replace(day=1)
-    last_month = start_of_month - timedelta(days=1)
-        
+    last_month = start_of_month - timedelta(days=1)        
     
     # Get the filter parameter from the request
-    filter_param = request.GET.get('filter', 'all')
+    #filter_param = request.GET.get('filter', 'all')
 
-    if filter_param == 'today':
-        p_payment = PurchasePayment.objects.filter(payment_time__date=today).order_by('-payment_time')
-    elif filter_param == 'yesterday':
-        p_payment = PurchasePayment.objects.filter(payment_time__date=yesterday).order_by('-payment_time')
-    elif filter_param == 'this_month':
-        p_payment = PurchasePayment.objects.filter(payment_time__date__gte=start_of_month).order_by('-payment_time')
-    elif filter_param == 'last_month':
-        p_payment = PurchasePayment.objects.filter(payment_time__date__gte=last_month.replace(day=1), payment_time__date__lt=start_of_month).order_by('-payment_time')
-    else:
-        p_payment = PurchasePayment.objects.all().order_by('-payment_time')
+    #if filter_param == 'today':
+    #    p_payment = PurchasePayment.objects.filter(payment_time__date=today).order_by('-payment_time')
+    #elif filter_param == 'yesterday':
+    #    p_payment = PurchasePayment.objects.filter(payment_time__date=yesterday).order_by('-payment_time')
+    #elif filter_param == 'this_month':
+     #   p_payment = PurchasePayment.objects.filter(payment_time__date__gte=start_of_month).order_by('-payment_time')
+      
+    #elif filter_param == 'last_month':
+    #    p_payment = PurchasePayment.objects.filter(payment_time__date__gte=last_month.replace(day=1), payment_time__date__lt=start_of_month).order_by('-payment_time')
+    #else:
+    p_payment = PurchasePayment.objects.all().order_by('-payment_time')
 
-    purchase_order_today = PurchaseOrder.objects.filter(porder_create_time__date=current_date).values('id', 'porder_create_time','porder_total', 'porder_due', 'supplier_id__supplier_name','porder_discount') \
+    purchase_order_due = PurchaseOrder.objects.filter(porder_due__gt=0).values('id', 'porder_create_time','porder_total', 'porder_due', 'supplier_id__supplier_name','porder_discount','porder_create_by') \
+        .annotate(total_items=Count('item_sl', distinct=True)) \
+        .annotate(total_orders=Count('id', distinct=True)) \
+        .order_by('-porder_create_time')
+    total_purchase_due_order = sum(item['total_orders'] for item in purchase_order_due)
+    total_purchase_due_amt = sum(item['porder_due'] for item in purchase_order_due)
+    # Get the current date...
+    purchase_order_today = PurchaseOrder.objects.filter(porder_create_time__date=today).values('id', 'porder_create_time','porder_total', 'porder_due', 'supplier_id__supplier_name','porder_discount','porder_create_by__username') \
         .annotate(total_items=Count('item_sl', distinct=True)) \
         .annotate(total_orders=Count('id', distinct=True)) \
         .order_by('-porder_create_time')
@@ -541,24 +548,23 @@ def purchase(request):
     total_purchase_amount = sum(item['porder_total'] for item in purchase_order_today)
     total_purchase_due = sum(item['porder_due'] for item in purchase_order_today)
     total_purchase_discount = sum(item['porder_discount'] for item in purchase_order_today)
-
       # Define an ExpressionWrapper to calculate the total amount for purchases and sales
     purchase_total_amount = ExpressionWrapper(F('item_qty') * F('item_pprice'), output_field=DecimalField())
     
     purchase_summary_today = list(PurchaseOrderItem.objects.filter(porder_id__porder_create_time__date=current_date).values('item_id__id', 'item_id__item_name') \
         .annotate(total_purchased_quantity=Sum('item_qty')) \
         .annotate(total_purchased_amount=Sum(purchase_total_amount)) \
-        .annotate(total_items=Count('item_id')) \
+        .annotate(total_items=Count('item_id', distinct=True)) \
         .order_by('item_id__id'))
     #print(purchase_summary_today)
     # Get the total orders and total price for purchases
-    total_purchase_items = len(set(item['total_items'] for item in purchase_summary_today))
+    total_purchase_items = sum(item['total_items'] for item in purchase_summary_today)
     total_purchase_items_qty = sum(item['total_purchased_quantity'] for item in purchase_summary_today)
  
-    todays_payments = PurchasePayment.objects.filter(payment_time__date=current_date)
+    todays_payments = PurchasePayment.objects.filter(payment_time__date=current_date).order_by('-payment_time')
     cash_payments = todays_payments.filter(payment_status='cash').aggregate(total_amount=Sum('payment_amount'))['total_amount'] or 0
     due_payments = todays_payments.filter(payment_status='due').aggregate(total_amount=Sum('payment_amount'))['total_amount'] or 0
-
+  
     #p_payment = PurchasePayment.objects.all().order_by('-payment_time')
     orders = get_order_item_count().order_by('-porder_create_time')
    
@@ -566,12 +572,13 @@ def purchase(request):
     filterset = PurchaseOrderFilter(request.GET, queryset=orders)
     filtered_queryset = filterset.qs
     # Set up pagination
-    paginator = Paginator(filtered_queryset, 10)  # Show 10 items per page
+    paginator = Paginator(filtered_queryset, 30)  # Show 10 items per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'business_apps/purchase.html', {
-        'p_payment' : p_payment,
+        #'p_payment' : p_payment,
+        'todays_payments' : todays_payments,
         'filterset': filterset,
         'page_obj': page_obj,
         'orders': orders,
@@ -585,6 +592,8 @@ def purchase(request):
         'total_purchase_due': total_purchase_due,
         'cash_payments': cash_payments,
         'due_payments': due_payments,
+        'total_purchase_due_order': total_purchase_due_order,
+        'total_purchase_due_amt': total_purchase_due_amt, 
     })
 def purchase_new(request):
     CartItemFormSet = modelformset_factory(PurchaseOrderItem, form=PurchaseOrderItemForm, extra=0)
@@ -1094,6 +1103,72 @@ def report_summary_daily(request):
         'total_purchase_due': total_purchase_due,
     }
     return render(request, 'business_apps/reports/daily_reports_summary.html', context)
+def report_purchase_daily(request):
+    current_date = timezone.localtime().date()
+    p_payment = PurchasePayment.objects.all().order_by('-payment_time')
+    # Get the all due...
+    purchase_order_due = PurchaseOrder.objects.filter(porder_due__gt=0).values('id', 'porder_create_time','porder_total', 'porder_due', 'supplier_id__supplier_name','porder_discount','porder_create_by') \
+        .annotate(total_items=Count('item_sl', distinct=True)) \
+        .annotate(total_orders=Count('id', distinct=True)) \
+        .order_by('-porder_create_time')
+    total_purchase_due_order = sum(item['total_orders'] for item in purchase_order_due)
+    total_purchase_due_amt = sum(item['porder_due'] for item in purchase_order_due)
+    # Get the current date...
+    purchase_order_today = PurchaseOrder.objects.filter(porder_create_time__date=current_date).values('id', 'porder_create_time','porder_total', 'porder_due', 'supplier_id__supplier_name','porder_discount','porder_create_by__username') \
+        .annotate(total_items=Count('item_sl', distinct=True)) \
+        .annotate(total_orders=Count('id', distinct=True)) \
+        .order_by('-porder_create_time')
+    total_purchase_order = sum(item['total_orders'] for item in purchase_order_today)
+    total_purchase_amount = sum(item['porder_total'] for item in purchase_order_today)
+    total_purchase_due = sum(item['porder_due'] for item in purchase_order_today)
+    total_purchase_discount = sum(item['porder_discount'] for item in purchase_order_today)
+      # Define an ExpressionWrapper to calculate the total amount for purchases and sales
+    purchase_total_amount = ExpressionWrapper(F('item_qty') * F('item_pprice'), output_field=DecimalField())
+    
+    purchase_summary_today = list(PurchaseOrderItem.objects.filter(porder_id__porder_create_time__date=current_date).values('item_id__id', 'item_id__item_name') \
+        .annotate(total_purchased_quantity=Sum('item_qty')) \
+        .annotate(total_purchased_amount=Sum(purchase_total_amount)) \
+        .annotate(total_items=Count('item_id', distinct=True)) \
+        .order_by('item_id__id'))
+    #print(purchase_summary_today)
+    # Get the total orders and total price for purchases
+    total_purchase_items = sum(item['total_items'] for item in purchase_summary_today)
+    total_purchase_items_qty = sum(item['total_purchased_quantity'] for item in purchase_summary_today)
+ 
+    todays_payments = PurchasePayment.objects.filter(payment_time__date=current_date).order_by('-payment_time')
+    cash_payments = todays_payments.filter(payment_status='cash').aggregate(total_amount=Sum('payment_amount'))['total_amount'] or 0
+    due_payments = todays_payments.filter(payment_status='due').aggregate(total_amount=Sum('payment_amount'))['total_amount'] or 0
+  
+    #p_payment = PurchasePayment.objects.all().order_by('-payment_time')
+    orders = get_order_item_count().order_by('-porder_create_time')
+   
+    # Get the queryset and apply filtering
+    filterset = PurchaseOrderFilter(request.GET, queryset=orders)
+    filtered_queryset = filterset.qs
+    # Set up pagination
+    paginator = Paginator(filtered_queryset, 30)  # Show 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'business_apps/reports/daily_reports_purchase.html', {
+        'current_date' : current_date,
+        'todays_payments' : todays_payments,
+        'filterset': filterset,
+        'page_obj': page_obj,
+        'orders': orders,
+        'total_purchase_discount' : total_purchase_discount,
+        'purchase_order_today': purchase_order_today,
+        'purchase_summary_today': purchase_summary_today,
+        'total_purchase_order': total_purchase_order,
+        'total_purchase_items': total_purchase_items,
+        'total_purchase_items_qty': total_purchase_items_qty,
+        'total_purchase_amount': total_purchase_amount,
+        'total_purchase_due': total_purchase_due,
+        'cash_payments': cash_payments,
+        'due_payments': due_payments,
+        'total_purchase_due_order': total_purchase_due_order,
+        'total_purchase_due_amt': total_purchase_due_amt, 
+    })
 
 #Printing page....
 def purchase_invoice(request, pk):

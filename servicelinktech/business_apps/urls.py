@@ -76,4 +76,5 @@ urlpatterns = [
     # Reports Tools .... report_summary_daily
     path('reports/', views.reports, name='reports'),
     path('report_summary_daily/', views.report_summary_daily, name='report_summary_daily'),
+    path('report_purchase_daily/', views.report_purchase_daily, name='report_purchase_daily'),
 ]

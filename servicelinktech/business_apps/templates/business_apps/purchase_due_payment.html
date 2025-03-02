@@ -31,7 +31,7 @@ SLT | New Purchase
     <nav class="navbar navbar-expand">
       <div class="container-fluid">
         <div class="navbar-nav me-auto mb-2 mb-lg-0" style="align-items: center;">
-          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(146, 155, 20, 0.822);">Due Received : POI-{{ form.instance.pk}} Supplier: {{ form.instance.supplier_id.supplier_name}} </span>
+          <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem; background-color: rgba(146, 155, 20, 0.822);">Due Payment : POI-{{ form.instance.pk}} Supplier: {{ form.instance.supplier_id.supplier_name}} </span>
         </div>
         <div>
           <a class="nav-link" href="{% url 'slt:purchase' %}">Purchase List</a>

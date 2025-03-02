@@ -10,7 +10,7 @@
       <th scope="col">Action</th>
       <th scope="col">View</th>
     </tr>
-    {% for data in p_payment %}
+    {% for data in todays_payments %}
     <tr>       
       <td>POI-{{ data.order_id }}</td>
       <td>{{ data.order_id.supplier_id }}</td>

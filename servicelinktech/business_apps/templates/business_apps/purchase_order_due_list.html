@@ -11,21 +11,21 @@
       <th scope="col">Action</th>
       <th scope="col">View</th>
     </tr>
-    {% for data in page_obj %}
-      {% if data.porder_due > 0 %}
+    {% for data in purchase_order_today %}
+      <!-- {% if data.porder_due > 0 %}-->
       <tr>       
         <td>POI-{{ data.id }}</td>
-        <td>{{ data.supplier_id }}</td>
+        <td>{{ data.supplier_id__supplier_name }}</td>
         <td>{{ data.total_items }}</td>
         <td>{{ data.porder_total }}</td>
         <td style="color: rgb(110, 3, 3); font-weight: 600;">{{ data.porder_due }}</td>
         <td>{{ data.porder_create_time|date:'Y-m-d' }}</td>
-        <td>{{ data.porder_create_by }}</td>
+        <td>{{ data.porder_create_by__username }}</td>
         <td>
-          <a href="{% url 'slt:purchase_due_form' data.pk %}">Payment</a>
+          <a href="{% url 'slt:purchase_due_form' data.id %}">Payment</a>
         </td>
         <td>
-          <a href="{% url 'slt:purchase_invoice' data.pk %}" target="_blank">View</a>
+          <a href="{% url 'slt:purchase_invoice' data.id %}" target="_blank">View</a>
         </td>
       </tr>
       {% endif %}
