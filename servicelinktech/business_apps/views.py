@@ -512,7 +512,7 @@ def sales_due_form(request, pk):
 # Purchase ....
 @login_required
 def purchase(request):
-    current_date = timezone.localtime().date()
+    current_date = timezone.now().date()
     today = timezone.localtime().date()
     yesterday = today - timedelta(days=1)
     start_of_month = today.replace(day=1)
@@ -564,7 +564,7 @@ def purchase(request):
     todays_payments = PurchasePayment.objects.filter(payment_time__date=current_date).order_by('-payment_time')
     cash_payments = todays_payments.filter(payment_status='cash').aggregate(total_amount=Sum('payment_amount'))['total_amount'] or 0
     due_payments = todays_payments.filter(payment_status='due').aggregate(total_amount=Sum('payment_amount'))['total_amount'] or 0
-  
+    print(todays_payments)
     #p_payment = PurchasePayment.objects.all().order_by('-payment_time')
     orders = get_order_item_count().order_by('-porder_create_time')
    

@@ -191,7 +191,7 @@ SLT | New Purchase
           </div>
         </div> 
         <div class="submit-row">
-          <input id="form_submit_id" type="submit" onclick="this.disabled=true; this.form.submit();">
+          <input id="form_submit_id" type="submit">
         </div>
       </form>
     </div>
@@ -501,19 +501,5 @@ document.getElementById('mySelect').onchange = function(){
   
 <!-- Be sure to put the links in the right position to avoid dependency issue.-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js" integrity="sha256-+C0A5Ilqmu4QcSPxrlGpaZxJ04VjsRjKu+G82kl5UJk=" crossorigin="anonymous"></script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    form.addEventListener('submit', function(event) {
-      // Prevent multiple submissions
-      if (form.dataset.submitted === 'true') {
-        event.preventDefault();
-        return;
-      }
-      form.dataset.submitted = 'true';
-    });
-  });
-</script>
 
 {% endblock %}

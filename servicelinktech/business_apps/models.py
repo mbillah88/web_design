@@ -127,7 +127,7 @@ class PurchasePayment(models.Model):
 
 @receiver(pre_save, sender=PurchasePayment)
 def set_payment_status(sender, instance, **kwargs):
-    current_date = timezone.localtime().date()
+    current_date = timezone.now().date()
     order_date = instance.order_id.porder_create_time.date()
     if order_date == current_date:
         instance.payment_status = 'cash'
