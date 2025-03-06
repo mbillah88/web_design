@@ -512,7 +512,7 @@ def sales_due_form(request, pk):
 # Purchase ....
 @login_required
 def purchase(request):
-    current_date = timezone.now().date()
+    current_date = timezone.localtime().date()
     today = timezone.localtime().date()
     yesterday = today - timedelta(days=1)
     start_of_month = today.replace(day=1)
