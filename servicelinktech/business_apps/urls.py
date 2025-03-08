@@ -53,6 +53,10 @@ urlpatterns = [
     
     path('purchase/', views.purchase, name='purchase'),
     path('purchase/purchase_new', views.purchase_new, name='purchase_new'),
+    path('purchase/purchase_list', views.purchase_list, name='purchase_list'),
+    path('purchase/purchase_due_list', views.purchase_due_list, name='purchase_due_list'),
+    path('purchase/purchase_payment_list', views.purchase_payment_list, name='purchase_payment_list'),
+    path('purchase/purchase_return_list', views.purchase_return_list, name='purchase_return_list'),
     path('purchase/purchase_update/<int:pk>/', views.purchase_update, name='purchase_update'),
     path('purchase/purchase_due_form/<int:pk>/', views.purchase_due_form, name='purchase_due_form'),
     path('purchase/supplier/<int:supplier_pk>/', views.supplier_detail, name='supplier_detail'),

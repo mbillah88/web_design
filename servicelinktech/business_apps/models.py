@@ -110,7 +110,7 @@ class PurchaseOrderItem(models.Model):
 
   def get_total_price(self):
     return self.item_qty * self.item_pprice
-    
+
 class PurchasePayment(models.Model):
   payment_status_choices = [
         ('cash', 'Cash'),
@@ -133,12 +133,42 @@ def set_payment_status(sender, instance, **kwargs):
         instance.payment_status = 'cash'
     else:
         instance.payment_status = 'due'
-class PurchaseReturn(models.Model):
-    purchase = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
-    return_quantity = models.IntegerField()
-    return_date = models.DateTimeField(default=timezone.now)
-    reason = models.TextField()
 
+class PurchaseReturn(models.Model):
+  porder_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
+  porder_total = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  porder_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  porder_due = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  porder_status = models.CharField(max_length=1,choices=OrderChoice, default=3)
+  porder_note = models.CharField(max_length=500, default='')
+  porder_create_time = models.DateTimeField(auto_now_add=True,null = True)  
+  porder_update_time = models.DateTimeField(auto_now=True,null = True)  
+  porder_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='or_create_user')
+  porder_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='or_create_update')
+  
+class PurchaseReturnItem(models.Model):
+  porder_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
+  item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
+  item_qty = models.PositiveBigIntegerField(default=1)
+  item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+
+  def get_total_price(self):
+    return self.item_qty * self.item_pprice
+ 
+class PurchaseReturnPayment(models.Model):
+  payment_status_choices = [
+        ('cash', 'Cash'),
+        ('due', 'Due'),
+    ]
+  order_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
+  payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
+  payment_type = models.CharField(max_length=1,choices=PaymentChoice, default=1)
+  payment_status = models.CharField(max_length=10, choices=payment_status_choices, default='cash')  
+  payment_time = models.DateTimeField(auto_now_add=True, null = True)  
+  payment_update_time = models.DateTimeField(auto_now=True, null = True)   
+  payment_create_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='pr_create_user')
+  payment_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='pr_create_update')
+       
 class PurchaseCancel(models.Model):
     purchase = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE)
     cancel_date = models.DateTimeField(default=timezone.now)

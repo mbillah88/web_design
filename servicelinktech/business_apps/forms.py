@@ -73,6 +73,15 @@ class PurchaseOrderForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['supplier_id'].empty_label = "Select Supplier..."
 
+class PurchaseOrderReturnForm(forms.ModelForm):
+    class Meta:
+        model = PurchaseReturn
+        fields = ['porder_id','porder_total','porder_discount','porder_due','porder_status','porder_note']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['porder_id'].empty_label = "Select Order ID..."
+
 class PurchaseOrderDueForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrder
@@ -82,15 +91,20 @@ class PurchaseOrderItemForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrderItem
         fields = ['item_id','item_qty','item_pprice']
-
-    helper = FormHelper()
-    helper.add_input(Submit('submit', 'Submit', css_class='bg-success'))
-    helper.form_method = 'POST'
+class PurchaseOrderReturnItemForm(forms.ModelForm):
+    class Meta:
+        model = PurchaseReturnItem
+        fields = ['item_id','item_qty','item_pprice']
 
 class PurchasePaymentForm(forms.ModelForm):
     class Meta:
         model = PurchasePayment
         fields = ['payment_amount','payment_type']
+class PurchaseReturnPaymentForm(forms.ModelForm):
+    class Meta:
+        model = PurchaseReturnPayment
+        fields = ['payment_amount','payment_type']
+
 
 class PurchasePaymentAllForm(forms.ModelForm):
     class Meta:

@@ -577,7 +577,7 @@ def purchase(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'business_apps/purchase.html', {
-        #'p_payment' : p_payment,
+        'current_date' : current_date,
         'todays_payments' : todays_payments,
         'filterset': filterset,
         'page_obj': page_obj,
@@ -676,7 +676,80 @@ def purchase_due_form(request, pk):
             'pay_form' : payment_form,
             'pay_list_formset' : pay_list_formset,
             'formset' : formset})
+def purchase_list(request):
+    current_date = timezone.localtime().date()
+    orders = get_order_item_count().order_by('-porder_create_time')
+   
+    # Get the queryset and apply filtering
+    filterset = PurchaseOrderFilter(request.GET, queryset=orders)
+    filtered_queryset = filterset.qs
+    # Set up pagination
+    paginator = Paginator(filtered_queryset, 30)  # Show 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'business_apps/purchase/purchase_order_all.html', {
+        'current_date' : current_date,
+        'filterset': filterset,
+        'page_obj': page_obj,
+        'orders': orders,
+    })
+def purchase_return_list(request):
+    current_date = timezone.localtime().date()
+    orders = get_order_item_count().order_by('-porder_create_time')
+   
+    # Get the queryset and apply filtering
+    filterset = PurchaseOrderFilter(request.GET, queryset=orders)
+    filtered_queryset = filterset.qs
+    # Set up pagination
+    paginator = Paginator(filtered_queryset, 30)  # Show 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'business_apps/purchase/purchase_order_return_list.html', {
+        'current_date' : current_date,
+        'filterset': filterset,
+        'page_obj': page_obj,
+        'orders': orders,
+    })
+def purchase_due_list(request):
+    current_date = timezone.localtime().date()
+    orders = get_order_item_count().order_by('-porder_create_time')
+   
+    # Get the queryset and apply filtering
+    filterset = PurchaseOrderFilter(request.GET, queryset=orders)
+    filtered_queryset = filterset.qs
+    # Set up pagination
+    paginator = Paginator(filtered_queryset, 30)  # Show 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'business_apps/purchase/purchase_order_due_all.html', {
+        'current_date' : current_date,
+        'filterset': filterset,
+        'page_obj': page_obj,
+        'orders': orders,
+    })
+def purchase_payment_list(request):
+    current_date = timezone.localtime().date()
+    orders = get_order_item_count().order_by('-porder_create_time')
+   
+    p_payment = PurchasePayment.objects.all().order_by('-payment_time')
 
+    # Get the queryset and apply filtering
+    filterset = PurchaseOrderFilter(request.GET, queryset=orders)
+    filtered_queryset = filterset.qs
+    # Set up pagination
+    paginator = Paginator(p_payment, 30)  # Show 10 items per page
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    return render(request, 'business_apps/purchase/purchase_order_payment_list.html', {
+        'current_date' : current_date,
+        'filterset': filterset,
+        'page_obj': page_obj,
+        'orders': orders,
+    })
 def purchase_update(request, pk):
     po = get_object_or_404(PurchaseOrder, id=pk)
     #payo = get_object_or_404(PurchasePayment, order_id=pk)
@@ -1172,12 +1245,12 @@ def report_purchase_daily(request):
 
 #Printing page....
 def purchase_invoice(request, pk):
+    current_date = timezone.localtime()
     purchase_list = list(PurchasePayment.objects.filter(order_id=pk))
     # Get the purchase summary
     purchase_summary = list(PurchasePayment.objects.filter(order_id=pk).values('order_id', 'payment_amount') \
         .annotate(pay_id=Count('order_id')) \
         .order_by('order_id'))
-    print(purchase_summary)
     # Get the purchase summary    
     total_payment = sum(item['payment_amount'] for item in purchase_summary)
     po = get_object_or_404(PurchaseOrder, id=pk)
@@ -1189,6 +1262,7 @@ def purchase_invoice(request, pk):
     porder = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
     formset = CartItemFormSet(queryset=porder)
     return render(request, 'business_apps/reports/pinvoice.html', {
+        'current_date' : current_date,
         'form' : customer_form,
         'purchase_list' : purchase_list,
         'total_payment' : total_payment,

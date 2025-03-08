@@ -89,15 +89,15 @@
     <div class="container">
         <div style="display: flex; justify-content: space-between;">
             <div>
-                <div> <span><h3>Invoice # POI-{{ form.instance.id }}</h3></span> <span>PO Date : {{ form.instance.porder_create_time|date:'Y-m-d h:m A'  }}</span></div>
+                <div> <span><h3>Invoice # POI-{{ form.instance.id }}</h3></span> <span>PO Date : {{ form.instance.porder_create_time|date:'Y-m-d h:i A'  }}</span></div>
                
                 <span>Supplier Name : {{ form.instance.supplier_id.supplier_name }}</span><br>
                 <span>Contact No: {{ form.instance.supplier_id.supplier_mobile }}</span><br>
             </div>
             <div>
                 <div> 
-                    <img src="{{ form.barcode.url }}" alt="Barcode">    
-                    <span>Print Time : Date.now()</span>
+                    <img src="{{ form.barcode.url }}" alt="Barcode"> <br>   
+                    <span>Print Time : {{current_date|date:'Y-m-d h:i A'}}</span>
                 </div>               
                 <span>Supplier Name : {{ form.instance.supplier_id.supplier_name }}</span><br>
                 <span>Contact No: {{ form.instance.supplier_id.supplier_mobile }}</span><br>
@@ -149,7 +149,7 @@
                     <tbody>
                         {% for payment in purchase_list %}
                         <tr>
-                            <td style="padding: 3px; text-align: center;">{{ payment.payment_time|date:'Y-m-d' }}</td>
+                            <td style="padding: 3px; text-align: center;">{{ payment.payment_time|date:'Y-m-d h:i A' }}</td>
                             <td style="padding: 3px; text-align: right;">{{ payment.payment_amount }}</td>
                             <td style="padding: 3px; text-align: center;">{{ payment.get_payment_status_display }}</td>
                             <td style="padding: 3px; text-align: center;">{{ payment.payment_create_by }}</td>

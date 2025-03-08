@@ -190,7 +190,7 @@
                         <tr>
                             <td>{{ order.id }}</td>
                             <td>{{ order.supplier_id__supplier_name }}</td>
-                            <td>{{ order.porder_create_time|date:'Y-m-d h:m A' }}</td>
+                            <td>{{ order.porder_create_time|date:'Y-m-d h:i A' }}</td>
                             <td>{{ order.porder_total }}</td>
                             <td>{{ order.porder_discount }}</td>                  
                             <td style="color: rgb(110, 3, 3); font-weight: 600;">{{ order.porder_due }}</td>
@@ -249,7 +249,7 @@
                             <td>{{ data.porder_total }}</td>
                             <td style="color: rgb(110, 3, 3); font-weight: 600;">{{ data.porder_due }}</td>
                         </tr>
-                        {% endif %}
+                        <!-- {% endif %}-->
                         
                         {% endfor %}
                     </table>
@@ -291,15 +291,6 @@
                         <th scope="col">Due Amt</th>
                         </tr>
                         {% for data in purchase_order_today %}
-                        <!-- {% if data.porder_due > 0 %}-->
-                        <tr>       
-                            <td>POI-{{ data.id }}</td>
-                            <td>{{ data.supplier_id__supplier_name }}</td>
-                            <td>{{ data.total_items }}</td>
-                            <td>{{ data.porder_total }}</td>
-                            <td style="color: rgb(110, 3, 3); font-weight: 600;">{{ data.porder_due }}</td>
-                        </tr>
-                        {% endif %}
                         
                         {% endfor %}
                     </table>
@@ -315,14 +306,6 @@
                         <th scope="col">Amount</th>
                         <th scope="col">Status</th>
                         </tr>
-                        {% for data in todays_payments %}
-                        <tr>       
-                        <td>POI-{{ data.order_id }}</td>
-                        <td>{{ data.order_id.supplier_id }}</td>
-                        <td>{{ data.payment_amount }}</td>
-                        <td>{{ data.get_payment_type_display }}</td>
-                        </tr>
-                        {% endfor %}
                     </table>
                   <hr/>
           

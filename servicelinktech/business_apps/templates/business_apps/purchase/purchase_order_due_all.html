@@ -1,0 +1,158 @@
+{% extends "business_apps/master.html" %}
+{% load multiply %}
+{% block title %}
+  SST | Purchase List
+{% endblock %}
+
+{% block header %}
+Purchase List
+{% endblock %}
+
+{% block breadcrumbs %}
+{% url 'slt:business' as url %}
+{% url 'slt:purchase' as urls %}
+<div style="--bs-breadcrumb-divider: url(&#34;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Cpath d='M2.5 0L1 1.5 3.5 4 1 6.5 2.5 8l4-4-4-4z' fill='currentColor'/%3E%3C/svg%3E&#34;);" aria-label="breadcrumb">
+  <ul style="display: flex; flex-wrap: wrap; margin-bottom: 0; padding-left: 0;">
+    <li class="breadcrumb-item"><a href="{{url}}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{urls}}">Purchase Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page"> Purchase Due List</li>
+  </ul>
+</div>
+{% endblock %}
+    
+{% block content %}
+<div class="main-content">
+  <div class="content"> 
+    <div style="display: flex; gap: .5rem;align-items: center;justify-content: space-between;padding-bottom: 1rem;">      
+      <div style="flex: auto;">
+        <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Purchase Due List</span>
+      </div>
+      <div>
+        <select id="filter-select" onchange="filterPayments()">
+          <option value="all" {% if filter == 'all' %}selected{% endif %}>All Due Order</option>
+          <option selected value="today" {% if filter == 'today' %}selected{% endif %}>Today's Due Order</option>
+          <option value="yesterday" {% if filter == 'yesterday' %}selected{% endif %}>Yesterday's Due Order</option>
+          <option value="this_month" {% if filter == 'this_month' %}selected{% endif %}>This Month's Due Order</option>
+          <option value="last_month" {% if filter == 'last_month' %}selected{% endif %}>Last Month's Due Order</option>
+        </select>
+      </div>
+      <div>             
+        <input type="text" id="searchInput" style="background-image: url('/static/business_apps/icons/searchicon.png');background-repeat: no-repeat; background-position: 6px 10px;padding-left: 25px;"onkeyup="searchTable()" placeholder="Search for Supplier...">
+      </div>
+    </div> 
+    <!-- Paginated list -->
+    <div id="list-container">
+      <table id="purchaseDueTable" class="table table-success table-striped">
+          <tr>
+            <th scope="col">Order Code</th>
+            <th scope="col">Supplier</th>
+            <th scope="col">Total Item</th>
+            <th scope="col">Total Amount</th>
+            <th scope="col">Due Amt</th>
+            <th scope="col">Create Time</th>
+            <th scope="col">Created By</th>
+            <th scope="col">Action</th>
+            <th scope="col">View</th>
+          </tr>
+          {% for data in page_obj %}
+            {% if data.porder_due > 0 %}
+            <tr>       
+              <td>POI-{{ data.id }}</td>
+              <td>{{ data.supplier_id }}</td>
+              <td>{{ data.total_items }}</td>
+              <td>{{ data.porder_total }}</td>
+              <td style="color: rgb(110, 3, 3); font-weight: 600;">{{ data.porder_due }}</td>
+              <td>{{ data.porder_create_time|date:'Y-m-d' }}</td>
+              <td>{{ data.porder_create_by }}</td>
+              <td>
+                <a href="{% url 'slt:purchase_due_form' data.id %}">Payment</a>
+              </td>
+              <td>
+                <a href="{% url 'slt:purchase_invoice' data.id %}" target="_blank">View</a>
+              </td>
+            </tr>
+            {% endif %}
+          
+          {% endfor %}
+      </table>
+    </div>
+    <hr/>  
+    <div class="content">
+      <!-- Pagination controls -->
+      <div class="pagination">
+          <span class="step-links">
+              {% if page_obj.has_previous %}
+                  <a href="?page=1">&laquo; first</a>
+                  <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+              {% endif %}
+  
+              <span class="current">
+                  Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+              </span>
+  
+              {% if page_obj.has_next %}
+                  <a href="?page={{ page_obj.next_page_number }}">next</a>
+                  <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+              {% endif %}
+          </span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function searchTable() {
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("purchaseDueTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+
+</script>
+<script>
+  // Handle filter change
+  $('#filter-form select, #filter-form input').on('change', function() {
+      submitForm();
+  });
+
+  // Handle pagination click
+  $(document).on('click', '.pagination-link', function(e) {
+      e.preventDefault();
+      const page = $(this).data('page');
+      submitForm(page);
+  });
+
+  function submitForm(page = 1) {
+      const form = $('#filter-form');
+      const formData = form.serializeArray();
+      formData.push({name: 'page', value: page});
+
+      $.ajax({
+          url: form.attr('action'),
+          data: $.param(formData),
+          success: function(data) {
+              $('#list-container').html($(data).find('#list-container').html());
+              $('.pagination').html($(data).find('.pagination').html());
+          }
+      });
+  }
+</script>
+<script>
+  function filterPayments() {
+      var filter = document.getElementById("filter-select").value;
+      window.location.href = "?filter=" + filter;
+  }
+</script>
+{% endblock %}

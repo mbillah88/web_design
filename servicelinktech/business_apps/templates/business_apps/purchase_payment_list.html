@@ -16,7 +16,7 @@
       <td>{{ data.order_id.supplier_id }}</td>
       <td>{{ data.payment_amount }}</td>
       <td>{{ data.get_payment_type_display }}</td>
-      <td>{{ data.payment_time|date:'Y-m-d h:m A' }}</td>
+      <td>{{ data.payment_time|date:'Y-m-d h:i A' }}</td>
       <td>{{ data.payment_create_by }}</td>
       <td>
         <a href="{% url 'slt:purchase_update' data.order_id %}">Edit</a>
