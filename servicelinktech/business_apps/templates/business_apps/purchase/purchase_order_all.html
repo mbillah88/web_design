@@ -75,7 +75,8 @@ Purchase List
             <td>{{ data.porder_create_by }}</td>
             <td>
               <a href="{% url 'slt:purchase_update' data.pk %}">Edit</a>
-              <a href="">Delete</a>
+              <a href="{% url 'slt:purchase_return' data.pk %}">Return</a>
+              
             </td>
             <td>
               <a href="{% url 'slt:purchase_invoice' data.pk %}" target="_blank">View</a>
