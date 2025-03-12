@@ -76,11 +76,10 @@ class PurchaseOrderForm(forms.ModelForm):
 class PurchaseOrderReturnForm(forms.ModelForm):
     class Meta:
         model = PurchaseReturn
-        fields = ['porder_id','porder_total','porder_discount','porder_due','porder_status','porder_note']
+        fields = ['porder_total','porder_discount','porder_due','porder_status','porder_note']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['porder_id'].empty_label = "Select Order ID..."
 
 class PurchaseOrderDueForm(forms.ModelForm):
     class Meta:
