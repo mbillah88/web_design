@@ -707,12 +707,12 @@ def purchase_return(request, pk):
         .order_by('order_id'))
     # Get the purchase summary    
     total_payment = sum(item['payment_amount'] for item in purchase_summary)
-    payFormSet = modelformset_factory(PurchasePayment, form=PurchasePaymentForm, extra=0)
+    payFormSet = modelformset_factory(PurchaseReturnPayment, form=PurchaseReturnPaymentForm, extra=0)
 
     if request.method == 'POST':
         customer_form = PurchaseOrderReturnForm(request.POST)
         payment_form = PurchaseReturnPaymentForm(request.POST)
-        formset = CartItemReturnFormSet(request.POST,queryset=PurchaseReturnItem.objects.none())        
+        formset = CartItemFormSet(request.POST)        
         #for Data Check...
         for name in request.POST:
             print("{}: {}".format(name, request.POST.getlist(name)))        
@@ -726,17 +726,25 @@ def purchase_return(request, pk):
         if not customer_form.is_valid():
             print("customer_form Errors:", customer_form.errors)
 
-        if customer_form.is_valid() and formset.is_valid() and payment_form.is_valid():
+        if customer_form.is_valid() and payment_form.is_valid():
             order = customer_form.save(commit=False)
             order.porder_id = po
             order.porder_create_by = request.user
+            #print(request.user)
             order.save()
-            cart_items = formset.save(commit=False)
-            for item in cart_items:
-                item.porder_id = order
-                item.save()
+            #cart_items = formset.save(commit=False)
+            for item in formset:
+                # Extract cleaned data
+                data = item.cleaned_data
+                # Save directly to the model
+                PurchaseReturnItem.objects.create(
+                    porder_id=order,
+                    item_id=data['item_id'],
+                    item_qty=data['item_qty'],
+                    item_pprice=data['item_pprice']
+                )
             payment = payment_form.save(commit=False)
-            payment.order_id = po
+            payment.order_id = order
             payment.payment_create_by = request.user
             payment.save()
             return redirect('slt:purchase')  # Redirect to a success page or another view

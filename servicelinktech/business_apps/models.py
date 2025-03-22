@@ -147,7 +147,7 @@ class PurchaseReturn(models.Model):
   porder_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='or_create_update')
   
 class PurchaseReturnItem(models.Model):
-  porder_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
+  porder_id = models.ForeignKey(PurchaseReturn, on_delete=models.CASCADE, null = True)
   item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
   item_qty = models.PositiveBigIntegerField(default=1)
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
@@ -160,7 +160,7 @@ class PurchaseReturnPayment(models.Model):
         ('cash', 'Cash'),
         ('due', 'Due'),
     ]
-  order_id = models.ForeignKey(PurchaseOrder, on_delete=models.CASCADE, null = True)
+  order_id = models.ForeignKey(PurchaseReturn, on_delete=models.CASCADE, null = True)
   payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)
   payment_type = models.CharField(max_length=1,choices=PaymentChoice, default=1)
   payment_status = models.CharField(max_length=10, choices=payment_status_choices, default='cash')  
