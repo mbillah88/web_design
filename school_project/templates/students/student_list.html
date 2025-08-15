@@ -1,0 +1,11 @@
+<h3>শিক্ষার্থীদের তালিকা</h3>
+<table>
+  <tr><th>নাম</th><th>রোল</th><th>শ্রেণি</th></tr>
+  {% for s in students %}
+    <tr>
+      <td>{{ s.user.first_name }}</td>
+      <td>{{ s.roll }}</td>
+      <td>{{ s.class_name }}</td>
+    </tr>
+  {% endfor %}
+</table>

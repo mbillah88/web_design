@@ -576,7 +576,7 @@ def purchase(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'business_apps/purchase.html', {
+    return render(request, 'business_apps/purchase/purchase.html', {
         'current_date' : current_date,
         'todays_payments' : todays_payments,
         'filterset': filterset,
@@ -628,7 +628,7 @@ def purchase_new(request):
         payment_form = PurchasePaymentForm()
         formset = CartItemFormSet(queryset=PurchaseOrderItem.objects.none())
 
-    return render(request, 'business_apps/purchase_new.html', {
+    return render(request, 'business_apps/purchase/purchase_new.html', {
         'form' : customer_form,
         'pay_form' : payment_form,
         'formset' : formset,
@@ -670,7 +670,7 @@ def purchase_due_form(request, pk):
         item_order_id = PurchaseOrderItem.objects.filter(porder_id_id=pk) 
         formset = CartItemFormSet(queryset=item_order_id)
         pay_list_formset = payFormSet(queryset=pay_order_id)
-        return render(request, 'business_apps/purchase_due_payment.html', {
+        return render(request, 'business_apps/purchase/purchase_due_payment.html', {
             'form' : customer_form,
             'total_payment' : total_payment,
             'pay_form' : payment_form,
@@ -765,7 +765,7 @@ def purchase_return(request, pk):
             'products' : products})
 def purchase_return_list(request):
     current_date = timezone.localtime().date()
-    orders = get_order_item_count().order_by('-porder_create_time')
+    orders = get_return_order_item_count().order_by('-porder_create_time')
    
     # Get the queryset and apply filtering
     filterset = PurchaseOrderFilter(request.GET, queryset=orders)
@@ -874,7 +874,7 @@ def purchase_update(request, pk):
         #pay_form = PurchasePaymentForm()
         pay_id = PurchasePayment.objects.filter(order_id=pk)
         pay_list_formset = payFormSet(queryset=pay_id, prefix='payment')
-        return render(request, 'business_apps/purchase_update.html', {
+        return render(request, 'business_apps/purchase/purchase_update.html', {
             'form' : customer_form,
             'total_payment' : total_payment,
             #'pay_form' : pay_form,

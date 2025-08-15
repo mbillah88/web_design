@@ -28,6 +28,9 @@ Purchase List
         <span style="font-size: 1.3rem; font-weight: bolder; margin-right: 2rem;">Purchase Due List</span>
       </div>
       <div>
+        <a class="nav-link" href="{% url 'slt:purchase' %}">Purchase Dashboard</a>
+      </div>
+      <div>
         <select id="filter-select" onchange="filterPayments()">
           <option value="all" {% if filter == 'all' %}selected{% endif %}>All Due Order</option>
           <option selected value="today" {% if filter == 'today' %}selected{% endif %}>Today's Due Order</option>

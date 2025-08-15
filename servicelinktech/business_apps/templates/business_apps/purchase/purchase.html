@@ -1,7 +1,7 @@
 {% extends "business_apps/master.html" %}
 {% load multiply %}
 {% block title %}
-  SST | Purchase List
+  SST | Purchase Dashboard
 {% endblock %}
 
 {% block header %}
@@ -192,7 +192,7 @@ Purchase List
             <a class="nav-link" href="{% url 'slt:purchase_due_list' %}">Due List</a>
           </div>
         </div>          
-          {% include "business_apps/purchase_order_due_list.html" %}
+          {% include "business_apps/purchase/purchase_order_due_list.html" %}
         <hr/> 
       </div> 
       <div style="flex: 50%;"> 
@@ -204,7 +204,7 @@ Purchase List
             <a class="nav-link" href="{% url 'slt:purchase_payment_list' %}">Payment List</a>
           </div>
         </div>
-          {% include "business_apps/purchase_payment_list.html" %}
+          {% include "business_apps/purchase/purchase_payment_list.html" %}
         <hr/>
 
       </div> 
@@ -220,7 +220,7 @@ Purchase List
             <a class="nav-link" href="{% url 'slt:purchase_return_list' %}">Return List</a>
           </div>
         </div>          
-          {% include "business_apps/purchase_order_due_list.html" %}
+          {% include "business_apps/purchase/purchase_order_due_list.html" %}
         <hr/> 
       </div> 
       <div style="flex: 50%;"> 
@@ -232,7 +232,7 @@ Purchase List
             <a class="nav-link" href="{% url 'slt:purchase' %}">Cancel List</a>
           </div>
         </div>
-          {% include "business_apps/purchase_payment_list.html" %}
+          {% include "business_apps/purchase/purchase_payment_list.html" %}
         <hr/>
 
       </div> 

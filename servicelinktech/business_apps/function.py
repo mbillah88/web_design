@@ -1,8 +1,12 @@
 from django.db.models import Count
-from .models import PurchaseOrder, PurchaseOrderItem, SalesOrder
+from .models import PurchaseOrder, PurchaseOrderItem, PurchaseReturn, SalesOrder
 
 def get_order_item_count():
   orders = PurchaseOrder.objects.annotate(total_items=Count('item_sl'))
+  return orders
+  
+def get_return_order_item_count():
+  orders = PurchaseReturn.objects.annotate(total_items=Count('item_sl'))
   return orders
   
 def get_sorder_item_count():

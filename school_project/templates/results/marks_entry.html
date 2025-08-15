@@ -1,0 +1,21 @@
+<h3>নম্বর এন্ট্রি</h3>
+<form method="post">
+  {% csrf_token %}
+  <select name="student">
+    {% for s in students %}
+      <option value="{{ s.id }}">{{ s.user.first_name }} ({{ s.roll }})</option>
+    {% endfor %}
+  </select>
+  <select name="subject">
+    {% for sub in subjects %}
+      <option value="{{ sub.id }}">{{ sub.name }}</option>
+    {% endfor %}
+  </select>
+  <select name="exam">
+    {% for ex in exams %}
+      <option value="{{ ex.id }}">{{ ex.name }}</option>
+    {% endfor %}
+  </select>
+  <input type="number" name="marks" placeholder="নম্বর">
+  <button type="submit">সংরক্ষণ করুন</button>
+</form>

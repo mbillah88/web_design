@@ -1,0 +1,36 @@
+<!-- templates/accounts/student_dashboard.html -->
+{% extends 'base.html' %}
+{% block content %}
+<h2>স্বাগতম {{ request.user.first_name }}</h2>
+<p>আপনি একজন শিক্ষার্থী</p>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="card text-white bg-primary mb-3">
+      <div class="card-body">
+        <h5 class="card-title">রেজাল্ট</h5>
+        <p class="card-text">আপনার সর্বশেষ পরীক্ষার ফলাফল দেখুন</p>
+        <a href="{% url 'view_results' %}" class="btn btn-light">দেখুন</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-white bg-success mb-3">
+      <div class="card-body">
+        <h5 class="card-title">ক্লাস রুটিন</h5>
+        <p class="card-text">আপনার ক্লাসের সময়সূচী</p>
+        <a href="{% url 'class_routine' %}" class="btn btn-light">দেখুন</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-white bg-warning mb-3">
+      <div class="card-body">
+        <h5 class="card-title">নোটিশ</h5>
+        <p class="card-text">সর্বশেষ নোটিশগুলো</p>
+        <a href="{% url 'notices' %}" class="btn btn-light">দেখুন</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

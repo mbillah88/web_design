@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>আমার প্রোফাইল</h3>
+<div class="card" style="width: 18rem;">
+  <img src="{{ student.photo.url }}" class="card-img-top" alt="ছবি">
+  <div class="card-body">
+    <h5 class="card-title">{{ student.user.first_name }} {{ student.user.last_name }}</h5>
+    <p class="card-text">রোল: {{ student.roll }}</p>
+    <p class="card-text">শ্রেণি: {{ student.class_name }}</p>
+    <p class="card-text">ফোন: {{ student.phone }}</p>
+    <p class="card-text">ঠিকানা: {{ student.address }}</p>
+  </div>
+</div>
+{% endblock %}

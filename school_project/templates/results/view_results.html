@@ -1,0 +1,19 @@
+<h3>আমার রেজাল্ট</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>বিষয়</th>
+      <th>পরীক্ষা</th>
+      <th>নম্বর</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in results %}
+      <tr>
+        <td>{{ r.subject.name }}</td>
+        <td>{{ r.exam.name }}</td>
+        <td>{{ r.marks }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

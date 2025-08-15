@@ -147,7 +147,7 @@ class PurchaseReturn(models.Model):
   porder_update_by = models.ForeignKey(User, on_delete=models.CASCADE, null = True, related_name='or_create_update')
   
 class PurchaseReturnItem(models.Model):
-  porder_id = models.ForeignKey(PurchaseReturn, on_delete=models.CASCADE, null = True)
+  porder_id = models.ForeignKey(PurchaseReturn, related_name='item_sl', on_delete=models.CASCADE, null = True)
   item_id = models.ForeignKey(ItemProduct, on_delete=models.CASCADE, null = True)
   item_qty = models.PositiveBigIntegerField(default=1)
   item_pprice = models.DecimalField(max_digits=10, decimal_places=2, null=True, default=0)

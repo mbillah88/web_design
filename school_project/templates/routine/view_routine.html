@@ -1,0 +1,12 @@
+<h3>শ্রেণির রুটিন</h3>
+<table>
+  <tr><th>বার</th><th>সময়</th><th>বিষয়</th><th>শিক্ষক</th></tr>
+  {% for r in routines %}
+    <tr>
+      <td>{{ r.day }}</td>
+      <td>{{ r.time }}</td>
+      <td>{{ r.subject }}</td>
+      <td>{{ r.teacher.first_name }}</td>
+    </tr>
+  {% endfor %}
+</table>

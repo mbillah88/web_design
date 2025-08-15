@@ -1,0 +1,76 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>ড্যাশবোর্ড</title>
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <style>
+    body { font-family: 'SolaimanLipi', sans-serif; }
+    .sidebar {
+      height: 100vh;
+      background-color: #343a40;
+      color: white;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      color: white;
+      display: block;
+      padding: 10px 20px;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    .sidebar a:hover {
+      background-color: #495057;
+      border-left: 4px solid #ffc107;
+    }
+    .sidebar .collapse a {
+      padding-left: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <nav class="col-md-3 sidebar">
+        <h4 class="text-center mb-4">নেভিগেশন</h4>
+
+        {% if request.user.role == 'admin' %}
+          <a href="{% url 'admin_dashboard' %}">🏠 অ্যাডমিন ড্যাশবোর্ড</a>
+          <a data-bs-toggle="collapse" href="#adminMenu" role="button">⚙️ ব্যবস্থাপনা</a>
+          <div class="collapse" id="adminMenu">
+            <a href="{% url 'manage_teachers' %}">👨‍🏫 শিক্ষক</a>
+            <a href="{% url 'manage_students' %}">👨‍🎓 শিক্ষার্থী</a>
+            <a href="{% url 'manage_routine' %}">📅 রুটিন</a>
+          </div>
+        {% elif request.user.role == 'teacher' %}
+          <a href="{% url 'teacher_dashboard' %}">🏠 শিক্ষক ড্যাশবোর্ড</a>
+          <a data-bs-toggle="collapse" href="#teacherMenu" role="button">📚 ক্লাস</a>
+          <div class="collapse" id="teacherMenu">
+            <a href="{% url 'attendance' %}">📝 উপস্থিতি</a>
+            <a href="{% url 'marks_entry' %}">📊 নম্বর এন্ট্রি</a>
+          </div>
+        {% elif request.user.role == 'student' %}
+          <a href="{% url 'student_dashboard' %}">🏠 আমার প্রোফাইল</a>
+          <a data-bs-toggle="collapse" href="#studentMenu" role="button">📖 তথ্য</a>
+          <div class="collapse" id="studentMenu">
+            <a href="{% url 'view_results' %}">📈 রেজাল্ট</a>
+            <a href="{% url 'class_routine' %}">🕒 রুটিন</a>
+            <a href="{% url 'notice_list' %}">📢 নোটিশ</a>
+          </div>
+        {% endif %}
+
+        <a href="{% url 'logout' %}">🚪 লগআউট</a>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="col-md-9 p-4">
+        {% block content %}
+        {% endblock %}
+      </main>
+    </div>
+  </div>
+</body>
+</html>

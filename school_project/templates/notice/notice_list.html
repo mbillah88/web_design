@@ -1,0 +1,6 @@
+<h3>নোটিশ বোর্ড</h3>
+<ul>
+  {% for n in notices %}
+    <li><strong>{{ n.title }}</strong> — {{ n.description }}</li>
+  {% endfor %}
+</ul>
