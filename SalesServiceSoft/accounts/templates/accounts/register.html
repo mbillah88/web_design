@@ -1,0 +1,54 @@
+
+{% extends 'base_software.html' %}
+{% block title %}নতুন ইউজার রেজিস্টার করুন{% endblock %}
+{% block content %}
+<h4 class="mb-4">➕ নতুন ইউজার রেজিস্টার করুন</h4>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label">ইউজারনেম</label>
+      <input type="text" name="username" class="form-control" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">ইমেইল</label>
+      <input type="email" name="email" class="form-control">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">রোল</label>
+      <select name="role" class="form-select">
+        <option value="admin">অ্যাডমিন</option>
+        <option value="technician">টেকনিশিয়ান</option>
+        <option value="sales">সেলস</option>
+        <option value="manager">ম্যানেজার</option>
+        <option value="viewer">ভিউয়ার</option>
+      </select>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">ফোন</label>
+      <input type="text" name="phone" class="form-control">
+    </div>
+    <div class="col-md-12 mb-3">
+      <label class="form-label">ঠিকানা</label>
+      <textarea name="address" class="form-control"></textarea>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">জন্ম তারিখ</label>
+      <input type="date" name="date_of_birth" class="form-control">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">প্রোফাইল ছবি</label>
+      <input type="file" name="profile_image" class="form-control">
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">পাসওয়ার্ড</label>
+      <input type="password" name="password1" class="form-control" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label">পুনরায় পাসওয়ার্ড</label>
+      <input type="password" name="password2" class="form-control" required>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-success w-100">✅ রেজিস্টার করুন</button>
+</form>
+{% endblock %}

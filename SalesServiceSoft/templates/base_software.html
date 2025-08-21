@@ -1,0 +1,269 @@
+{% load static %}
+{% load sidebar_tags %}
+
+<!DOCTYPE html>
+<html lang="bn" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}স্কুল ম্যানেজমেন্ট{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'SolaimanLipi', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+    .top-header {
+      background-color: var(--bs-dark);
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav-link.active {
+        font-weight: bold;
+        border-left: 4px solid #0d6efd;
+      }
+    .toggle-btn {
+      position: fixed;
+      top: 15px;
+      left: 15px;
+      z-index: 1100;
+      background: transparent;
+      border: none;
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+    }
+    .bar {
+      display: block;
+      width: 30px;
+      height: 4px;
+      margin: 6px auto;
+      background-color: #0d6efd;
+      transition: all 0.4s ease;
+      border-radius: 2px;
+    }
+    .toggle-btn.active .top {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+    .toggle-btn.active .middle {
+      opacity: 0;
+    }
+    .toggle-btn.active .bottom {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+    @media (max-width: 767px) {
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 250px;
+        z-index: 1000;
+      }
+      .sidebar.show {
+        left: 0;
+      }
+    }
+    .sidebar {
+      position: fixed;
+      top: 100;
+      width: 250px;
+      height: 100vh;
+      background-color: var(--bs-dark);
+      transition: left 0.4s ease;
+      z-index: 1000;
+    }
+    .sidebar {
+      background-color: var(--bs-dark);
+      color: var(--bs-light);
+      min-height: 100vh;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      color: var(--bs-light);
+      padding: 10px 20px;
+      display: block;
+      text-decoration: none;
+    }
+    .sidebar a:hover {
+      background-color: #495057;
+      border-left: 4px solid #ffc107;
+    }
+    .active-link {
+      background-color: #495057;
+      font-weight: bold;
+      border-left: 4px solid #0d6efd;
+    }
+    .sidebar-footer {
+      font-size: 14px;
+      border-top: 1px solid #6c757d;
+      padding-top: 10px;
+    }
+    .theme-toggle {
+      border: none;
+      background: transparent;
+      color: white;
+      font-size: 18px;
+    }
+    /* Main Content */
+    .main-content {
+      margin-left: 0;
+      transition: margin-left 0.3s ease;
+    }
+    @media (min-width: 768px) {
+      .sidebar {
+        position: static;
+        left: 0;
+      }
+      .main-content {
+        margin-left: 250px;
+      }
+    }
+  </style>
+</head>
+<body onclick="closeSidebar(event)">
+
+    <!-- 🌐 Top Header -->
+    <div class="top-header">
+      <div class="d-flex align-items-center gap-3">
+        <img src="{% static 'img/dhumketu_logo.png' %}" alt="Logo" style="height: 40px;">
+        <h5 class="mb-0">ধুমকেতু সফট ৥ 2025</h5>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <!-- 👤 Profile Dropdown -->
+        <div class="dropdown">
+          <button class="btn btn-sm btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            👤 {{ request.user.username }}
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#">📄 প্রোফাইল</a></li>
+            <li><a class="dropdown-item" href="#">🔒 পাসওয়ার্ড পরিবর্তন</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">🚪 লগআউট</a></li>
+          </ul>
+        </div>
+
+        <!-- 🌗 Theme Toggle -->
+        <button class="btn btn-sm btn-outline-light" onclick="toggleTheme()">🌗</button>
+
+        <!-- ☰ Sidebar Toggle (Mobile only) -->
+        <button class="btn btn-sm btn-warning d-md-none" onclick="toggleSidebar()" id="sidebarToggleBtn">☰</button>
+      </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+      <!-- 🧭 Sidebar -->
+        <nav id="sidebar" class="sidebar bg-dark text-white p-3">
+      <ul class="nav nav-pills flex-column">
+
+        <!-- ──────────────────────────────── -->
+        <!-- ১) সরাসরি লিংক (কোনো গ্রুপ ছাড়া) -->
+        <li class="nav-item mb-2">
+          <a href="{% url 'dashboard' %}"
+            class="nav-link text-white {% if request.resolver_match.url_name == 'dashboard' %}active bg-secondary{% endif %}">
+            🏠 ড্যাশবোর্ড
+          </a>
+        </li>
+
+        <!-- ──────────────────────────────── -->
+        <!-- ২) অ্যাকর্ডিয়ন গ্রুপ -->
+        {% if request.user.role == 'admin' %}
+        <li class="nav-item mb-2">
+          <button class="btn btn-toggle align-items-center text-white w-100 text-start"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#accountsMenu"
+                  aria-expanded="{% if request.resolver_match.url_name == 'profile_detail' or request.resolver_match.url_name == 'user_list' or request.resolver_match.url_name == 'add_user' %}true{% else %}false{% endif %}">
+            ⚙️ অ্যাকাউন্টস অপশন
+          </button>
+          <div class="accordion-collapse collapse {% if request.resolver_match.url_name == 'profile_detail' or request.resolver_match.url_name == 'user_list' or request.resolver_match.url_name == 'add_user' %}show{% endif %}" id="accountsMenu">
+            <ul class="btn-toggle-nav list-unstyled fw-normal small">
+              <li>
+                <a href="{% url 'profile_detail' %}"
+                  class="nav-link text-white {% if request.resolver_match.url_name == 'profile_detail' %}active bg-secondary{% endif %}">
+                  📝 প্রোফাইল
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'user_list' %}"
+                  class="nav-link text-white {% if request.resolver_match.url_name == 'user_list' %}active bg-secondary{% endif %}">
+                  👥 ইউজার তালিকা
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'add_user' %}"
+                  class="nav-link text-white {% if request.resolver_match.url_name == 'add_user' %}active bg-secondary{% endif %}">
+                  ➕ নতুন ইউজার
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        {% endif %}
+
+        <!-- ──────────────────────────────── -->
+        <!-- ৩) আরও কোনো সরাসরি লিংক -->
+        <li class="nav-item mt-auto">
+          <a href="{% url 'logout' %}" class="nav-link text-danger">🚪 লগআউট</a>
+        </li>
+
+      </ul>
+
+      <!-- ──────────────────────────────── -->
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer text-center mt-4 small">
+        <div id="banglaDate" class="mb-1"></div>
+        <div id="clock" class="mb-2"></div>
+        <marquee behavior="scroll" direction="left" scrollamount="3">
+          📢 আজকের নোটিশ: {{ latest_notice.title }}
+        </marquee>
+      </div>
+    </nav>
+
+    <!-- 📄 Main Content -->
+    <main class="col-md-9 p-4">
+      {% block content %}
+      {% endblock %}
+    </main>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script>
+  function toggleTheme() {
+    const html = document.documentElement;
+    const current = html.getAttribute("data-bs-theme");
+    html.setAttribute("data-bs-theme", current === "light" ? "dark" : "light");
+  }
+  function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('show');
+    }
+
+  function updateClock() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    document.getElementById('clock').innerText = `সময়: ${hours}:${minutes}`;
+  }
+
+  function getBanglaDate() {
+    const banglaMonths = ['জানুয়ারি','ফেব্রুয়ারি','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টেম্বর','অক্টোবর','নভেম্বর','ডিসেম্বর'];
+    const now = new Date();
+    const day = now.getDate();
+    const month = banglaMonths[now.getMonth()];
+    const year = now.getFullYear();
+    document.getElementById('banglaDate').innerText = `তারিখ: ${day} ${month}, ${year}`;
+  }
+
+  setInterval(updateClock, 1000);
+  getBanglaDate();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+{% extends 'base_software.html' %}
+{% block title %}ড্যাশবোর্ড{% endblock %}
+{% block content %}
+<h4>👥 ইউজার তালিকা</h4>
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>ইউজারনেম</th>
+      <th>নাম</th>
+      <th>রোল</th>
+      <th>যোগদান</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.username }}</td>
+      <td>{{ u.get_full_name }}</td>
+      <td>{{ u.get_role_display }}</td>
+      <td>{{ u.get_date_joined_formatted }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base_software.html' %}
+{% block title %}ড্যাশবোর্ড{% endblock %}
+{% block content %}
+<h2> {{ role }} রোল এ স্বাগতম {{ username }}!</h2>
+{% if role == 'admin' %}
+  <div class="row">
+    <div class="col-md-3"><div class="card"><div class="card-body">👥 ইউজার: {{ user_count }}</div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body">📦 পণ্য: {{ product_count }}</div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body">🔧 সার্ভিস: {{ service_count }}</div></div></div>
+    <div class="col-md-3"><div class="card"><div class="card-body">💰 বিক্রয়: {{ sales_count }}</div></div></div>
+  </div>
+
+{% elif role == 'technician' %}
+  <div class="row">
+    <div class="col-md-6"><div class="card"><div class="card-body">🔧 নতুন সার্ভিস: {{ new_services }}</div></div></div>
+    <div class="col-md-6"><div class="card"><div class="card-body">📝 ফিডব্যাক অপেক্ষমাণ: {{ pending_feedbacks }}</div></div></div>
+  </div>
+
+{% elif role == 'sales' %}
+  <div class="row">
+    <div class="col-md-6"><div class="card"><div class="card-body">🛒 আজকের বিক্রয়: {{ today_sales }}</div></div></div>
+    <div class="col-md-6"><div class="card"><div class="card-body">📄 ইনভয়েস: {{ invoices_created }}</div></div></div>
+  </div>
+{% endif %}
+{% endblock %}

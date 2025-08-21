@@ -1,0 +1,130 @@
+{% extends 'base_software.html' %}
+{% block title %}ড্যাশবোর্ড{% endblock %}
+{% block content %}
+ <div class="container mt-5">
+    <h4 class="mb-4">➕ নতুন ইউজার তৈরি করুন</h4>
+
+    <!-- show non-field errors -->
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">
+        {% for err in form.non_field_errors %}
+          <div>{{ err }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+
+        <!-- Username -->
+        <div class="col-md-6 mb-3">
+          <label class="form-label">ইউজারনেম</label>
+          <input type="text"
+                 name="username"
+                 class="form-control"
+                 value="{{ form.username.value|default_if_none:'' }}">
+          {% if form.username.errors %}
+            <div class="text-danger">{{ form.username.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-6 mb-3">
+          <label class="form-label">ইমেইল</label>
+          <input type="email"
+                 name="email"
+                 class="form-control"
+                 value="{{ form.email.value|default_if_none:'' }}">
+          {% if form.email.errors %}
+            <div class="text-danger">{{ form.email.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Role -->
+        <div class="col-md-6 mb-3">
+          <label class="form-label">রোল</label>
+          <select name="role" class="form-select">
+            {% for val,label in form.fields.role.choices %}
+              <option value="{{ val }}"
+                {% if form.role.value == val %}selected{% endif %}>
+                {{ label }}
+              </option>
+            {% endfor %}
+          </select>
+          {% if form.role.errors %}
+            <div class="text-danger">{{ form.role.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Phone -->
+        <div class="col-md-6 mb-3">
+          <label class="form-label">ফোন</label>
+          <input type="text"
+                 name="phone"
+                 class="form-control"
+                 value="{{ form.phone.value|default_if_none:'' }}">
+          {% if form.phone.errors %}
+            <div class="text-danger">{{ form.phone.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Address -->
+        <div class="col-md-12 mb-3">
+          <label class="form-label">ঠিকানা</label>
+          <textarea name="address" class="form-control">{{ form.address.value }}</textarea>
+          {% if form.address.errors %}
+            <div class="text-danger">{{ form.address.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Date of Birth -->
+        <div class="col-md-6 mb-3">
+          <label class="form-label">জন্ম তারিখ</label>
+          <input type="date"
+                 name="date_of_birth"
+                 class="form-control"
+                 value="{{ form.date_of_birth.value|default_if_none:'' }}">
+          {% if form.date_of_birth.errors %}
+            <div class="text-danger">{{ form.date_of_birth.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Profile Image -->
+        <div class="col-md-6 mb-3">
+          <label class="form-label">প্রোফাইল ছবি</label>
+          <input type="file" name="profile_image" class="form-control">
+          {% if form.profile_image.errors %}
+            <div class="text-danger">{{ form.profile_image.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Password1 -->
+        <div class="col-md-6 mb-3">
+          <label class="form-label">পাসওয়ার্ড</label>
+          <input type="password"
+                 name="password1"
+                 class="form-control">
+          {% if form.password1.errors %}
+            <div class="text-danger">{{ form.password1.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+        <!-- Password2 -->
+        <div class="col-md-6 mb-3">
+          <label class="form-label">পুনরায় পাসওয়ার্ড</label>
+          <input type="password"
+                 name="password2"
+                 class="form-control">
+          {% if form.password2.errors %}
+            <div class="text-danger">{{ form.password2.errors.0 }}</div>
+          {% endif %}
+        </div>
+
+      </div>
+
+      <button type="submit" class="btn btn-success w-100">✅ ইউজার যুক্ত করুন</button>
+    </form>
+  </div>
+{% endblock %}
+
