@@ -1,0 +1,43 @@
+<header class="navbar navbar-light bg-white border-bottom px-3 d-flex justify-content-between align-items-center">
+  <!-- ✅ Mobile Sidebar Toggle -->
+  <button id="mobileSidebarToggle" class="btn btn-outline-secondary d-md-none">
+    ☰
+  </button>
+
+  <!-- ✅ Brand Title -->
+  <span class="fw-bold text-primary fs-5">ITC Admin Panel</span>
+
+  <!-- ✅ Right-side Icons -->
+  <div class="d-flex align-items-center gap-3">
+    <!-- 🔔 Notification -->
+    <button class="btn btn-sm btn-light position-relative">
+      <i class="bi bi-bell fs-5 text-secondary"></i>
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        3
+      </span>
+    </button>
+
+    <!-- ⚙️ Settings -->
+    <button class="btn btn-sm btn-light">
+      <i class="bi bi-gear fs-5 text-secondary"></i>
+    </button>
+
+    <!-- 👤 Profile Dropdown -->
+    <div class="dropdown">
+      <a href="#" class="d-flex align-items-center text-decoration-none" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="{{ request.user.profile_image.url|default:'https://via.placeholder.com/32?text=👤' }}"
+             alt="Profile"
+             class="rounded-circle me-2"
+             width="32" height="32">
+        <span class="d-none d-md-inline-block fw-semibold text-dark">{{ request.user.first_name|default:"ইউজার" }}</span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+        <li><a class="dropdown-item" href="{% url 'my_profile' %}">প্রোফাইল</a></li>
+        <li><a class="dropdown-item" href="#">সেটিংস</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">লগআউট</a></li>
+      </ul>
+    </div>
+  </div>
+</header>
+

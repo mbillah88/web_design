@@ -1,0 +1,24 @@
+{% extends 'accounts/base.html' %}
+{% load custom_tags %}
+{% load static %}
+{% block title %}Add Test Category{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2 class="mb-3">➕ Add Test Category</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}
+          <div class="text-danger">{{ field.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">💾 Save</button>
+    <a href="{% url 'diagnostics:test_category_list' %}" class="btn btn-secondary">Back</a>
+  </form>
+</div>
+{% endblock %}

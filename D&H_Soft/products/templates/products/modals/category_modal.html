@@ -1,0 +1,54 @@
+<form id="categoryForm" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <input type="hidden" name="category_id" id="categoryId">
+
+  <div class="mb-2">
+    <label>নাম</label>
+    <input type="text" name="name" id="categoryName" class="form-control form-control-sm" required>
+  </div>
+
+  <div class="mb-2">
+    <label>প্যারেন্ট ক্যাটাগরি</label>
+    <select name="parent" id="categoryParent" class="form-select form-select-sm">
+      <option value="">-- নেই --</option>
+      {% for cat in categories %}
+        <option value="{{ cat.id }}">{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="mb-2">
+    <label>বর্ণনা</label>
+    <textarea name="description" id="categoryDescription" class="form-control form-control-sm" rows="2"></textarea>
+  </div>
+
+  <div class="mb-2">
+    <label>আইকন (icon)</label>
+    <input type="file" name="icon" id="categoryIcon" class="form-control form-control-sm" accept="image/*">
+    <div class="mt-2">
+      <img id="iconPreview" src="#" alt="Icon Preview" class="img-thumbnail d-none" style="max-height: 80px;">
+    </div>
+  </div>
+
+  <div class="mb-2">
+    <label>ব্যানার (banner)</label>
+    <input type="file" name="banner" id="categoryBanner" class="form-control form-control-sm" accept="image/*">
+    <div class="mt-2">
+      <img id="bannerPreview" src="#" alt="Banner Preview" class="img-thumbnail d-none" style="max-height: 120px;">
+    </div>
+  </div>
+
+  <div class="mb-2">
+    <label>সক্রিয়</label>
+    <select name="is_active" id="categoryActive" class="form-select form-select-sm">
+      <option value="true">✅ হ্যাঁ</option>
+      <option value="false">❌ না</option>
+    </select>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2 mt-3">
+    <button type="submit" class="btn btn-primary btn-sm px-4">💾 সংরক্ষণ</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm px-4" onclick="clearCategoryForm()">🧹 ক্লিয়ার</button>
+    <button type="button" class="btn btn-danger btn-sm px-4 d-none" id="deleteCategoryBtn">🗑️ ডিলিট</button>
+  </div>
+</form>

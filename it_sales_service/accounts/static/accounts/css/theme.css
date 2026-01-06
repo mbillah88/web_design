@@ -1,0 +1,135 @@
+:root {
+  --bg-main: #ffffff;
+  --text-main: #212529;
+  --bg-sidebar: #f8f9fa;
+  --text-sidebar: #212529;
+  --bg-header: #ffffff;
+}
+
+[data-theme="dark"] {
+  --bg-main: #32383e;
+  --text-main: #f8f9fa;
+  --bg-sidebar: #32383e;
+  --text-sidebar: #f8f9fa;
+  --bg-header: #32383e;
+}
+
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'SolaimanLipi', sans-serif;
+  }
+  .sidebar {
+    min-height: 100vh;
+    transition: transform 0.3s ease-in-out;
+    z-index: 1000;
+    background-color: var(--bg-sidebar);
+    color: var(--text-sidebar);
+  }
+
+  .sidebar.collapsed {
+    transform: translateX(-100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 240px;
+  }
+
+
+  .sidebar .nav-link {
+    color: var(--text-sidebar);
+    transition: background-color 0.2s ease;
+  }
+
+  .sidebar .nav-link:hover {
+    background-color: var(--bg-sidebar-hover);
+    border-radius: 4px;
+  }
+
+  .sidebar .nav-link.active {
+    background-color: var(--bg-sidebar-active);
+    color: var(--text-sidebar-active) !important;
+    font-weight: bold;
+    border-radius: 4px;
+  }
+
+  .sidebar .accordion-button {
+    background-color: var(--bg-sidebar);
+    color: var(--text-sidebar);
+  }
+
+  .sidebar .accordion-button:hover {
+    background-color: var(--bg-sidebar-hover);
+  }
+
+  @media (max-width: 768px) {
+     .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 240px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1050;
+      }
+
+    .sidebar.show {
+      transform: translateX(0);
+    }
+
+    #mainContent {
+      padding-left: 0 !important;
+      width: 100%;
+    }
+  }
+.sidebar.mini {
+  width: 70px;
+}
+
+.sidebar.mini .sidebar-text {
+  display: none;
+}
+
+.sidebar.mini:hover {
+  width: 240px;
+}
+
+.sidebar.mini:hover .sidebar-text {
+  display: inline;
+}
+
+.breadcrumb-item a {
+  color: var(--text-main);
+}
+
+.breadcrumb-item.active {
+  font-weight: bold;
+  color: #c1c3c5;
+}
+
+.collapsed-sidebar .nav-link {
+  justify-content: center;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.collapsed-sidebar .sidebar-text {
+  display: none;
+}
+
+.collapsed-sidebar .accordion-button::after {
+  display: none;
+}
+
+.collapsed-sidebar .accordion-button {
+  padding-left: 0.75rem;
+}
+
+.collapsed-sidebar .sidebar-title {
+  display: none;
+}
+
+.collapsed-sidebar .nav-item {
+  list-style: none; /* ✅ Bullet fix */
+}

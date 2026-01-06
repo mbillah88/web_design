@@ -1,0 +1,57 @@
+{% load static %}
+<header class="navbar navbar-light bg-white border-bottom px-3 d-flex justify-content-between align-items-center">
+  <!-- ✅ Mobile Sidebar Toggle -->
+  <button id="mobileSidebarToggle" class="btn btn-outline-secondary d-md-none">
+    ☰
+  </button>
+
+  <!-- ✅ Brand Title -->
+  <span class="fw-bold text-primary fs-5">ITC Admin Panel</span>
+  <!-- ✅ Backdrop for mobile sidebar -->
+  <div id="sidebarBackdrop"></div>    
+
+  <!-- ✅ Right-side Icons -->
+  <div class="d-flex align-items-center gap-3">
+    <!-- 🔔 Notification -->
+    <button class="btn btn-sm btn-light position-relative">
+      <i class="bi bi-bell fs-5 text-secondary"></i>
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+        3
+      </span>
+    </button>
+    <!-- ⚙️ Settings -->
+    <button class="btn btn-sm btn-light">
+      <i class="bi bi-gear fs-5 text-secondary"></i>
+    </button>
+    <!-- 👤 Profile Dropdown -->
+    <div class="dropdown">
+      <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+        {% if user_profile_image %}
+          <img src="{{ user_profile_image }}" class="rounded-circle me-2" style="width:36px; height:36px;">
+        {% else %}
+          <img src="{% static 'profile_images/default_profile.png' %}" class="rounded-circle me-2" style="width:36px; height:36px;">
+        {% endif %}
+        <span>{{ request.user.username }}</span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+          {% if request.user.id %}
+            <a href="{% url 'accounts:profile_view' user_id=request.user.id %}" class="dropdown-item btn-outline-light">
+              🙍‍♂️ আমার প্রোফাইল
+            </a>
+          {% endif %}
+        </li>
+        <li>
+          {% if request.user.id %}
+            <!-- ✅ AJAX modal loader trigger -->
+            <a href="#" class="dropdown-item text-danger" id="passwordResetBtn">
+              🔐 পাসওয়ার্ড পরিবর্তন
+            </a>
+          {% endif %}
+        </li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">🚪 লগআউট</a></li>
+      </ul>
+    </div>
+  </div>
+</header>

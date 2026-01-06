@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',  # Custom app for user accounts 
+    'product_catalog',  # Custom app for product catalog
     
 ]
 

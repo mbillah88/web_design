@@ -1,0 +1,71 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %}Warranty List{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+  <div class="d-flex justify-content-between mb-2">
+    <h5 class="fw-bold">Warranty List</h5>
+    {% if can_add %}
+      <button class="btn btn-primary btn-sm" onclick="openWarrantyModal()">➕ Add New Warranty</button>
+    {% endif %}
+  </div>
+
+  <table class="table table-bordered table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr class="text-center">
+        <th>#</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Duration</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="warrantyTable">
+      {% for warranty in warranties %}
+        <tr id="warrantyRow{{ warranty.id }}">
+          <td class="text-center">{{ forloop.counter }}</td>
+          <td>{{ warranty.name }}</td>
+          <td>{{ warranty.get_type_display }}</td>
+          <td>{{ warranty.duration_days }} days</td>
+          <td class="text-center">
+            <span class="badge {{ warranty.is_active|yesno:'bg-success,bg-secondary' }}">
+              {{ warranty.is_active|yesno:'Active,Inactive' }}
+            </span>
+          </td>
+          <td class="text-center">
+            {% if can_edit %}
+              <button type="button"
+                      class="btn btn-warning btn-sm edit-warranty-btn"
+                      data-id="{{ warranty.id }}">
+                ✏️
+              </button>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="6" class="text-center text-muted">❌ No warranties found</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- ✅ Toast Container -->
+  <div id="toastContainer" class="position-fixed top-0 end-0 p-3 z-3"></div>
+
+  <!-- ✅ Warranty Modal -->
+  <div class="modal fade" id="warrantyModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        {% include 'products/modals/warranty_modal.html' %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'products/js/warranty.js' %}"></script>
+{% endblock %}

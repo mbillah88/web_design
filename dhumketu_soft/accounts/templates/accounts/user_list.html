@@ -1,0 +1,30 @@
+{% extends 'base_software.html' %}
+{% block content %}
+<h4>User List</h4>
+<button class="btn btn-primary mb-2" data-bs-toggle="modal" data-bs-target="#userModal"
+        data-url="{% url 'user_add' %}" onclick="loadUserForm(this.getAttribute('data-url'))">
+  Add User
+</button>
+
+
+<div id="userTable">
+<table class="table table-bordered">
+  <thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.role.name }}</td>
+      <td>
+        <a href="{% url 'user_view' user.id %}" class="btn btn-info btn-sm">View</a>
+        <a href="{% url 'user_edit' user.id %}" class="btn btn-warning btn-sm">Edit</a>
+        <a href="{% url 'user_delete' user.id %}" class="btn btn-danger btn-sm">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% endblock %}

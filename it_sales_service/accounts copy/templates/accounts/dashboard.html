@@ -1,0 +1,61 @@
+{% extends 'accounts/base.html' %}
+{% block title %}{{ role }} ড্যাশবোর্ড{% endblock %}
+{% block content %}
+<div class="container-fluid">
+  <h4 class="mb-4">{{ role }} ড্যাশবোর্ড</h4>
+
+  {% if role == 'Admin' %}
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">মোট ইউজার</h5>
+            <p class="card-text display-6">{{ user_count }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">মোট রোল</h5>
+            <p class="card-text display-6">{{ role_count }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">সক্রিয় মডিউল</h5>
+            <p class="card-text display-6">{{ module_count }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">আমার প্রোফাইল</h5>
+            <p class="card-text">
+              <strong>{{ user.get_full_name }}</strong><br>
+              {{ user.email }}
+            </p>
+            <a href="{% url 'profile_view' request.user.id %}" class="btn btn-outline-primary">প্রোফাইল দেখুন</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">আমার মডিউল</h5>
+            <ul class="list-group">
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

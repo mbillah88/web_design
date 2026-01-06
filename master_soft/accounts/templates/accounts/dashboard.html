@@ -1,0 +1,28 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+
+<div class="container py-4">
+  <h4 class="fw-bold text-primary">{{ page_title }}</h4>
+  <p class="text-muted">{{ welcome_text }}</p>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="card border-success">
+        <div class="card-body">
+          <h5 class="card-title">🔐 আপনার রোল</h5>
+          <p class="card-text">{{ role.name }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-info">
+        <div class="card-body">
+          <h5 class="card-title">👤 ইউজার</h5>
+          <p class="card-text">{{ user.get_full_name }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

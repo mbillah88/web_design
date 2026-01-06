@@ -1,0 +1,56 @@
+{% extends 'accounts/base.html' %}
+{% load custom_tags %}
+{% block content %}
+
+{% can_create 'role_list' as can_add %}
+{% can_edit 'role_list' as can_edit_role %}
+{% can_delete 'role_list' as can_delete_role %}
+
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-primary">{{ page_title }}</h4>
+    {% if can_add %}
+      <a href="{% url 'role_create' %}" class="btn btn-primary">➕ নতুন রোল</a>
+    {% endif %}
+  </div>
+
+  <table class="table table-bordered table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>নাম</th>
+        <th>সুরক্ষিত?</th>
+        <th>অ্যাকশন</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for role in roles %}
+      <tr>
+        <td>{{ role.name }}</td>
+        <td>
+          {% if role.is_protected %}
+            <span class="text-muted">🔒</span>
+          {% else %}
+            <span class="text-success">✅</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if can_edit_role %}
+            <a href="{% url 'role_edit' role.id %}" class="btn btn-sm btn-warning">✏️ সম্পাদনা</a>
+          {% endif %}
+          {% if can_delete_role and not role.is_protected %}
+            <form method="POST" action="{% url 'role_delete' role.id %}" class="d-inline">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-danger"
+                      onclick="return confirm('আপনি কি {{ role.name }} রোলটি মুছে ফেলতে চান?')">
+                🗑️ মুছে ফেলুন
+              </button>
+            </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+<!-- accounts/modals/module_group_list.html -->
+<div class="modal fade" id="groupManagerModal" tabindex="-1" aria-labelledby="groupManagerLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="groupForm" method="POST">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="groupManagerLabel">🧩 মডিউল গ্রুপ ম্যানেজ</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <label class="form-label">গ্রুপের নাম</label>
+          <input type="text" name="group_name" class="form-control" required>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">💾 সংরক্ষণ করুন</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ বাতিল</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  const groupForm = document.getElementById('groupForm');
+    groupForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      fetch("{% url 'create_module_group_ajax' %}", {
+        method: 'POST',
+        headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showToast('✅ গ্রুপ সফলভাবে তৈরি হয়েছে');
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          showToast('❌ গ্রুপ তৈরি ব্যর্থ হয়েছে', 'danger');
+        }
+      })
+      .catch(() => showToast('❌ সংযোগ ব্যর্থ হয়েছে', 'danger'));
+    });
+
+</script>

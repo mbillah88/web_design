@@ -1,0 +1,37 @@
+<form id="unitForm" method="POST">
+  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+  <input type="hidden" id="unitId">
+
+  <div class="mb-2">
+    <label for="unitName">নাম</label>
+    <input type="text" name="name" id="unitName" class="form-control form-control-sm" required>
+  </div>
+
+  <div class="mb-2">
+    <label for="unitSymbol">সিম্বল</label>
+    <input type="text" name="symbol" id="unitSymbol" class="form-control form-control-sm" placeholder="e.g. pcs, bx">
+  </div>
+
+  <div class="mb-2">
+    <label for="unitFactor">রূপান্তর হার</label>
+    <input type="number" step="0.0001" name="conversion_factor" id="unitFactor" class="form-control form-control-sm" value="1.0000">
+  </div>
+
+  <div class="mb-2">
+    <label for="unitActive">সক্রিয়</label>
+    <select name="is_active" id="unitActive" class="form-select form-select-sm">
+      <option value="true">✅ হ্যাঁ</option>
+      <option value="false">❌ না</option>
+    </select>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2 mt-3">
+    {% if can_add %}
+    <button type="submit" class="btn btn-primary btn-sm px-4">💾 সংরক্ষণ</button>
+    {% endif %}
+    <button type="button" class="btn btn-outline-secondary btn-sm px-4" onclick="clearUnitForm()">🧹 ক্লিয়ার</button>
+    {% if can_delete %}
+    <button type="button" class="btn btn-danger btn-sm px-4 d-none" id="deleteUnitBtn">🗑️ ডিলিট</button>
+    {% endif %}
+  </div>
+</form>

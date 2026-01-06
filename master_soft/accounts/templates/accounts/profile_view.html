@@ -1,0 +1,451 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% load custom_tags %}
+{% block content %}
+
+{% can_create 'accounts:add_department' as can_add_department %}
+{% can_edit 'accounts:edit_department' as can_edit_department %}
+{% can_delete 'accounts:delete_department' as can_delete_department %}
+<div class="container py-4">
+  <!-- 🔘 Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+    <div>
+      <h3 class="fw-bold mb-0">🙍‍♂️ {{ target_user.get_full_name }} প্রোফাইল</h3>
+      <small class="text-muted">আপনার ব্যক্তিগত ও অফিসিয়াল তথ্য</small>
+    </div>
+    
+    <a href="{% url 'accounts:dashboard' %}" class="btn btn-outline-secondary btn-sm shadow-sm">
+      🔙 ফিরে যান
+    </a>   
+    {% if can_edit %}
+      <button class="btn btn-warning" data-bs-toggle="collapse" data-bs-target="#editForm">
+        ✏️ তথ্য সম্পাদনা করুন
+      </button>
+    {% endif %}
+
+  </div>
+
+  <div id="profileViewSection">
+    <!-- 👁️ Profile Overview -->
+    <div class="row g-4">
+      <div class="col-lg-4 text-center">
+        {% if profile.profile_image %}
+          <img src="{{ profile.profile_image.url }}" class="img-fluid rounded-circle">
+        {% else %}
+          <img src="{% static 'profile_images/default_profile.png' %}" class="img-fluid rounded-circle">
+        {% endif %}
+
+        <h5 class="mt-3 mb-0">{{ profile.first_name }} {{ profile.last_name }}</h5>
+        <small class="text-muted">{{ profile.designation|default:"পদবি নেই" }}</small>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-light fw-semibold">📋 বিস্তারিত তথ্য</div>
+          <div class="card-body px-4 py-3">
+            <div class="row g-4">
+              <!-- 🔹 জন্ম তারিখ ও বিভাগ -->
+              <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-calendar-event text-primary fs-5"></i>
+                  <div>
+                    <div class="fw-semibold">জন্ম তারিখ</div>
+                    <div class="text-muted">{{ profile.date_of_birth|date:"d F, Y"|default:"--" }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-diagram-3 text-success fs-5"></i>
+                  <div>
+                    <div class="fw-semibold">বিভাগ</div>
+                    <div class="text-muted">{% if profile.department %}{{ profile.department.name }}{% else %}--{% endif %}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 🔹 ফোন ও মোবাইল -->
+              <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-telephone text-info fs-5"></i>
+                  <div>
+                    <div class="fw-semibold">ফোন নম্বর</div>
+                    <div class="text-muted">{{ profile.phone_number|default:"--" }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-phone text-warning fs-5"></i>
+                  <div>
+                    <div class="fw-semibold">মোবাইল নম্বর</div>
+                    <div class="text-muted">{{ profile.mobile_number|default:"--" }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 🔹 ঠিকানা -->
+              <div class="col-md-12">
+                <div class="d-flex align-items-start gap-2">
+                  <i class="bi bi-geo-alt text-danger fs-5 mt-1"></i>
+                  <div>
+                    <div class="fw-semibold">ঠিকানা</div>
+                    <div class="text-muted">{{ profile.address|default:"--" }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 🔹 জরুরি যোগাযোগ -->
+              <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-person-lines-fill text-secondary fs-5"></i>
+                  <div>
+                    <div class="fw-semibold">জরুরি যোগাযোগ</div>
+                    <div class="text-muted">{{ profile.emergency_contact|default:"--" }}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-telephone-forward text-secondary fs-5"></i>
+                  <div>
+                    <div class="fw-semibold">জরুরি ফোন</div>
+                    <div class="text-muted">{{ profile.emergency_phone|default:"--" }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- ✏️ Edit Form (Collapsible) -->
+    <div class="collapse mt-5" id="editForm">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light fw-semibold">✏️ তথ্য সম্পাদনা করুন</div>
+        <div class="container py-4">
+        {% if profile.user %}
+          <form method="POST" enctype="multipart/form-data"
+                action="{% url 'accounts:profile_view' user_id=target_user.id %}">
+        {% else %}
+          <div class="alert alert-danger">⚠️ ইউজার তথ্য পাওয়া যায়নি</div>
+        {% endif %}
+
+              {% csrf_token %}
+
+              <!-- 📋 ব্যক্তিগত তথ্য -->
+              <div class="card mb-4 shadow-sm border-0">
+                <div class="card-header bg-light fw-semibold">📋 ব্যক্তিগত তথ্য</div>
+                <div class="card-body row g-4">
+                  <div class="col-md-6">
+                    <label class="form-label">নামের প্রথম অংশ</label>
+                    {{ form.first_name }}
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">নামের শেষ অংশ</label>
+                    {{ form.last_name }}
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">জন্ম তারিখ</label>
+                    {{ form.date_of_birth }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- 📞 যোগাযোগ -->
+              <div class="card mb-4 shadow-sm border-0">
+                <div class="card-header bg-light fw-semibold">📞 যোগাযোগ</div>
+                <div class="card-body row g-4">
+                  <div class="col-md-6">
+                    <label class="form-label">ফোন নম্বর</label>
+                    {{ form.phone_number }}
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">মোবাইল নম্বর</label>
+                    {{ form.mobile_number }}
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">ঠিকানা</label>
+                    {{ form.address }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- 🚨 জরুরি তথ্য -->
+              <div class="card mb-4 shadow-sm border-0">
+                <div class="card-header bg-light fw-semibold">🚨 জরুরি তথ্য</div>
+                <div class="card-body row g-4">
+                  <div class="col-md-6">
+                    <label class="form-label">জরুরি যোগাযোগ</label>
+                    {{ form.emergency_contact }}
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">জরুরি ফোন</label>
+                    {{ form.emergency_phone }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- 🏢 অফিসিয়াল তথ্য -->
+              <div class="card mb-4 shadow-sm border-0">
+                <div class="card-header bg-light fw-semibold">🏢 অফিসিয়াল তথ্য</div>
+                <div class="card-body row g-4">
+                  <div class="col-md-6">
+                    <label class="form-label d-flex justify-content-between align-items-center">
+                      <span>বিভাগ</span>
+                      {% if can_add_department %}
+                        <button type="button" class="btn btn-sm btn-outline-success" data-bs-toggle="modal" data-bs-target="#departmentModal">
+                          ➕ বিভাগ যোগ করুন
+                        </button>
+                      {% endif %}
+                    </label>
+                    {{ form.department }}
+
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">পদবি</label>
+                    {{ form.designation }}
+                  </div>
+                </div>
+              </div>
+
+
+              <!-- 🖼️ প্রোফাইল ছবি -->
+              <div class="card mb-4 shadow-sm border-0">
+                <div class="card-header bg-light fw-semibold">🖼️ প্রোফাইল ছবি</div>
+                <div class="card-body">
+                  <label class="form-label">ছবি আপলোড করুন</label>
+                  {{ form.profile_image }}
+                </div>
+              </div>
+
+              <!-- ✅ Submit Button -->
+              <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-primary px-4 shadow-sm">💾 সংরক্ষণ করুন</button>
+              </div>
+          </form>
+        </div>
+    </div>
+  </div>
+</div>
+{% include 'accounts/modals/add_department.html' %}
+
+<!-- ✅ Toast Container -->
+<div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
+
+<script>
+  document.getElementById('departmentForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const form = e.target;
+    const deptId = document.getElementById("deptId").value;
+    const csrfToken = getCSRF();
+    const data = new URLSearchParams(new FormData(form));
+
+    const url = deptId
+      ? `/accounts/departments/edit/${deptId}/`
+      : `/accounts/departments/add/`;
+
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrfToken,
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: data
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        const dept = data.department;
+        const action = deptId ? "আপডেট" : "যোগ";
+        showToast(`✅ বিভাগ "${dept.name}" ${action} হয়েছে`);
+
+        updateDepartmentDropdown(dept);
+        refreshDepartmentTable();
+        clearDepartmentForm();
+        bootstrap.Modal.getInstance(document.getElementById("departmentModal")).hide();
+      } else {
+        const errorMsg = typeof data.error === 'string'
+          ? data.error
+          : Object.values(data.error).flat().join(', ');
+        showToast(`❌ ${errorMsg}`, "danger");
+      }
+    })
+    .catch(err => showToast(`❌ সার্ভার সমস্যা: ${err}`, "danger"));
+  });
+
+  document.querySelectorAll('.edit-dept-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const dept = JSON.parse(this.dataset.dept);
+      document.getElementById('deptId').value = dept.id;
+      document.getElementById('deptName').value = dept.name;
+      document.getElementById('deptCode').value = dept.code;
+      document.getElementById('deptDesc').value = dept.description || '';
+      document.getElementById('deleteDeptBtn').classList.remove("d-none");
+    });
+  });
+  document.querySelectorAll('.delete-dept-btn').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const deptId = this.dataset.id;
+    const deptName = this.dataset.name;
+
+    if (!confirm(`আপনি কি "${deptName}" বিভাগটি মুছে ফেলতে চান?`)) return;
+
+    fetch(`/accounts/departments/delete/${deptId}/`, {
+      method: "POST",
+      headers: { "X-CSRFToken": getCSRF() }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showToast(`🗑️ বিভাগ "${deptName}" মুছে ফেলা হয়েছে`);
+
+        // ✅ Remove from dropdown
+        const dropdown = document.getElementById("id_department");
+        const option = dropdown.querySelector(`option[value="${deptId}"]`);
+        if (option) option.remove();
+
+        // ✅ Refresh table
+        refreshDepartmentTable();
+
+        // ✅ Reset modal form
+        clearDepartmentForm();
+
+        // ✅ Close modal
+        bootstrap.Modal.getInstance(document.getElementById("departmentModal")).hide();
+      } else {
+        const errorMsg = typeof data.error === 'string'
+          ? data.error
+          : Object.values(data.error).flat().join(', ');
+        showToast(`❌ ${errorMsg}`, "danger");
+      }
+    })
+    .catch(err => showToast(`❌ সার্ভার সমস্যা: ${err}`, "danger"));
+  });
+});
+  function updateDepartmentDropdown(dept) {
+    const select = document.getElementById("id_department");
+    let existing = select.querySelector(`option[value="${dept.id}"]`);
+    if (existing) {
+      existing.textContent = `${dept.name} (${dept.code})`;
+      existing.selected = true;
+    } else {
+      const option = document.createElement("option");
+      option.value = dept.id;
+      option.textContent = `${dept.name} (${dept.code})`;
+      option.selected = true;
+      select.appendChild(option);
+    }
+  }
+
+  function getCSRF() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+  } 
+  function refreshDepartmentTable() {
+  fetch("/accounts/departments/list-json/")
+    .then(res => res.json())
+    .then(data => {
+      const tbody = document.getElementById("departmentTableBody");
+      tbody.innerHTML = "";
+
+      if (data.departments.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-muted">কোনো বিভাগ পাওয়া যায়নি</td></tr>`;
+        return;
+      }
+
+      data.departments.forEach(dept => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${dept.name}</td>
+          <td><code>${dept.code}</code></td>
+          <td>${dept.description || '--'}</td>
+          <td class="text-center">
+            <button class="btn btn-sm btn-warning edit-dept-btn"
+                    data-dept='${JSON.stringify(dept)}'>✏️</button>
+            <button class="btn btn-sm btn-danger delete-dept-btn"
+                    data-id="${dept.id}" data-name="${dept.name}">🗑️</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      attachEditButtons();
+      attachDeleteButtons();
+    })
+    .catch(err => {
+      showToast(`❌ বিভাগ তালিকা আনতে সমস্যা: ${err}`, "danger");
+    });
+}
+function attachEditButtons() {
+  document.querySelectorAll('.edit-dept-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const dept = JSON.parse(this.dataset.dept);
+      document.getElementById("deptId").value = dept.id;
+      document.getElementById("deptName").value = dept.name;
+      document.getElementById("deptCode").value = dept.code;
+      document.getElementById("deptDesc").value = dept.description || '';
+      document.getElementById("deleteDeptBtn").classList.remove("d-none");
+      bootstrap.Modal.getOrCreateInstance(document.getElementById("departmentModal")).show();
+    });
+  });
+}
+function attachDeleteButtons() {
+  document.querySelectorAll('.delete-dept-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const deptId = this.dataset.id;
+      const deptName = this.dataset.name;
+
+      if (!confirm(`আপনি কি "${deptName}" বিভাগটি মুছে ফেলতে চান?`)) return;
+
+      fetch(`/accounts/departments/delete/${deptId}/`, {
+        method: "POST",
+        headers: { "X-CSRFToken": getCSRF() }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showToast(`🗑️ বিভাগ "${deptName}" মুছে ফেলা হয়েছে`);
+          refreshDepartmentTable();
+          clearDepartmentForm();
+          bootstrap.Modal.getInstance(document.getElementById("departmentModal")).hide();
+        } else {
+          const errorMsg = typeof data.error === 'string'
+            ? data.error
+            : Object.values(data.error).flat().join(', ');
+          showToast(`❌ ${errorMsg}`, "danger");
+        }
+      });
+    });
+  });
+}
+
+  function clearDepartmentForm() {
+    document.getElementById('deptId').value = '';
+    document.getElementById('deptName').value = '';
+    document.getElementById('deptCode').value = '';
+    document.getElementById('deptDesc').value = '';
+    document.getElementById('deleteDeptBtn').classList.add("d-none");
+  }
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-bg-${type} border-0 show mb-2`;
+    toast.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                onclick="this.parentElement.parentElement.remove()"></button>
+      </div>
+    `;
+    document.getElementById('toastContainer').appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+  }
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ITC Admin Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    html, body {
+      overflow-x: hidden;
+    }
+    .sidebar {
+      width: 250px;
+      transition: all 0.3s ease;
+    }
+    .collapsed-sidebar {
+      width: 70px;
+    }
+    .collapsed-sidebar .sidebar-text,
+    .collapsed-sidebar .sidebar-title {
+      display: none;
+    }
+    .collapsed-sidebar .nav-link,
+    .collapsed-sidebar .accordion-button {
+      justify-content: center;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
+
+    .collapsed-sidebar .nav-link i,
+    .collapsed-sidebar .accordion-button i {
+      font-size: 1.2rem;
+    }
+
+    .collapsed-sidebar .accordion-button::after {
+      display: none;
+    }
+    
+    li.nav-item.w-100 {
+      list-style-type: none;
+    }
+
+@media (max-width: 767px) {
+  .sidebar {
+    position: fixed;
+    top: 56px; /* header height */
+    left: 0;
+    height: calc(100vh - 56px);
+    background-color: #f8f9fa;
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+}
+
+/* Mobile hidden sidebar */
+@media (max-width: 767px) {
+  .sidebar {
+    position: fixed;
+    top: 56px; /* header height */
+    left: 0;
+    height: calc(100vh - 56px);
+    background-color: #f8f9fa;
+    z-index: 1050;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.show {
+    transform: translateX(0);
+  }
+}
+  </style>
+</head>
+<body>
+
+<!-- ✅ Header -->
+<header class="navbar navbar-light bg-white border-bottom px-3 d-flex justify-content-between align-items-center">
+  <button id="mobileSidebarToggle" class="btn btn-outline-secondary d-md-none">
+    ☰
+  </button>
+  <span class="fw-bold text-primary fs-5">ITC Admin Panel</span>
+  <div class="d-flex align-items-center gap-3">
+    <i class="bi bi-bell fs-5 text-secondary"></i>
+    <i class="bi bi-gear fs-5 text-secondary"></i>
+    <img src="https://via.placeholder.com/32" class="rounded-circle" alt="Profile">
+  </div>
+</header>
+
+<!-- ✅ Layout -->
+<div class="container-fluid">
+  <div class="row flex-nowrap">
+    <!-- ✅ Sidebar -->
+    <aside id="sidebar" class="sidebar bg-light border-end d-flex flex-column min-vh-100 px-2">
+      <div class="p-3">
+        <!-- Desktop Toggle -->
+        <button id="sidebarToggle" class="btn btn-sm btn-outline-secondary w-100 mb-3 d-none d-md-block">
+          <i class="bi bi-layout-sidebar-inset"></i> <span class="sidebar-text">সাইডবার টোগল</span>
+        </button>
+
+        <span class="fs-6 fw-bold text-primary sidebar-title">🔧 প্রশাসন</span>
+        <hr class="w-100">
+
+        <!-- ✅ Accordion Menu -->
+        <div class="accordion" id="sidebarAccordion">
+          <!-- Example parent-child structure -->
+           {% for parent in parents %}
+              {% with children|get_item:parent.id as child_list %}       
+              <div class="accordion-item border-0">
+                {% if child_list %}
+                <h2 class="accordion-header" id="heading{{ parent.id }}">
+                  <button class="accordion-button collapsed bg-light text-dark rounded-0 shadow-none d-flex align-items-center"
+                          type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ parent.id }}"
+                          aria-expanded="false" aria-controls="collapse{{ parent.id }}">
+                    <i class="{{ parent.icon }} me-2 text-secondary"></i>
+                    <span class="sidebar-text">{{ parent.name }}</span>
+                  </button>
+                </h2>
+                <div id="collapse{{ parent.id }}" class="accordion-collapse collapse" aria-labelledby="headingAccounts" data-bs-parent="#sidebarAccordion">
+                  <div class="accordion-body px-0 py-2">
+                    <ul class="nav flex-column ms-3">
+                      <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center text-dark px-3 py-2 rounded" href="#">
+                          <i class="bi bi-list-ul me-2"></i>
+                          <span class="sidebar-text">Module List</span>
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link d-flex align-items-center text-dark px-3 py-2 rounded" href="#">
+                          <i class="bi bi-plus-circle me-2"></i>
+                          <span class="sidebar-text">Add Module</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+          <!-- Single module -->
+          <li class="nav-item w-100">
+            <a class="nav-link d-flex align-items-center text-dark px-3 py-2 rounded active" href="#">
+              <i class="bi bi-speedometer2 me-2"></i>
+              <span class="sidebar-text">ড্যাশবোর্ড</span>
+            </a>
+          </li>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ✅ Main Content -->
+    <main class="col py-4 px-3">
+      <h2 class="mb-4">স্বাগতম, ITC ভাই 👋</h2>
+      <p>এখানে আপনার ড্যাশবোর্ড, মডিউল, রোল, পারমিশন এবং প্রোফাইল সংক্রান্ত সবকিছু থাকবে।</p>
+    </main>
+  </div>
+</div>
+
+<!-- ✅ JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const mobileToggle = document.getElementById('mobileSidebarToggle');
+
+  // Desktop collapse persistence
+  if (window.innerWidth >= 768 && localStorage.getItem('sidebarCollapsed') === 'true') {
+    sidebar.classList.add('collapsed-sidebar');
+  }
+
+
+sidebarToggle?.addEventListener('click', function () {
+  if (window.innerWidth >= 768) {
+    sidebar.classList.toggle('collapsed-sidebar');
+    localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed-sidebar'));
+    updateTooltips();
+  }
+});
+
+
+  // Mobile toggle
+  mobileToggle?.addEventListener('click', function () {
+    sidebar.classList.toggle('show');
+  });
+
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+    new bootstrap.Tooltip(el);
+  });
+
+  const isCollapsed = sidebar.classList.contains('collapsed-sidebar');
+  document.querySelectorAll('.nav-link').forEach(function (el) {
+    const tooltip = bootstrap.Tooltip.getInstance(el);
+    if (isCollapsed) {
+      if (!tooltip) {
+        const label = el.querySelector('.sidebar-text')?.innerText || '';
+        el.setAttribute('title', label);
+        el.setAttribute('data-bs-toggle', 'tooltip');
+        new bootstrap.Tooltip(el);
+      }
+    } else {
+      if (tooltip) {
+        tooltip.dispose();
+        el.removeAttribute('title');
+        el.removeAttribute('data-bs-toggle');
+      }
+    }
+  });
+  function updateTooltips() {
+  const isCollapsed = sidebar.classList.contains('collapsed-sidebar');
+  document.querySelectorAll('.nav-link').forEach(function (el) {
+    const tooltip = bootstrap.Tooltip.getInstance(el);
+    if (isCollapsed) {
+      if (!tooltip) {
+        const label = el.querySelector('.sidebar-text')?.innerText || '';
+        el.setAttribute('title', label);
+        el.setAttribute('data-bs-toggle', 'tooltip');
+        new bootstrap.Tooltip(el);
+      }
+    } else {
+      if (tooltip) {
+        tooltip.dispose();
+        el.removeAttribute('title');
+        el.removeAttribute('data-bs-toggle');
+      }
+    }
+  });
+}
+
+</script>
+
+</body>
+</html>

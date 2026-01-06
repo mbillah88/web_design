@@ -1,0 +1,189 @@
+{% load static %}
+<style>
+  @media print {
+    @page {
+      size: 7in 8.5in;
+      margin: 0.5in;
+    }
+    body {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      margin: 0;
+    }
+    .no-print {
+      display: none !important;
+    }
+  }
+
+  body {
+    background: #f8f9fa;
+  }
+
+  .invoice-container {
+    width: 7in;
+    height: 8.5in;
+    margin: auto;
+    padding: 20px;
+    font-family: 'Courier New', monospace;
+    background: white;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    color: #000;
+  }
+
+  .invoice-container h5,
+  .invoice-container h6 {
+    margin: 0;
+    padding: 0;
+  }
+
+  .invoice-container table {
+    font-size: 12px;
+  }
+
+  .invoice-container .table th,
+  .invoice-container .table td {
+    padding: 4px 6px;
+    vertical-align: middle;
+  }
+
+  .invoice-container .table-sm th,
+  .invoice-container .table-sm td {
+    padding: 3px 5px;
+  }
+
+  .invoice-container hr {
+    margin: 10px 0;
+    border-top: 1px dashed #999;
+  }
+
+  .invoice-container .text-end {
+    text-align: right;
+  }
+
+  .invoice-container .text-center {
+    text-align: center;
+  }
+
+  .invoice-container .text-muted {
+    color: #6c757d;
+  }
+
+  .invoice-container .totals-table td {
+    padding: 2px 6px;
+  }
+
+  .invoice-container .signature-line {
+    margin-top: 40px;
+  }
+
+  .invoice-container .signature-line p {
+    margin-bottom: 0;
+  }
+
+  .invoice-container .footer-note {
+    font-size: 10px;
+    margin-top: 20px;
+    color: #6c757d;
+  }
+</style>
+
+<div class="text-end mb-2 no-print">
+  <button onclick="window.print()" class="btn btn-sm btn-primary">প্রিন্ট করুন</button><br>
+  <small class="text-muted">প্রিন্ট করার সময় ব্রাউজারে “Headers and Footers” অপশনটি বন্ধ করুন</small>
+</div>
+
+<div class="invoice-container">
+  <!-- Header -->
+  <div class="text-center mb-3">
+    <img src="{% static 'profile_images/default_profile.png' %}" alt="Logo" height="60">
+    <h5 class="mt-2 mb-0">Human Care Hospital & Diagnostic Rangpur</h5>
+    <small class="text-muted">Dhap Kakoli Lane, Rangpur | www.humancarehdr.com</small><br>
+    <small class="text-muted">Phone: 0521 00000, 01768 000000 | Email: humancare.hrd@gmail.com</small>
+    <hr>
+    <h6 class="text-uppercase">{{ copy_type|title }} Copy</h6>
+  </div>
+
+  <!-- Invoice Info -->
+  <div class="row mb-2">
+    <div class="col-6">
+      <strong>Invoice No:</strong> {{ invoice.invoice_code }}<br>
+      <strong>Visit Code:</strong> {{ invoice.visit.visit_code }}<br>
+      <strong>Patient:</strong> {{ invoice.visit.patient.name }}<br>
+      <strong>Age/Gender:</strong> {{ invoice.visit.patient.age }} / {{ invoice.visit.patient.gender }}
+    </div>
+    <div class="col-6 text-end">
+      <strong>Invoice Date:</strong> {{ invoice.visit.visit_date|date:"d-m-Y h:i A" }}<br>
+      <strong>Consultant:</strong> {{ invoice.visit.consultant.name }}<br>
+      <strong>Referred By:</strong> {{ invoice.visit.referred_by.name|default:"—" }}
+    </div>
+  </div>
+
+  <!-- Advice Table -->
+  <table class="table table-bordered table-sm">
+    <thead class="table-light">
+      <tr>
+        <th class="text-center" style="width: 5%;">SL</th>
+        <th>Advice Name</th>
+        <th class="text-end" style="width: 20%;">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in invoice.visit.adviceentry_set.all %}
+        <tr>
+          <td class="text-center">{{ forloop.counter }}</td>
+          <td>{{ entry.group.name }}</td>
+          <td class="text-end">{{ entry.price_at_entry }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="3" class="text-center text-muted">No advice entries found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Totals -->
+  <table class="table table-borderless table-sm totals-table">
+    <tr>
+      <td class="text-end"><strong>Total:</strong></td>
+      <td class="text-end">{{ invoice.gross_amount }}</td>
+    </tr>
+    <tr>
+      <td class="text-end"><strong>Discount:</strong></td>
+      <td class="text-end">{{ invoice.discount }}</td>
+    </tr>
+    <tr>
+      <td class="text-end"><strong>Accessories:</strong></td>
+      <td class="text-end">{{ invoice.accessory_amount }}</td>
+    </tr>
+    <tr>
+      <td class="text-end"><strong>Net Total:</strong></td>
+      <td class="text-end">{{ invoice.net_amount }}</td>
+    </tr>
+    <tr>
+      <td class="text-end"><strong>Paid:</strong></td>
+      <td class="text-end">{{ invoice.paid_amount }}</td>
+    </tr>
+    <tr>
+      <td class="text-end"><strong>Due:</strong></td>
+      <td class="text-end">
+        {{ invoice.net_amount|floatformat:2|add:"-invoice.paid_amount"|floatformat:2 }}
+      </td>
+    </tr>
+  </table>
+
+  <!-- Footer -->
+  <div class="row signature-line">
+    <div class="col-6 text-center">
+      <p>__________________</p>
+      <small>Patient Signature</small>
+    </div>
+    <div class="col-6 text-center">
+      <p>__________________</p>
+      <small>Authorized Signature</small>
+    </div>
+  </div>
+
+  <div class="text-center footer-note">
+    Powered by: Dynamic ICT | Developed by: Dhumketu SOFT
+  </div>
+</div>

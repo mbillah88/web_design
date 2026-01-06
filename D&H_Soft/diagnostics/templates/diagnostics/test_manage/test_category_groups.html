@@ -1,0 +1,35 @@
+{% extends 'accounts/base.html' %}
+{% load custom_tags %}
+{% load static %}
+{% block title %}Add Test Category{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>📋 Test Groups under "{{ category.name }}"</h2>
+  <a href="{% url 'diagnostics:test_category_list' %}" class="btn btn-secondary mb-3">← Back to Categories</a>
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr><th>Name</th><th>Price</th><th>Discount</th></tr>
+    </thead>
+    <tbody>
+      {% for group in groups %}
+      <tr>
+        <td>{{ group.name }}</td>
+        <td>৳{{ group.price }}</td>
+        <td>
+          {% if group.discounted_price %}
+            ৳{{ group.discounted_price }}
+          {% elif group.percent_discount %}
+            {{ group.percent_discount }}%
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3">No groups found under this category.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

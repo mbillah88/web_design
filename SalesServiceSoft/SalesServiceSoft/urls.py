@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # Include the URLs from the accounts app
     path('accounts/', include('accounts.urls')),
+    path('products/', include('product_catalog.urls')),
     #path('dashboard/', include('dashboard.urls')),  # ✅ This is crucial
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,127 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block title %}Category List | {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+  <div class="d-flex justify-content-between mb-3">
+    <h4>📂 Category List</h4>
+    {% if can_add %}
+      <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#categoryModal"
+              onclick="clearCategoryForm()">➕ Add New Category</button>
+    {% endif %}
+  </div>
+
+  <table class="table table-bordered table-hover table-sm align-middle">
+    <thead class="table-light">
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Parent</th>
+        <th>Description</th>
+        <th>Active</th>
+        <th>Icon</th>
+        <th>Banner</th>
+        <th>Created By</th>
+        <th>Updated By</th>
+        <th>Created At</th>
+        <th>Updated At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cat in categories %}
+        <tr>
+          <td class="text-center">{{ forloop.counter }}</td>
+          <td>{{ cat.name }}</td>
+          <td>
+            {% if cat.parent %}
+              <span class="text-primary">{{ cat.parent.name }}</span>
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+          <td>{{ cat.description|default:"—" }}</td>
+          <td>
+            <span class="badge {{ cat.is_active|yesno:'bg-success,bg-secondary' }}">
+              {{ cat.is_active|yesno:'Active,Inactive' }}
+            </span>
+          </td>
+          <td>
+            {% if cat.icon %}
+              <img src="{{ cat.icon.url }}" alt="icon" style="height:30px;">
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if cat.banner %}
+              <img src="{{ cat.banner.url }}" alt="banner" style="height:30px;">
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if cat.created_by %}
+              {{ cat.created_by.get_full_name|default:cat.created_by.username }}
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if cat.updated_by %}
+              {{ cat.updated_by.get_full_name|default:cat.updated_by.username }}
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+          <td>{{ cat.created_at|date:"Y-m-d H:i" }}</td>
+          <td>{{ cat.updated_at|date:"Y-m-d H:i" }}</td>
+          <td>
+            {% if can_edit %}
+              <button class="btn btn-warning btn-sm edit-category-btn"
+                      data-id="{{ cat.id }}">
+                ✏️
+              </button>
+            {% endif %}
+            {% if can_delete %}
+              <button class="btn btn-danger btn-sm delete-category-btn"
+                      data-id="{{ cat.id }}" data-name="{{ cat.name|escapejs }}">
+                🗑️
+              </button>
+            {% endif %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="12" class="text-center text-muted">❌ No categories found</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ✅ Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h6 class="modal-title">➕ Add New Category</h6>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        {% include 'products/modals/category_modal.html' %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Toast Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+  <div id="toastContainer"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'products/js/category.js' %}"></script>
+{% endblock %}

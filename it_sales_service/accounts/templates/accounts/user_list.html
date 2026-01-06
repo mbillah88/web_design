@@ -1,0 +1,161 @@
+{% extends 'accounts/base.html' %}
+{% load custom_tags %}
+{% block content %}
+
+{% can_create 'accounts:user_list' as can_add %}
+{% can_edit 'accounts:user_list' as can_edit_user %}
+{% can_delete 'accounts:user_list' as can_delete_user %}
+<p>{{ user.role.name }}</p>
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-primary">👥 ইউজার তালিকা</h4>
+    {% if can_add %}
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#userModal" id="addUserBtn">
+        ➕ নতুন ইউজার
+      </button>
+    {% endif %}
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>ইউজারনেম</th>
+          <th>ইমেইল</th>
+          <th>রোল</th>
+          <th>অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.role.name }}</td>
+          <td>
+            <a href="{% url 'profile_view' user.id %}" class="btn btn-sm btn-info">দেখুন</a>
+
+            {% if can_edit_user %}
+              <button class="btn btn-sm btn-warning edit-user-btn"
+                      data-bs-toggle="modal"
+                      data-bs-target="#userModal"
+                      data-user='{
+                        "id": "{{ user.id }}",
+                        "username": "{{ user.username }}",
+                        "email": "{{ user.email }}",
+                        "role_id": "{{ user.role.id }}",
+                        "is_active": "{{ user.is_active }}",
+                        "is_staff": "{{ user.is_staff }}",
+                        "is_superuser": "{{ user.is_superuser }}"
+                      }'>
+                ✏️ সম্পাদনা
+              </button>
+            {% endif %}
+
+            {% if can_delete_user %}
+              {% if not user.is_protected %}
+                <form method="POST" action="{% url 'user_delete' user.id %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-danger"
+                          onclick="return confirm('আপনি কি {{ user.username }} কে মুছে ফেলতে চান?')">
+                    🗑️ মুছে ফেলুন
+                  </button>
+                </form>
+              {% else %}
+                <span class="text-muted">🔒 সুরক্ষিত ইউজার</span>
+              {% endif %}
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% include 'accounts/modals/add_user.html' %}
+</div>
+
+<!-- ✅ Toast Container -->
+<div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055;"></div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+const form = document.getElementById('userForm');
+const modal = new bootstrap.Modal(document.getElementById('userModal'));
+
+document.getElementById('addUserBtn')?.addEventListener('click', () => {
+  form.reset();
+  form.setAttribute('data-user-id', '');
+  document.getElementById('modalTitle').textContent = '➕ নতুন ইউজার';
+});
+
+document.querySelectorAll('.edit-user-btn').forEach(button => {
+  button.addEventListener('click', () => {
+    const user = JSON.parse(button.getAttribute('data-user'));
+    form.setAttribute('data-user-id', user.id);
+    document.getElementById('modalTitle').textContent = '✏️ ইউজার সম্পাদনা';
+
+    form.username.value = user.username;
+    form.email.value = user.email;
+    form.role.value = user.role_id;
+    form.password.value = '';
+    form.confirm_password.value = '';
+    form.is_active.checked = user.is_active === 'True';
+    form.is_staff.checked = user.is_staff === 'True';
+    form.is_superuser.checked = user.is_superuser === 'True';
+  });
+});
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const userId = this.getAttribute('data-user-id');
+  const formData = new FormData(this);
+  const url = userId ? `/accounts/users/form/${userId}/` : `/accounts/users/form/`;
+
+  const password = formData.get('password');
+  const confirm = formData.get('confirm_password');
+  if (password || confirm) {
+    if (password !== confirm) {
+      showToast('❌ পাসওয়ার্ড মিলছে না', 'danger');
+      return;
+    }
+  }
+
+  fetch(url, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showToast('✅ সফলভাবে সংরক্ষণ হয়েছে');
+      modal.hide();
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      const errors = Object.values(data.error).flat().join(', ');
+      showToast(`❌ ${errors}`, 'danger');
+    }
+  })
+  .catch(() => showToast('❌ সংযোগ ব্যর্থ হয়েছে', 'danger'));
+});
+
+function showToast(message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = `toast align-items-center text-white bg-${type} border-0 mb-2`;
+  toast.setAttribute('role', 'alert');
+  toast.setAttribute('aria-live', 'assertive');
+  toast.setAttribute('aria-atomic', 'true');
+  toast.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">${message}</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  `;
+  document.getElementById('toastContainer').appendChild(toast);
+  new bootstrap.Toast(toast, { delay: 3000 }).show();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'accounts/base.html' %}
+{% block title %}Advice Invoice List{% endblock %}
+{% block content %}
+<h5 class="mb-3">📄 Advice Invoice List</h5>
+
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-2">
+    <label class="form-label">From</label>
+    <input type="date" name="from" value="{{ from_date }}" class="form-control">
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">To</label>
+    <input type="date" name="to" value="{{ to_date }}" class="form-control">
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Created By</label>
+    <select name="user" class="form-select">
+      <option value="All">All</option>
+      {% for user in users %}
+        <option value="{{ user }}" {% if user == selected_user %}selected{% endif %}>{{ user }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label">Payment</label>
+    <select name="status" class="form-select">
+      <option value="All" {% if payment_status == 'All' %}selected{% endif %}>All</option>
+      <option value="Paid" {% if payment_status == 'Paid' %}selected{% endif %}>Paid</option>
+      <option value="Due" {% if payment_status == 'Due' %}selected{% endif %}>Due</option>
+    </select>
+  </div>
+  <div class="col-md-2 d-flex align-items-end">
+    <button type="submit" class="btn btn-primary w-100">🔍 Filter</button>
+  </div>
+</form>
+
+<!-- Invoice Table -->
+<div class="table-responsive">
+  <table class="table table-bordered table-hover table-sm align-middle">
+    <thead class="table-light text-center">
+      <tr>
+        <th>Invoice</th>
+        <th>Visit</th>
+        <th>Patient</th>
+        <th>Consultant</th>
+        <th>Date</th>
+        <th>Net</th>
+        <th>Paid</th>
+        <th>Status</th>
+        <th>Created By</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for inv in page_obj %}
+        <tr class="text-center {% if not inv.is_paid %}table-warning{% endif %}">
+          <td><strong>{{ inv.invoice_code }}</strong></td>
+          <td>{{ inv.visit.visit_code }}</td>
+          <td>{{ inv.visit.patient.name }}</td>
+          <td>{{ inv.visit.consultant.name }}</td>
+          <td>{{ inv.visit.visit_date|date:"d M Y, h:i A" }}</td>
+          <td class="text-end">{{ inv.net_amount }}</td>
+          <td class="text-end">{{ inv.paid_amount }}</td>
+          <td>{% if inv.is_paid %}✅ Paid{% else %}⏳ Due{% endif %}</td>
+          <td>{{ inv.created_by.username }}</td>
+          <td>
+            <div class="btn-group btn-group-sm" role="group">
+              <a href="{% url 'diagnostics:invoice_view' inv.visit.visit_code %}" class="btn btn-outline-primary" target="_blank">🔍 View</a>
+              <a href="{% url 'diagnostics:invoice_print' inv.visit.visit_code %}?copy=office" class="btn btn-outline-secondary" target="_blank">🖨️ Office</a>
+              <a href="{% url 'diagnostics:invoice_print' inv.visit.visit_code %}?copy=patient" class="btn btn-outline-success" target="_blank">🖨️ Patient</a>
+            </div>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="10" class="text-center text-muted">No invoices found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?from={{ from_date }}&to={{ to_date }}&user={{ selected_user }}&status={{ payment_status }}&page={{ page_obj.previous_page_number }}">&laquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <li class="page-item">
+          <a class="page-link" href="?from={{ from_date }}&to={{ to_date }}&user={{ selected_user }}&status={{ payment_status }}&page={{ num }}">{{ num }}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?from={{ from_date }}&to={{ to_date }}&user={{ selected_user }}&status={{ payment_status }}&page={{ page_obj.next_page_number }}">&raquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% endblock %}

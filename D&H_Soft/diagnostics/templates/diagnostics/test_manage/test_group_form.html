@@ -1,0 +1,214 @@
+{% extends 'accounts/base.html' %}
+{% block title %}{{ edit_mode|yesno:"Edit,Create" }} Test Group{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h4 class="mb-3">{{ edit_mode|yesno:"✏️ Edit,➕ Create" }} Test Group</h4>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        {{ form.non_field_errors }}
+        <div class="row g-3">
+          <div class="col-md-6">
+            {{ form.name.label_tag }} {{ form.name }} {{ form.name.errors }}
+          </div>
+          <div class="col-md-6">
+            {{ form.sub_category.label_tag }} {{ form.sub_category }} {{ form.sub_category.errors }}
+          </div>
+          <div class="col-md-4">
+            {{ form.price.label_tag }} {{ form.price }} {{ form.price.errors }}
+          </div>
+          <div class="col-md-4">
+            {{ form.discounted_price.label_tag }} {{ form.discounted_price }} {{ form.discounted_price.errors }}
+          </div>
+          <div class="col-md-4">
+            {{ form.percent_discount.label_tag }} {{ form.percent_discount }} {{ form.percent_discount.errors }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Test Item Selection -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <strong>🧬 Select Test Items</strong>
+        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addItemModal">
+          ➕ Add New Test Item
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered align-middle" id="item-table">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 45%">Test Item</th>
+                <th style="width: 15%">Order</th>
+                <th style="width: 10%">Active</th>
+                <th style="width: 5%"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for link in items %}
+                <tr>
+                  <td>
+                    <select name="item_id[]" class="form-select form-select-sm select2" required>
+                      <option value="">— Select —</option>
+                      {% for item in all_items %}
+                        <option value="{{ item.id }}" {% if item.id == link.item.id %}selected{% endif %}>{{ item.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td><input type="number" name="item_order[]" class="form-control form-control-sm" value="{{ link.order }}"></td>
+                  <td class="text-center">
+                    <input type="checkbox" name="item_active[]" value="{{ forloop.counter0 }}" {% if link.item.is_active %}checked{% endif %}>
+                  </td>
+                  <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeRow(this)">🗑️</button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-secondary mt-2" onclick="addItemRow()">➕ Add Row</button>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <a href="{% url 'diagnostics:test_group_list' %}" class="btn btn-secondary">← Back</a>
+      <button type="submit" class="btn btn-primary">💾 Save Group</button>
+    </div>
+  </form>
+</div>
+
+<!-- Add Item Modal -->
+<div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="add-item-form" class="modal-content">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title">➕ Add New Test Item</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" name="name" class="form-control mb-2" placeholder="Name" required>
+        <input type="text" name="unit" class="form-control mb-2" placeholder="Unit">
+        <input type="text" name="unit2" class="form-control mb-2" placeholder="Unit 2">
+        <input type="text" name="reference_range" class="form-control mb-2" placeholder="Reference Range">
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div id="discount-warning" class="text-danger small mt-1" style="display:none;"></div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+  $(document).ready(function () {
+    initializeSelect2();
+    bindDiscountEvents();
+    bindAddItemForm();
+  });
+
+  function initializeSelect2(context = document) {
+    $(context).find('.select2').select2({
+      width: '100%',
+      placeholder: 'Search test item...',
+      allowClear: true
+    });
+  }
+
+  function addItemRow() {
+    createItemRow();
+  }
+
+  function removeRow(btn) {
+    btn.closest('tr').remove();
+    updateCheckboxValues();
+  }
+
+  function updateCheckboxValues() {
+    document.querySelectorAll('#item-table tbody input[type="checkbox"]').forEach((checkbox, index) => {
+      checkbox.value = index;
+    });
+  }
+
+  function bindDiscountEvents() {
+    const priceInput = document.getElementById('id_price');
+    const discountInput = document.getElementById('id_percent_discount');
+    const discountedInput = document.getElementById('id_discounted_price');
+
+    const warningBox = document.getElementById('discount-warning');
+
+    function calculateDiscountedPrice() {
+      const price = parseFloat(priceInput.value);
+      const discount = parseFloat(discountInput.value);
+
+      warningBox.style.display = 'none';
+      warningBox.textContent = '';
+
+      if (isNaN(price) || price < 0) {
+        warningBox.textContent = '❌ Please enter a valid non-negative price.';
+        warningBox.style.display = 'block';
+        discountedInput.value = '';
+        return;
+      }
+
+      if (isNaN(discount) || discount < 0 || discount > 100) {
+        warningBox.textContent = '❌ Discount must be between 0 and 100%.';
+        warningBox.style.display = 'block';
+        discountedInput.value = '';
+        return;
+      }
+
+      const discounted = price - (price * discount / 100);
+      discountedInput.value = discounted.toFixed(2);
+    }
+
+    priceInput.addEventListener('input', calculateDiscountedPrice);
+    discountInput.addEventListener('input', calculateDiscountedPrice);
+    calculateDiscountedPrice();
+  }
+
+  function bindAddItemForm() {
+    document.getElementById('add-item-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+
+      fetch("{% url 'diagnostics:test_item_create' %}", {
+        method: 'POST',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        body: data
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.querySelectorAll('select[name="item_id[]"]').forEach(select => {
+            const option = document.createElement('option');
+            option.value = data.item.id;
+            option.textContent = data.item.name;
+            select.appendChild(option);
+          });
+
+          createItemRow(data.item.id, data.item.name, true);
+
+          form.reset();
+          bootstrap.Modal.getInstance(document.getElementById('addItemModal')).hide();
+        } else {
+          alert("Error: " + JSON.stringify(data.errors));
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert("Something went wrong.");
+      });
+    });
+  }
+</script>
+{% endblock %}

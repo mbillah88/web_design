@@ -1,0 +1,84 @@
+<div class="modal fade" id="moduleModal" tabindex="-1" aria-labelledby="moduleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-sm rounded-4">
+      <form id="moduleForm" method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="moduleId" name="id">
+
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold" id="moduleModalLabel">➕ নতুন মডিউল</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">মডিউল নাম</label>
+              <input type="text" class="form-control" id="moduleName" name="name" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">URL নাম</label>
+              <input type="text" class="form-control" id="moduleUrl" name="url_name" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">আইকন ক্লাস</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="moduleIcon" name="icon" placeholder="bi bi-circle">
+                <button type="button" class="btn btn-outline-secondary" id="openIconPicker">🎨</button>
+              </div>
+              <div class="mt-2">
+                <i id="iconPreview" class="fs-4 text-primary"></i>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">ক্রম</label>
+              <input type="number" class="form-control" id="moduleOrder" name="order" min="0" required>
+            </div>
+
+            <div class="col-md-3">
+              <label class="form-label">দৃশ্যমান?</label>
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="moduleVisible" name="is_visible" checked>
+                <label class="form-check-label" for="moduleVisible">হ্যাঁ</label>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Parent মডিউল</label>
+              <select class="form-select" id="moduleParent" name="parent">
+                <option value="">-- নেই --</option>
+                {% for parent in parent_modules %}
+                  <option value="{{ parent.id }}">{{ parent.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">গ্রুপ</label>
+              <select class="form-select" id="moduleGroup" name="group">
+                <option value="">-- নেই --</option>
+                {% for group in module_groups %}
+                  <option value="{{ group.id }}">{{ group.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="col-md-12">
+              <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="moduleAccordion" name="is_accordion">
+                <label class="form-check-label" for="moduleAccordion">Accordion হিসেবে দেখাও</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">💾 সংরক্ষণ করুন</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ বাতিল</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

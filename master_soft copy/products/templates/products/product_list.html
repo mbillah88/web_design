@@ -1,0 +1,65 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container-fluid py-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold">{{ page_title }}</h4>
+    {% if can_add %}
+      <button class="btn btn-success btn-sm"
+              data-bs-toggle="modal"
+              data-bs-target="#productModal"
+              onclick="clearProductForm()">
+        ➕ New Product
+      </button>
+    {% endif %}
+  </div>
+  
+  {% include 'products/partials/product_table.html' %}
+
+  <div class="d-flex justify-content-between align-items-center mt-2">
+    <span>Total Products: <strong>{{ products|length }}</strong></span>
+    <!-- Add pagination controls here if needed -->
+  </div>
+
+</div>
+
+
+<!-- ✅ Product Modal -->
+<div class="modal fade" id="productModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header py-2">
+        <h5 class="modal-title">📝 Product Form</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        {% include 'products/modals/product_modal.html' %}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ✅ Barcode Scanner Modal -->
+<div class="modal fade" id="barcodeModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-dark text-white py-2">
+        <h6 class="modal-title">📷 বারকোড স্ক্যান করুন</h6>
+        <button type="button" class="btn-close" onclick="closeBarcodeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div id="barcodeScanner" class="border rounded p-2"></div>
+        <div class="text-center mt-2 text-muted small">📌 ক্যামেরা চালু হলে বারকোড সামনে ধরুন</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Toast Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+  <div id="toastContainer"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'products/js/products.js' %}"></script>
+{% endblock %}
