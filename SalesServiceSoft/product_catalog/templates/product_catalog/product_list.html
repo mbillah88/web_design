@@ -1,0 +1,108 @@
+{% extends 'base_software.html' %}
+{% block title %}📋 প্রোডাক্ট তালিকা{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">📦 প্রোডাক্ট তালিকা</h5>
+      <a href="{% url 'product_add' %}" class="btn btn-light btn-sm">➕ নতুন প্রোডাক্ট</a>
+    </div>
+
+    <div class="card-body">
+      <!-- 🔍 Search Bar -->
+      <form method="get" class="mb-3 d-flex justify-content-end">
+        <input type="text" name="q" value="{{ query }}" class="form-control w-25 me-2" placeholder="🔍 প্রোডাক্ট খুঁজুন...">
+        <button type="submit" class="btn btn-outline-primary">অনুসন্ধান</button>
+      </form>
+
+      <!-- 📋 Product Table -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle text-center">
+          <thead class="table-secondary">
+            <tr>
+              <th>ছবি</th>
+              <th>নাম</th>
+              <th>SKU</th>
+              <th>ইউনিট</th>
+              <th>মূল্য</th>
+              <th>স্টক</th>
+              <th>স্ট্যাটাস</th>
+              <th>অ্যাকশন</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in products %}
+            <tr class="{% if p.stock <= 5 %}table-warning{% endif %}">
+              <td>
+                {% if p.image %}
+                  <img src="{{ p.image.url }}" width="50" height="50" class="rounded border" style="object-fit:contain;">
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </td>
+              <td class="text-start">{{ p.name }}</td>
+              <td>{{ p.sku }}</td>
+              <td>{{ p.unit.symbol }}</td>
+              <td>{{ p.final_price|floatformat:2 }} ৳</td>
+              <td>
+                {% if p.stock == 0 %}
+                  <span class="badge bg-danger">স্টক শেষ</span>
+                {% elif p.stock <= 5 %}
+                  <span class="badge bg-warning text-dark">কম স্টক</span>
+                {% else %}
+                  {{ p.stock }}
+                {% endif %}
+              </td>
+              <td>
+                {% if p.is_active %}
+                  <span class="badge bg-success">সক্রিয়</span>
+                {% else %}
+                  <span class="badge bg-secondary">নিষ্ক্রিয়</span>
+                {% endif %}
+              </td>
+              <td>
+                <div class="d-flex justify-content-center gap-1">
+                  <a href="{% url 'product_edit' p.id %}" class="btn btn-sm btn-outline-primary" title="সম্পাদনা">✏️</a>
+                  <form action="{% url 'product_delete' p.id %}" method="post" onsubmit="return confirm('আপনি কি নিশ্চিতভাবে মুছে ফেলতে চান?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-danger" title="মুছে ফেলুন">🗑️</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="8" class="text-muted py-4">কোনো প্রোডাক্ট পাওয়া যায়নি।</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 🔢 Pagination (optional) -->
+      {% if products.has_other_pages %}
+      <nav class="mt-3">
+        <ul class="pagination justify-content-center">
+          {% if products.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?q={{ query }}&page={{ products.previous_page_number }}">←</a>
+            </li>
+          {% endif %}
+          {% for num in products.paginator.page_range %}
+            <li class="page-item {% if products.number == num %}active{% endif %}">
+              <a class="page-link" href="?q={{ query }}&page={{ num }}">{{ num }}</a>
+            </li>
+          {% endfor %}
+          {% if products.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?q={{ query }}&page={{ products.next_page_number }}">→</a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

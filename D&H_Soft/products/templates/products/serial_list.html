@@ -1,0 +1,48 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h5>সিরিয়াল তালিকা</h5>
+  {% if can_add %}
+    <button class="btn btn-success btn-sm"
+            data-bs-toggle="modal"
+            data-bs-target="#serialModal"
+            onclick="clearSerialForm()">
+      ➕ নতুন সিরিয়াল
+    </button>
+  {% endif %}
+</div>
+
+<table class="table table-bordered table-hover table-sm">
+  <thead class="table-light">
+    <tr>
+      <th>সিরিয়াল</th>
+      <th>অবস্থা</th>
+      <th>ওয়ারেন্টি</th>
+      <th>একশন</th>
+    </tr>
+  </thead>
+  <tbody id="serialTableBody"></tbody>
+</table>
+
+<!-- ✅ Modal -->
+<div class="modal fade" id="serialModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="serialForm">
+        {% csrf_token %}
+        <input type="hidden" id="serialProductId" name="product_id" value="{{ product.id }}">
+        <div class="modal-header"><h5 class="modal-title">🔢 সিরিয়াল যোগ করুন</h5></div>
+        <div class="modal-body">
+          <label for="serialInput" class="form-label">সিরিয়ালসমূহ</label>
+          <textarea id="serialInput" name="serials" class="form-control" rows="3" placeholder="প্রতিটি লাইনে একটি সিরিয়াল লিখুন"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">💾 সেভ করুন</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Toast Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055">
+  <div id="toastContainer"></div>
+</div>

@@ -1,0 +1,16 @@
+{% extends 'base_software.html' %}
+{% block content %}
+<h4>My Profile</h4>
+<div class="card" style="max-width: 500px;">
+  <div class="card-body">
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Role:</strong> {{ user.role.name }}</p>
+    <p><strong>Phone:</strong> {{ user.phone }}</p>
+    <p><strong>Address:</strong> {{ user.address }}</p>
+    {% if user.profile_image %}
+      <img src="{{ user.profile_image.url }}" class="img-fluid rounded mt-2" alt="Profile Image">
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

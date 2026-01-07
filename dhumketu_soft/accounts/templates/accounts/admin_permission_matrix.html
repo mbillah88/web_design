@@ -1,0 +1,25 @@
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>মডিউল</th>
+      {% for role in roles %}
+        <th>{{ role.name }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for module in modules %}
+      <tr>
+        <td>{{ module.name }}</td>
+        {% for role in roles %}
+          <td>
+            <input type="checkbox"
+                   data-role="{{ role.id }}"
+                   data-module="{{ module.id }}"
+                   {% if permissions|get_item:role.id|get_item:module.id %}checked{% endif %}>
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

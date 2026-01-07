@@ -1,0 +1,94 @@
+{# ✅ Reusable Product Table with Block Support #}
+<div class="table-responsive">
+  <table class="table table-bordered table-hover table-striped align-middle">
+    <thead class="table-light text-center">
+      <tr>
+        <th style="width: 40px;">#</th>
+        {% block product_table_headers %}
+          <th style="width: 100px;">Image</th>
+          <th>Product Code</th>
+          <th>Barcode</th>
+          <th style="min-width: 250px;">Product Name</th>
+          <th>Model</th>
+          <th>Brand</th>
+          <th>Category</th>
+          <th>Purchase Price</th>
+          <th>Sale Price</th>
+          <th>Stock Alert</th>
+          <th>Status</th>
+        {% endblock %}
+        <th style="width: 100px;">Actions</th>
+      </tr>
+      <tr>
+        <th></th>
+        {% block product_table_filters %}
+          <th></th> <!-- No filter for image -->
+          <th><input type="text" class="form-control form-control-sm" placeholder="Search code"></th>
+          <th><input type="text" class="form-control form-control-sm" placeholder="Scan/search barcode" id="barcodeSearch"></th>
+          <th><input type="text" class="form-control form-control-sm" placeholder="Search name"></th>
+          <th><input type="text" class="form-control form-control-sm" placeholder="Search model"></th>
+          <th>
+            <select class="form-select form-select-sm" id="brandFilter">
+              <option value="">All Brands</option>
+              {% for brand in brands %}
+                <option value="{{ brand.name }}">{{ brand.name }}</option>
+              {% endfor %}
+            </select>
+          </th>
+          <th>
+            <select class="form-select form-select-sm" id="categoryFilter">
+              <option value="">All Categories</option>
+              {% for category in categories %}
+                <option value="{{ category.name }}">{{ category.name }}</option>
+              {% endfor %}
+            </select>
+          </th>
+          <th colspan="4"></th>
+        {% endblock %}
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="productTableBody">
+      {% for product in products %}
+      <tr class="text-center {% if product.low_stock %}table-warning{% endif %}" id="productRow{{ product.id }}">
+        <td>{{ forloop.counter }}</td>
+        {% block product_table_cells %}
+          <td>
+            {% if product.image %}
+              <img src="{{ product.image.url }}" class="img-thumbnail shadow-sm" style="height: 40px; width: auto;">
+            {% else %}
+              <span class="text-muted">❌</span>
+            {% endif %}
+          </td>
+          <td><code>{{ product.code }}</code></td>
+          <td><code>{{ product.barcode }}</code></td>
+          <td class="text-start fw-semibold">{{ product.name }}</td>
+          <td>{{ product.model }}</td>
+          <td>{{ product.brand.name }}</td>
+          <td>{{ product.category.name }}</td>
+          <td>{{ product.purchase_price }}</td>
+          <td>{{ product.sale_price }}</td>
+          <td>
+            {{ product.stock_alert }}
+            {% if product.low_stock %}
+              <span class="badge bg-warning">Low Stock</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if product.is_active %}
+              <span class="badge bg-success">Active</span>
+            {% else %}
+              <span class="badge bg-danger">Inactive</span>
+            {% endif %}
+          </td>
+        {% endblock %}
+        <td>
+          {% block product_table_actions %}
+            <button class="btn btn-sm btn-primary edit-product-btn" data-id="{{ product.id }}">✏️ Edit</button>
+          {% endblock %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

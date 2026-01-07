@@ -1,0 +1,30 @@
+{% extends 'accounts/base.html' %}
+{% load custom_tags %}
+{% load static %}
+{% block title %}Test Categories{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>📂 Test Categories</h2>
+  <a href="{% url 'diagnostics:test_category_create' %}" class="btn btn-success mb-3">➕ New Category</a>
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr><th>#</th><th>Name</th></tr>
+    </thead>
+    <tbody>
+      {% for category in categories %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ category.name }}</td>
+        <td>
+          <a href="{% url 'diagnostics:test_category_edit' category.pk %}" class="btn btn-sm btn-warning">✏️ Edit</a>
+          <a href="{% url 'diagnostics:test_category_delete' category.pk %}" class="btn btn-sm btn-danger">🗑️ Delete</a>
+          <a href="{% url 'diagnostics:test_category_groups' category.pk %}" class="btn btn-sm btn-info">📋 Groups</a>
+        </td>
+      </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+</div>
+{% endblock %}

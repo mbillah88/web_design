@@ -1,0 +1,294 @@
+{% extends 'accounts/base.html' %}
+{% load custom_tags %}
+{% block content %}
+{% can_create 'module_list' as can_add_module %}
+{% can_edit 'module_list' as can_edit_module %}
+{% can_delete 'module_list' as can_delete_module %}
+{% can_create 'sync_modules_ajax' as can_sync_modules %}
+{% can_edit 'module_group_save_ajax' as can_edit_module_group %}
+{% can_delete 'delete_module_group' as can_delete_module_group %}
+{% can_create 'create_module_group_ajax' as can_create_group %}
+
+
+
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold">🧩 মডিউল তালিকা</h4>
+    <p class="text-muted">মোট মডিউল: {{ modules|length }}</p>
+    <div>
+      {% if can_create_group %}
+      <div class="d-flex justify-content-end mb-3">
+        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#groupManagerModal">
+          🧩 মডিউল গ্রুপ ম্যানেজ
+        </button>
+
+      </div>
+      {% endif %}
+      {% if can_sync_modules %}
+      <button class="btn btn-success me-2" id="syncModulesBtn">
+        🔄 সিঙ্ক করুন
+      </button>
+      {% endif %}
+      {% if can_add_module %}
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#moduleModal" id="addModuleBtn">
+          ➕ নতুন মডিউল
+        </button>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th>নাম</th>
+          <th>URL</th>
+          <th>গ্রুপ</th>
+          <th>Parent</th>
+          <th>ক্রম</th>
+          <th>দৃশ্যমান?</th>
+          <th class="text-center">অ্যাকশন</th>
+        </tr>
+      </thead>
+      <tbody id="moduleTableBody">
+        {% for module in modules %}
+        <tr>
+          <td>{{ module.name }}</td>
+          <td>{{ module.url_name }}</td>
+          <td>
+            {% if module.group %}
+              <span class="text-primary">{{ module.group.name }}</span>
+            {% else %}
+              <span class="text-muted">-- নেই --</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if module.parent %}
+              {{ module.parent.name }}
+            {% else %}
+              <span class="text-muted">-- নেই --</span>
+            {% endif %}
+          </td>
+          <td>{{ module.order }}</td>
+          <td>
+            {% if module.is_visible %}
+              <span class="badge bg-success">হ্যাঁ</span>
+            {% else %}
+              <span class="badge bg-secondary">না</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            {% if can_edit_module %}
+            <button class="btn btn-sm btn-warning edit-module-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#moduleModal"
+                    data-module='{
+                      "id": "{{ module.id }}",
+                      "name": "{{ module.name|escapejs }}",
+                      "url_name": "{{ module.url_name|escapejs }}",
+                      "icon": "{{ module.icon|escapejs }}",
+                      "order": "{{ module.order }}",
+                      {% if module.parent %}
+                        "parent_id": "{{ module.parent.id }}",
+                      {% else %}
+                        "parent_id": "",
+                      {% endif %}
+                      {% if module.group %}
+                        "group_id": "{{ module.group.id }}",
+                      {% else %}
+                        "group_id": "",
+                      {% endif %}
+                      "is_visible": {{ module.is_visible|yesno:"true,false" }},
+                      "is_accordion": {{ module.is_accordion|yesno:"true,false" }}
+                    }'>
+              ✏️ সম্পাদনা
+            </button>
+            {% endif %}
+            {% if can_delete_module %}
+            <form method="POST" action="{% url 'module_delete' module.id %}" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-danger"
+                      onclick="return confirm('আপনি কি {{ module.name }} মুছে ফেলতে চান?')">
+                🗑️ মুছে ফেলুন
+              </button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% include 'accounts/modals/add_module.html' %}
+{% include 'accounts/modals/icon_picker_modal.html' %}
+{% include 'accounts/modals/module_group_list.html' %}
+ 
+{% endblock %}
+{% block scripts %}
+  <script>
+    //Sync Btn...
+    document.getElementById('syncModulesBtn')?.addEventListener('click', () => {
+      fetch("{% url 'sync_modules_ajax' %}", {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("✅ সিঙ্ক সফল হয়েছে");
+          location.reload();
+        } else {
+          alert("❌ সিঙ্ক ব্যর্থ:\n" + JSON.stringify(data.error));
+        }
+      })
+      .catch(err => alert("❌ সার্ভার সমস্যা: " + err));
+    });
+
+    // Open modal for new module
+    document.getElementById('addModuleBtn').addEventListener('click', () => {
+      const form = document.getElementById('moduleForm');
+      form.reset();
+      document.getElementById('moduleId').value = '';
+      document.getElementById('iconPreview').className = 'fs-4 text-primary';
+      document.getElementById('moduleModalTitle').innerText = '➕ নতুন মডিউল';
+    });
+
+    // Open modal for editing module
+    document.querySelectorAll('.edit-module-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        try {
+          const form = document.getElementById('moduleForm');
+          form.reset(); // ✅ Clear previous data
+
+          const data = JSON.parse(btn.getAttribute('data-module'));
+
+          // ✅ Populate new data
+          document.getElementById('moduleId').value = data.id || '';
+          document.getElementById('moduleName').value = data.name || '';
+          document.getElementById('moduleUrl').value = data.url_name || '';
+          document.getElementById('moduleIcon').value = data.icon || '';
+          document.getElementById('moduleOrder').value = data.order || 0;
+          document.getElementById('moduleParent').value = data.parent_id || '';
+          document.getElementById('moduleGroup').value = data.group_id || '';
+          document.getElementById('moduleVisible').checked = data.is_visible ?? true;
+          document.getElementById('moduleAccordion').checked = data.is_accordion ?? false;
+
+          // ✅ Update icon preview
+          document.getElementById('iconPreview').className = (data.icon || '') + ' fs-4 text-primary';
+
+          // ✅ Update modal title
+          document.getElementById('moduleModalLabel').innerText = '✏️ মডিউল সম্পাদনা';
+        } catch (err) {
+          alert('❌ ডাটা লোড করতে সমস্যা হয়েছে');
+          console.error(err);
+        }
+      });
+    });
+    document.getElementById('moduleForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = new URLSearchParams(new FormData(form));
+      const moduleId = document.getElementById('moduleId').value;
+      const url = moduleId
+        ? `/accounts/modules/form/${moduleId}/`
+        : `/accounts/modules/form/`;
+
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": form.querySelector('[name=csrfmiddlewaretoken]').value,
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: data
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert(`✅ মডিউল "${data.module.name}" ${data.created ? 'যোগ' : 'আপডেট'} হয়েছে`);
+          form.reset();
+          bootstrap.Modal.getInstance(document.getElementById('moduleModal')).hide();
+          location.reload(); // অথবা dynamic row update
+        } else {
+          alert("❌ ফর্ম সমস্যা:\n" + Object.values(data.error).map(e => e[0].message).join('\n'));
+        }
+      })
+      .catch(err => alert("❌ সার্ভার সমস্যা: " + err));
+    });
+
+    // Live icon preview
+    document.getElementById('moduleIcon').addEventListener('input', e => {
+      document.getElementById('iconPreview').className = e.target.value + ' fs-4 text-primary';
+    });
+
+    // Open icon picker modal
+    document.getElementById('openIconPicker').addEventListener('click', () => {
+      const iconModal = new bootstrap.Modal(document.getElementById('iconPickerModal'), {
+        backdrop: 'static',
+        keyboard: false
+      });
+      iconModal.show();
+    });
+
+    // Select icon from picker
+    document.querySelectorAll('.icon-select-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const selectedIcon = btn.getAttribute('data-icon');
+      document.getElementById('moduleIcon').value = selectedIcon;
+      document.getElementById('iconPreview').className = selectedIcon + ' fs-4 text-primary';
+      bootstrap.Modal.getInstance(document.getElementById('iconPickerModal')).hide();
+    });
+  });
+    
+    // Module Group List....
+    const groupModal = document.getElementById('groupManagerModal');    
+    groupModal.addEventListener('shown.bs.modal', () => {
+      const form = document.getElementById('groupForm');
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = new URLSearchParams(new FormData(form));
+
+        fetch("{% url 'module_group_save_ajax' %}", {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": form.querySelector('[name=csrfmiddlewaretoken]').value,
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: data
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert(`✅ গ্রুপ "${data.group.name}" ${data.created ? 'যোগ' : 'আপডেট'} হয়েছে`);
+            form.reset();
+            bootstrap.Modal.getInstance(groupModal).hide();
+            location.reload(); // অথবা row update
+          } else {
+            alert(`❌ ${data.error}`);
+          }
+        })
+        .catch(err => alert(`❌ সার্ভার সমস্যা: ${err}`));
+      });
+    });
+    document.querySelectorAll('.edit-group-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        try {
+          const data = JSON.parse(btn.getAttribute('data-group'));
+          document.getElementById('groupId').value = data.id;
+          document.getElementById('groupName').value = data.name;
+          document.getElementById('groupIcon').value = data.icon;
+          document.getElementById('groupOrder').value = data.order;
+        } catch (err) {
+          console.error("❌ JSON parse error:", err);
+        }
+      });
+    });
+
+  </script>
+
+{% endblock %}

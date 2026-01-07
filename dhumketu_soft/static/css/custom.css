@@ -1,0 +1,21 @@
+:root {
+  --bs-body-bg: #f8f9fa;
+  --bs-body-color: #212529;
+  font-family: 'SolaimanLipi', sans-serif;
+}
+[data-theme="dark"] {
+  --bs-body-bg: #212529;
+  --bs-body-color: #f8f9fa;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+.nav-link.active {
+  background-color: #0d6efd;
+  color: white;
+  font-weight: bold;
+}

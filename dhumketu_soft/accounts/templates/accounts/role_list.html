@@ -1,0 +1,34 @@
+{% extends 'base_software.html' %}
+{% block content %}
+<h4>Role Management</h4>
+<button class="btn btn-primary mb-2"
+        data-bs-toggle="modal"
+        data-bs-target="#roleModal"
+        data-url="{% url 'role_add' %}"
+        onclick="loadModal('roleModal', 'roleModalContent', this)">
+  Add Role
+</button>
+
+<div id="roleTable">
+  <table class="table table-bordered">
+    <thead><tr><th>Name</th><th>Actions</th></tr></thead>
+    <tbody>
+      {% for role in roles %}
+      <tr>
+        <td>{{ role.name }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning"
+                  data-bs-toggle="modal"
+                  data-bs-target="#roleModal"
+                  data-url="{% url 'role_edit' role.id %}"
+                  onclick="loadModal('roleModal', 'roleModalContent', this)">
+            Edit
+          </button>
+          <button class="btn btn-sm btn-danger" onclick="deleteRole({{ role.id }})">Delete</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

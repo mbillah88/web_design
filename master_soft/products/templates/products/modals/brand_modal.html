@@ -1,0 +1,58 @@
+<form id="brandForm" enctype="multipart/form-data" class="needs-validation" novalidate>
+  {% csrf_token %}
+  <input type="hidden" id="brandId" name="id">
+
+  <div class="card border-0 shadow-lg rounded-3 mb-3">
+
+    <div class="card-body row g-4 px-3 py-2">
+      <div class="col-md-6">
+        <label for="brandName" class="form-label fw-semibold">নাম <span class="text-danger">*</span></label>
+        <div class="input-group input-group-sm">
+          <span class="input-group-text"><i class="bi bi-pencil"></i></span>
+          <input type="text" id="brandName" name="name" class="form-control" required>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="brandCountry" class="form-label fw-semibold">দেশ</label>
+        <div class="input-group input-group-sm">
+          <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+          <input type="text" id="brandCountry" name="country" class="form-control">
+        </div>
+      </div>
+
+      <div class="col-md-12">
+        <label for="brandSupport_contact" class="form-label fw-semibold">সাপোর্ট কন্টাক্ট</label>
+        <textarea id="brandSupport_contact" name="support_contact" class="form-control form-control-sm" rows="2" placeholder="ফোন / ইমেইল / ওয়েবসাইট"></textarea>
+      </div>
+
+      <div class="col-md-6">
+        <label for="brandLogo" class="form-label fw-semibold">লোগো</label>
+        <input type="file" id="brandLogo" name="logo" class="form-control form-control-sm" accept="image/*">
+        <div id="logoPreview" class="mt-2"></div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="is_active" class="form-label fw-semibold">সক্রিয়</label>
+        <select id="is_active" name="is_active" class="form-select form-select-sm">
+          <option value="true">✅ হ্যাঁ</option>
+          <option value="false">❌ না</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2 mt-3 px-2">
+    <button type="submit" class="btn btn-success btn-sm px-4">
+      <i class="bi bi-save me-1"></i> সংরক্ষণ
+    </button>
+    <button type="button" class="btn btn-outline-secondary btn-sm px-4" onclick="clearBrandForm()">
+      <i class="bi bi-brush me-1"></i> ক্লিয়ার
+    </button>
+    {% if can_delete %}
+      <button type="button" class="btn btn-danger btn-sm px-4 d-none" id="deleteBrandBtn">
+        <i class="bi bi-trash me-1"></i> ডিলিট
+      </button>
+    {% endif %}
+  </div>
+</form>

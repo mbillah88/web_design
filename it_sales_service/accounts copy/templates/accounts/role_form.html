@@ -1,0 +1,29 @@
+{% extends 'accounts/base.html' %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-sm border-0 mt-5">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0 fw-bold">
+            {% if role %}✏️ রোল সম্পাদনা{% else %}➕ নতুন রোল{% endif %}
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="id_name" class="form-label">রোলের নাম</label>
+              {{ form.name }}
+            </div>
+            <div class="d-flex justify-content-between mt-4">
+              <a href="{% url 'role_list' %}" class="btn btn-secondary">↩️ ফিরে যান</a>
+              <button type="submit" class="btn btn-success px-4">✅ সংরক্ষণ করুন</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

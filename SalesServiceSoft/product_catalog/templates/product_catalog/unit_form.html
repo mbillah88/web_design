@@ -1,0 +1,41 @@
+{% extends 'base_software.html' %}
+{% block title %}🧮 ইউনিট {% if form.instance.pk %}সম্পাদনা{% else %}যোগ{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">🧮 {% if form.instance.pk %}ইউনিট সম্পাদনা{% else %}নতুন ইউনিট যোগ করুন{% endif %}</h5>
+      <a href="{% url 'unit_list' %}" class="btn btn-light btn-sm">🔙 তালিকায় ফিরে যান</a>
+    </div>
+
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">ইউনিট নাম</label>
+            {{ form.name }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">প্রতীক</label>
+            {{ form.symbol }}
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">বর্ণনা</label>
+            {{ form.description }}
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <label class="form-check-label me-2">সক্রিয়</label>
+            {{ form.is_active }}
+          </div>
+        </div>
+
+        <div class="mt-4 text-end">
+          <button type="submit" class="btn btn-success">✅ {% if form.instance.pk %}আপডেট{% else %}সংরক্ষণ{% endif %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

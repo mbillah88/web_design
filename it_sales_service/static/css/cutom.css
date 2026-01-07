@@ -1,0 +1,20 @@
+.sidebar-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #6c757d #343a40;
+}
+
+/* Optional: Webkit scrollbar styling */
+.sidebar-sticky::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar-sticky::-webkit-scrollbar-track {
+  background: #343a40;
+}
+.sidebar-sticky::-webkit-scrollbar-thumb {
+  background-color: #6c757d;
+  border-radius: 3px;
+}

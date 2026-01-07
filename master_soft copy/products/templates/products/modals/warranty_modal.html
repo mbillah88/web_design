@@ -1,0 +1,71 @@
+<form id="warrantyForm" class="needs-validation" novalidate>
+  {% csrf_token %}
+  <input type="hidden" id="warrantyId" name="id">
+
+  <div class="card border-0 shadow-sm rounded-3 mb-3">
+    <div class="card-header bg-primary text-white fw-semibold">
+      <i class="bi bi-shield-check me-2"></i> ওয়ারেন্টি তথ্য
+    </div>
+
+    <div class="card-body row g-3 px-3 py-2">
+      <div class="col-md-6">
+        <label for="warrantyName" class="form-label">নাম <span class="text-danger">*</span></label>
+        <input type="text" id="warrantyName" name="name" class="form-control form-control-sm" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="warrantyType" class="form-label">ধরন</label>
+        <select id="warrantyType" name="type" class="form-select form-select-sm">
+          <option value="manufacturer">প্রস্তুতকারক</option>
+          <option value="seller">বিক্রেতা</option>
+          <option value="extended">বর্ধিত</option>
+          <option value="none">কোনটি নয়</option>
+          <option value="lifetime">লাইফটাইম</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label for="duration_value" class="form-label">মেয়াদ</label>
+        <input type="number" id="duration_value" name="duration_value" class="form-control form-control-sm" min="0" required>
+      </div>
+
+      <div class="col-md-4">
+        <label for="duration_unit" class="form-label">একক</label>
+        <select id="duration_unit" name="duration_unit" class="form-select form-select-sm">
+          <option value="days">দিন</option>
+          <option value="months">মাস</option>
+          <option value="years">বছর</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label for="is_lifetime" class="form-label">লাইফটাইম?</label>
+        <select id="is_lifetime" name="is_lifetime" class="form-select form-select-sm">
+          <option value="false">❌ না</option>
+          <option value="true">✅ হ্যাঁ</option>
+        </select>
+      </div>
+
+      <div class="col-md-12">
+        <label for="terms" class="form-label">শর্তাবলী</label>
+        <textarea id="terms" name="terms" class="form-control form-control-sm" rows="3"></textarea>
+      </div>
+
+      <div class="col-md-6">
+        <label for="is_active" class="form-label">সক্রিয়</label>
+        <select id="is_active" name="is_active" class="form-select form-select-sm">
+          <option value="true">✅ হ্যাঁ</option>
+          <option value="false">❌ না</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end gap-2 px-3 pb-2">
+    <button type="submit" class="btn btn-success btn-sm px-4">💾 সংরক্ষণ</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm px-4" onclick="clearWarrantyForm()">🧹 ক্লিয়ার</button>
+    {% if can_delete %}
+      <button type="button" class="btn btn-danger btn-sm px-4 d-none" id="deleteWarrantyBtn">🗑️ ডিলিট</button>
+    {% endif %}
+  </div>
+</form>

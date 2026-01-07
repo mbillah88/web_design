@@ -1,39 +1,92 @@
 {% extends 'base_software.html' %}
-{% block title %}ড্যাশবোর্ড{% endblock %}
+{% block title %}প্রোফাইল সম্পাদনা{% endblock %}
+
 {% block content %}
-<h4>✏️ প্রোফাইল সম্পাদনা</h4>
-<form method="post" enctype="multipart/form-data">
-  {% csrf_token %}
-  <div class="row">
-    <div class="col-md-6 mb-3">
-      <label class="form-label">নামের প্রথম অংশ</label>
-      <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control">
-    </div>
-    <div class="col-md-6 mb-3">
-      <label class="form-label">নামের শেষ অংশ</label>
-      <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control">
-    </div>
-    <div class="col-md-6 mb-3">
-      <label class="form-label">ইমেইল</label>
-      <input type="email" name="email" value="{{ user.email }}" class="form-control">
-    </div>
-    <div class="col-md-6 mb-3">
-      <label class="form-label">ফোন</label>
-      <input type="text" name="phone" value="{{ user.phone }}" class="form-control">
-    </div>
-    <div class="col-md-12 mb-3">
-      <label class="form-label">ঠিকানা</label>
-      <textarea name="address" class="form-control">{{ user.address }}</textarea>
-    </div>
-    <div class="col-md-6 mb-3">
-      <label class="form-label">জন্ম তারিখ</label>
-      <input type="date" name="date_of_birth" value="{{ user.date_of_birth }}" class="form-control">
-    </div>
-    <div class="col-md-6 mb-3">
-      <label class="form-label">প্রোফাইল ছবিs</label>
-      <input type="file" name="profile_image" class="form-control">
+<div class="container-fluid mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">✏️ প্রোফাইল সম্পাদনা</h5>
+        </div>
+
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row g-3">
+
+              <div class="col-md-6">
+                <label class="form-label">নামের প্রথম অংশ</label>
+                <input type="text" name="first_name"
+                       value="{{ form.instance.first_name }}"
+                       class="form-control" required>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">নামের শেষ অংশ</label>
+                <input type="text" name="last_name"
+                       value="{{ form.instance.last_name }}"
+                       class="form-control">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">ইমেইল</label>
+                <input type="email" name="email"
+                       value="{{ form.instance.email }}"
+                       class="form-control">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">ফোন</label>
+                <input type="text" name="phone"
+                       value="{{ form.instance.phone }}"
+                       class="form-control">
+              </div>
+
+              <div class="col-md-12">
+                <label class="form-label">ঠিকানা</label>
+                <textarea name="address"
+                          class="form-control"
+                          rows="2">{{ form.instance.address }}</textarea>
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">জন্ম তারিখ</label>
+                <input type="date" name="date_of_birth"
+                       value="{{ form.instance.date_of_birth }}"
+                       class="form-control">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">প্রোফাইল ছবি</label>
+                {% if form.instance.profile_image %}
+                  <div class="mb-2">
+                    <img src="{{ form.instance.profile_image.url }}"
+                         alt="প্রোফাইল ছবি"
+                         class="rounded border"
+                         width="100">
+                  </div>
+                {% endif %}
+                <input type="file" name="profile_image" class="form-control">
+              </div>
+
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+              <a href="{% url 'user_list' %}" class="btn btn-outline-secondary">
+                🔙 ইউজার তালিকায় ফিরে যান
+              </a>
+              <button type="submit" class="btn btn-success">
+                ✅ সংরক্ষণ করুন
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
     </div>
   </div>
-  <button type="submit" class="btn btn-success">✅ সংরক্ষণ করুন</button>
-</form>
+</div>
 {% endblock %}

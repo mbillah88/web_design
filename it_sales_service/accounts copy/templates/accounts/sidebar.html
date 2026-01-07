@@ -1,0 +1,70 @@
+
+{% load custom_tags %}
+    <aside id="sidebar" class="sidebar bg-light border-end d-flex flex-column min-vh-100 px-2">
+      <div class="p-3">
+
+        <!-- ✅ Collapse toggle only for desktop -->
+        <button id="sidebarToggle" class="btn btn-sm btn-outline-secondary w-100 mb-3 d-none d-md-block">
+          <i class="bi bi-layout-sidebar-inset"></i> <span class="sidebar-text">সাইডবার টোগল</span>
+        </button>
+
+        <span class="fs-6 fw-bold text-primary sidebar-title">🔧 প্রশাসন</span>
+        <hr class="w-100">
+
+        <!-- ✅ Accordion Menu (Permission-aware) -->
+        <div class="accordion" id="sidebarAccordion">
+          {% for parent in parents %}
+            {% with children|get_item:parent.id as child_list %}
+              <div class="accordion-item border-0">
+                {% if child_list %}
+                  <h2 class="accordion-header" id="heading{{ parent.id }}">
+                    <button class="accordion-button collapsed bg-light text-dark rounded-0 shadow-none d-flex align-items-center"
+                            type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ parent.id }}"
+                            aria-expanded="false" aria-controls="collapse{{ parent.id }}"
+                            data-bs-toggle="tooltip" data-bs-placement="right" title="{{ parent.name }}">
+                      <i class="{{ parent.icon }} me-2 text-secondary"></i>
+                      <span class="sidebar-text">{{ parent.name }}</span>
+                    </button>
+                  </h2>
+                  <div id="collapse{{ parent.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ parent.id }}" data-bs-parent="#sidebarAccordion">
+                    <div class="accordion-body px-0 py-2">
+                      <ul class="nav flex-column ms-3">
+                        {% for child in child_list %}
+                          {% if request|can_access:child.url_name %}
+                            <li class="nav-item w-100">
+                              <a class="nav-link d-flex align-items-center text-dark px-3 py-2 rounded
+                                        {% if request.resolver_match.url_name == child.url_name %}
+                                          active fw-bold bg-primary-subtle text-primary
+                                        {% endif %}"
+                                href="{% url child.url_name %}"
+                                data-bs-toggle="tooltip" data-bs-placement="right" title="{{ child.name }}">
+                                <i class="{{ child.icon }} me-2"></i>
+                                <span class="sidebar-text">{{ child.name }}</span>
+                              </a>
+                            </li>
+                          {% endif %}
+                        {% endfor %}
+                      </ul>
+                    </div>
+                  </div>
+                {% elif parent.url_name %}
+                  {% if request|can_access:parent.url_name %}
+                    <li class="nav-item w-100">
+                      <a class="nav-link d-flex align-items-center text-dark px-3 py-2 rounded
+                                {% if request.resolver_match.url_name == parent.url_name %}
+                                  active fw-bold bg-primary-subtle text-primary
+                                {% endif %}"
+                        href="{% url parent.url_name %}"
+                        data-bs-toggle="tooltip" data-bs-placement="right" title="{{ parent.name }}">
+                        <i class="{{ parent.icon }} me-2"></i>
+                        <span class="sidebar-text">{{ parent.name }}</span>
+                      </a>
+                    </li>
+                  {% endif %}
+                {% endif %}
+              </div>
+            {% endwith %}
+          {% endfor %}
+        </div>
+      </div>
+    </aside>

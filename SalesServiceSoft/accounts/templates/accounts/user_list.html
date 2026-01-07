@@ -1,25 +1,61 @@
 {% extends 'base_software.html' %}
-{% block title %}ড্যাশবোর্ড{% endblock %}
+{% block title %}ইউজার তালিকা{% endblock %}
+
 {% block content %}
-<h4>👥 ইউজার তালিকা</h4>
-<table class="table table-bordered table-hover">
-  <thead class="table-dark">
-    <tr>
-      <th>ইউজারনেম</th>
-      <th>নাম</th>
-      <th>রোল</th>
-      <th>যোগদান</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for u in users %}
-    <tr>
-      <td>{{ u.username }}</td>
-      <td>{{ u.get_full_name }}</td>
-      <td>{{ u.get_role_display }}</td>
-      <td>{{ u.get_date_joined_formatted }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="container-fluid mt-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">👥 ইউজার তালিকা</h5>
+      <a href="{% url 'add_user' %}" class="btn btn-light btn-sm">
+        ➕ নতুন ইউজার
+      </a>
+    </div>
+
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover mb-0 align-middle text-center">
+          <thead class="table-dark">
+            <tr>
+              <th style="width: 5%;">#</th> <!-- ক্রমিক নং -->
+              <th style="width: 25%;">নাম</th>
+              <th style="width: 15%;">রোল</th>
+              <th style="width: 20%;">যোগদান</th>
+              <th style="width: 15%;">অ্যাকশন</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td class="text-start">{{ u.get_full_name|default:"—" }}</td>
+              <td>
+                <span class="badge bg-info text-dark">{{ u.get_role_display }}</span>
+              </td>
+              <td>{{ u.get_date_joined_formatted }}</td>
+              <td>
+                <div class="d-flex justify-content-center gap-1">
+                  <a href="{% url 'edit_user' u.id %}" class="btn btn-sm btn-outline-primary">✏️</a>
+                  <form action="{% url 'delete_user' u.id %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('আপনি কি নিশ্চিতভাবে মুছে ফেলতে চান?');">
+                      🗑️
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="5" class="text-muted py-4">কোনো ইউজার পাওয়া যায়নি।</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -1,0 +1,31 @@
+<form id="refundForm">
+  {% csrf_token %}
+  <input type="hidden" name="purchase_id" id="refundPurchaseId">
+  <input type="hidden" name="product_id" id="refundProductId">
+  <input type="number" name="quantity" class="form-control" placeholder="Qty to refund" required>
+  <textarea name="reason" class="form-control mt-2" placeholder="Reason for return" required></textarea>
+  <button type="submit" class="btn btn-danger mt-2">🔁 Confirm Refund</button>
+</form>
+document.getElementById("refundForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+  fetch("/products/refund/", {
+    method: "POST",
+    body: formData
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        showToast("🔁 Product refunded successfully", "success");
+        bootstrap.Modal.getInstance(document.getElementById("refundModal")).hide();
+        resetRefundForm();
+      } else {
+        showToast("❌ " + data.message, "danger");
+      }
+    })
+    .catch(err => {
+      console.error("Refund error:", err);
+      showToast("❌ Unexpected refund error", "danger");
+    });
+});

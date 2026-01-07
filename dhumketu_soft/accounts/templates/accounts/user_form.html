@@ -1,0 +1,9 @@
+{% extends 'base_software.html' %}
+{% block content %}
+<h4>{{ title }}</h4>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-success">Save</button>
+</form>
+{% endblock %}

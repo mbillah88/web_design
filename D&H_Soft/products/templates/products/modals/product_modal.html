@@ -1,0 +1,212 @@
+<form id="productForm" class="needs-validation" novalidate>
+  {% csrf_token %}
+  <input type="hidden" id="productId" name="id">
+  <h5 id="purchaseModalTitle" class="modal-title"></h5>
+  <!-- 🔹 Basic Info -->
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-primary text-white fw-bold">📦 Product Information</div>
+    <div class="card-body row g-3">
+      <div class="col-md-6">
+        <label for="productName" class="form-label">
+          Product Name
+          <i class="bi bi-info-circle text-muted ms-1"
+            data-bs-toggle="tooltip"
+            title="এই নামটি ইনভয়েস, স্টক এবং রিপোর্টে দেখানো হবে"></i>
+        </label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
+          <input type="text" id="productName" name="name" class="form-control"
+                placeholder="যেমনঃ HP Laptop" required>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label for="productModel" class="form-label">মডেল</label>
+        <input type="text" id="productModel" name="model" class="form-control" required>
+      </div>
+
+      <div class="col-md-12">
+        <label for="productDescription" class="form-label">বিবরণ</label>
+        <textarea id="productDescription" name="description" class="form-control" rows="2"></textarea>
+      </div>
+
+      <div class="col-md-6">
+        <label for="productBrand" class="form-label">ব্র্যান্ড</label>
+        <select id="productBrand" name="brand" class="form-select" required>
+          <option value="">-- নির্বাচন করুন --</option>
+          {% for brand in brands %}
+            <option value="{{ brand.id }}">{{ brand.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label for="productCategory" class="form-label">ক্যাটাগরি</label>
+        <select id="productCategory" name="category" class="form-select">
+          <option value="">-- নির্বাচন করুন --</option>
+          {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">পণ্যের ছবি</label>
+        <div id="imageDropZone" class="border rounded p-2 text-center bg-light" style="cursor: pointer;">
+          <p class="mb-1">📂 ছবি ড্র্যাগ করুন অথবা নির্বাচন করুন</p>
+          <input type="file" id="productImage" name="image" class="form-control d-none" accept="image/*">
+          <img id="imagePreview" src="" class="img-fluid mt-2 rounded shadow-sm d-none" style="max-height: 150px;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔹 Pricing & Inventory -->
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-success text-white fw-bold">💰 মূল্য ও স্টক</div>
+    <div class="card-body row g-3">
+      <div class="col-md-6">
+        <label for="productPurchasePrice" class="form-label">ক্রয় মূল্য</label>
+        <input type="number" step="0.01" id="productPurchasePrice" name="purchase_price" class="form-control" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="productSalePrice" class="form-label">বিক্রয় মূল্য</label>
+        <input type="number" step="0.01" id="productSalePrice" name="sale_price" class="form-control" required>
+      </div>
+
+      <div class="col-md-6">
+        <label for="productDiscountPrice" class="form-label">ডিসকাউন্ট মূল্য</label>
+        <input type="number" step="0.01" id="productDiscountPrice" name="discount_price" class="form-control">
+      </div>
+
+      <div class="col-md-6">
+        <label for="productVatPercent" class="form-label">ভ্যাট (%)</label>
+        <input type="number" step="0.01" id="productVatPercent" name="vat_percent" class="form-control" value="0.00">
+      </div>
+
+      <div class="col-md-6">
+        <label for="productBarcode" class="form-label">
+          বারকোড
+          <i class="bi bi-info-circle text-muted ms-1"
+            data-bs-toggle="tooltip"
+            title="বারকোড স্ক্যান করলে পণ্য দ্রুত খুঁজে পাওয়া যাবে"></i>
+        </label>
+
+        <div class="input-group">
+          <button type="button" class="btn btn-outline-dark btn-sm"
+                  onclick="openBarcodeModal()">📷 স্ক্যান বারকোড</button>
+          <input type="text" id="productBarcode" name="barcode" class="form-control"
+                placeholder="বারকোড স্ক্যান করুন বা ফাঁকা রাখুন">
+          <button type="button" class="btn btn-outline-secondary btn-sm"
+                  onclick="toggleBarcodeMode()">⚙️ Auto</button>
+        </div>
+
+        <small class="text-muted d-block mt-1" id="barcodeModeHint">বর্তমানে: ম্যানুয়াল মোড</small>
+      </div>
+     
+      <div class="col-md-6">
+        <label for="productStockAlert" class="form-label">স্টক এলার্ট</label>
+        <input type="number" id="productStockAlert" name="stock_alert" class="form-control" value="1">
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔹 Warranty & Unit -->
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-info text-white fw-bold">🛡️ ওয়ারেন্টি ও ইউনিট</div>
+    <div class="card-body row g-3">
+      <div class="col-md-6">
+        <label for="productUnit" class="form-label">
+          ইউনিট
+          <i class="bi bi-info-circle text-muted ms-1"
+            data-bs-toggle="tooltip"
+            title="যেমনঃ Piece, Box, License — ইনভয়েসে দেখানো হবে"></i>
+        </label>
+        <select id="productUnit" name="unit" class="form-select">
+          <option value="">-- নির্বাচন করুন --</option>
+          {% for unit in units %}
+            <option value="{{ unit.id }}">{{ unit.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+
+      <div class="col-md-6">
+        <label for="productWarranty" class="form-label">
+          ওয়ারেন্টি
+          <i class="bi bi-info-circle text-muted ms-1"
+            data-bs-toggle="tooltip"
+            title="পণ্য বিক্রয়ের পর কত মাস পর্যন্ত ওয়ারেন্টি থাকবে"></i>
+        </label>
+        <select id="productWarranty" name="warranty" class="form-select">
+          <option value="">-- নির্বাচন করুন --</option>
+          {% for warranty in warranties %}
+            <option value="{{ warranty.id }}">{{ warranty.name }} ({{ warranty.duration_months }} মাস)</option>
+          {% endfor %}
+        </select>
+      </div>
+
+
+      <div class="col-md-6">
+        <label for="productWarrantyDurationMonths" class="form-label">ওয়ারেন্টি মেয়াদ (মাস)</label>
+        <input type="number" id="productWarrantyDurationMonths" name="warranty_duration_months" class="form-control" value="0">
+      </div>
+
+      <div class="col-md-6">
+        <label for="productServiceIntervalDays" class="form-label">সার্ভিস ইন্টারভাল (দিন)</label>
+        <input type="number" id="productServiceIntervalDays" name="service_interval_days" class="form-control" value="0">
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔹 Flags -->
+  <div class="card mb-3 shadow-sm">
+    <div class="card-header bg-warning text-dark fw-bold">⚙️ ফ্ল্যাগসমূহ</div>
+    <div class="card-body row g-3">
+      <div class="col-md-4">
+        <label for="productIsActive" class="form-label">সক্রিয়</label>
+        <select id="productIsActive" name="is_active" class="form-select">
+          <option value="true">হ্যাঁ</option>
+          <option value="false">না</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label for="productIsSerialized" class="form-label">সিরিয়াল ট্র্যাকিং</label>
+        <select id="productIsSerialized" name="is_serialized" class="form-select">
+          <option value="true">হ্যাঁ</option>
+          <option value="false">না</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label for="productRequiresBatch" class="form-label">ব্যাচ ট্র্যাকিং</label>
+        <select id="productRequiresBatch" name="requires_batch" class="form-select">
+          <option value="true">হ্যাঁ</option>
+          <option value="false">না</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label for="productIsReturnable" class="form-label">ফেরতযোগ্য</label>
+        <select id="productIsReturnable" name="is_returnable" class="form-select">
+          <option value="true">হ্যাঁ</option>
+          <option value="false">না</option>
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <label for="productIsServiceable" class="form-label">সার্ভিসযোগ্য</label>
+        <select id="productIsServiceable" name="is_serviceable" class="form-select">
+          <option value="true">হ্যাঁ</option>
+          <option value="false">না</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <!-- 🔹 Actions -->
+  <div class="d-flex justify-content-between mt-3">
+    <button type="button" id="deleteProductBtn" class="btn btn-danger d-none">🗑️ ডিলিট</button>
+    <button type="submit" id="savePurchaseBtn" class="btn btn-success">💾 সেভ করুন</button>
+  </div>
+</form>

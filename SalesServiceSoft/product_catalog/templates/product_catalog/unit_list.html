@@ -1,0 +1,58 @@
+{% extends 'base_software.html' %}
+{% block title %}🧮 ইউনিট তালিকা{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">🧮 ইউনিট তালিকা</h5>
+      <a href="{% url 'unit_add' %}" class="btn btn-light btn-sm">➕ নতুন ইউনিট</a>
+    </div>
+
+    <div class="card-body">
+      <form method="get" class="mb-3 d-flex justify-content-end">
+        <input type="text" name="q" value="{{ query }}" class="form-control w-25 me-2" placeholder="🔍 ইউনিট খুঁজুন...">
+        <button type="submit" class="btn btn-outline-light">অনুসন্ধান</button>
+      </form>
+
+      <table class="table table-bordered table-hover text-center align-middle">
+        <thead class="table-secondary">
+          <tr>
+            <th>নাম</th>
+            <th>প্রতীক</th>
+            <th>স্ট্যাটাস</th>
+            <th>অ্যাকশন</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in units %}
+          <tr>
+            <td>{{ u.name }}</td>
+            <td>{{ u.symbol }}</td>
+            <td>
+              {% if u.is_active %}
+                <span class="badge bg-success">সক্রিয়</span>
+              {% else %}
+                <span class="badge bg-danger">নিষ্ক্রিয়</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="{% url 'unit_edit' u.id %}" class="btn btn-sm btn-outline-primary">✏️</a>
+              <form action="{% url 'unit_delete' u.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger"
+                        onclick="return confirm('আপনি কি নিশ্চিতভাবে মুছে ফেলতে চান?');">🗑️</button>
+              </form>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="text-muted py-4">কোনো ইউনিট পাওয়া যায়নি।</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

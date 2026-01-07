@@ -1,0 +1,93 @@
+<div class="modal fade" id="departmentModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">🏢 Departments</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- ✅ Add Department Form -->
+        <form id="departmentForm" method="POST" class="mt-2">
+        {% csrf_token %}
+        <input type="hidden" name="dept_id" id="deptId"> <!-- ✅ edit-এর জন্য -->
+
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label for="deptName" class="form-label">বিভাগের নাম</label>
+            <input type="text" name="name" id="deptName" class="form-control form-control-sm" required>
+          </div>
+          <div class="col-md-3">
+            <label for="deptCode" class="form-label">কোড</label>
+            <input type="text" name="code" id="deptCode" class="form-control form-control-sm" required>
+          </div>
+          <div class="col-md-5">
+            <label for="deptDesc" class="form-label">বর্ণনা</label>
+            <input type="text" name="description" id="deptDesc" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-12 d-flex justify-content-end gap-2 mt-2">
+            <button type="submit" class="btn btn-primary btn-sm px-4">💾 সংরক্ষণ</button>
+            <button type="button" id="deleteDeptBtn" class="btn btn-danger btn-sm px-4 d-none" onclick="clearDepartmentForm()">🗑️ মুছে ফেলুন</button>
+          </div>
+        </div>
+      </form>
+
+              
+      <br>
+
+        <!-- ✅ Department Table -->
+        <table class="table table-bordered table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>নাম</th>
+                <th>কোড</th>
+                <th>বর্ণনা</th>
+                <th class="text-center">অ্যাকশন</th>
+              </tr>
+            </thead>
+            <tbody id="departmentTableBody">
+                {% for dept in departments %}
+                <tr>
+                  <td>{{ dept.name }}</td>
+                  <td><code>{{ dept.code }}</code></td>
+                  <td>{{ dept.description|default:"--" }}</td>
+                  <td class="text-center">
+                      {% if can_edit_department %}
+                        <button class="btn btn-sm btn-warning edit-dept-btn"
+                                data-dept='{
+                                  "id": "{{ dept.id }}",
+                                  "name": "{{ dept.name|escapejs }}",
+                                  "code": "{{ dept.code|escapejs }}",
+                                  "description": "{{ dept.description|escapejs }}"
+                                }'>✏️</button>
+                      {% else %}
+                        <span class="text-muted small">🔒</span>
+                      {% endif %}
+
+                      {% if can_delete_department %}
+                        <button type="button"
+                                class="btn btn-sm btn-danger delete-dept-btn"
+                                data-id="{{ dept.id }}"
+                                data-name="{{ dept.name }}">
+                          🗑️
+                        </button>
+                      {% else %}
+                        <span class="text-muted small">🔒</span>
+                      {% endif %}
+
+
+
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center text-muted">কোনো বিভাগ পাওয়া যায়নি</td></tr>
+                {% endfor %}
+              </tbody>
+
+          </table>
+          <p class="text-muted">মোট বিভাগ: {{ departments|length }}</p>
+
+      </div>
+    </div>
+  </div>
+</div>

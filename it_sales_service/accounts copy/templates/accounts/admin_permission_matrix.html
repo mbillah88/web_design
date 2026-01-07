@@ -1,0 +1,69 @@
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>মডিউল</th>
+      {% for action in actions %}
+        <th>{{ action.name_bn }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for module in modules %}
+    <tr data-module="{{ module.id }}">
+      <td>{{ module.name_bn }}</td>
+      {% for action in actions %}
+        <td>
+          <input type="checkbox"
+                 class="perm-checkbox"
+                 data-action="{{ action.key }}"
+                 disabled> <!-- JS will enable if applicable -->
+        </td>
+      {% endfor %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script>
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', function () {
+      const roleId = this.dataset.role;
+      const moduleId = this.dataset.module;
+      const canAccess = this.checked;
+
+      fetch('/admin/update-permission/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ role_id: roleId, module_id: moduleId, can_access: canAccess })
+      })
+      .then(res => res.json())
+      .then(data => {
+        showToast(data.message, data.status);
+      });
+    });
+  });
+  function updateMatrix(matrix) {
+    document.querySelectorAll('tr[data-module]').forEach(row => {
+      const moduleId = row.dataset.module;
+      const perms = matrix[moduleId];
+
+      row.querySelectorAll('.perm-checkbox').forEach(cb => {
+        const action = cb.dataset.action;
+        const config = perms[action];
+
+        cb.checked = config.value;
+        cb.disabled = !config.allowed;
+
+        if (!config.allowed) {
+          cb.title = "এই মডিউলে '" + action + "' অনুমতি প্রযোজ্য নয়";
+        } else {
+          cb.removeAttribute('title');
+        }
+      });
+    });
+  }
+
+</script>

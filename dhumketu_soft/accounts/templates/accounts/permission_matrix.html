@@ -1,0 +1,25 @@
+{% extends 'base_software.html' %}
+{% load custom_tags %}
+{% block content %}
+<table class="table table-bordered text-center">
+  <thead>
+    <tr><th>Role \ Module</th>{% for module in modules %}<th>{{ module.name }}</th>{% endfor %}</tr>
+  </thead>
+  <tbody>
+    {% for role in roles %}
+      <tr>
+        <td>{{ role.name }}</td>
+        {% for module in modules %}
+          <td>
+            <button class="btn btn-sm {% if matrix|get_item:(role.id,module.id) %}btn-success{% else %}btn-secondary{% endif %}"
+                    onclick="togglePermission({{ role.id }}, {{ module.id }}, this)">
+              {% if matrix|get_item:(role.id,module.id) %}✔{% else %}✖{% endif %}
+            </button>
+          </td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

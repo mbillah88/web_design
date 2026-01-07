@@ -1,0 +1,172 @@
+{% extends 'accounts/base.html' %}
+{% load custom_tags %}
+{% block content %}
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold">🎛️ রোল তালিকা</h4>
+    <button type="button" class="btn btn-primary" id="addRoleBtn">➕ নতুন রোল</button>
+  </div>
+
+  <table class="table table-bordered table-hover">
+    <thead class="table-light">
+      <tr>
+        <th>নাম</th>
+        <th class="text-center">অ্যাকশন</th>
+        <th class="text-center">রিমুভ</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for role in roles %}
+      <tr>
+        <td>{{ role.name }}</td>
+        <td class="text-center">
+          <button type="button"
+                  class="btn btn-sm btn-warning edit-role-btn"
+                  data-role='{"id": {{ role.id }}, "name": "{{ role.name }}", "is_protected": {{ role.is_protected|yesno:"true,false" }} }'>
+            ✏️ সম্পাদনা
+          </button>
+          <a href="{% url 'accounts:permission_matrix' %}?role_id={{ role.id }}" class="btn btn-sm btn-info me-1">🔐 পারমিশন</a>
+          <a href="{% url 'accounts:role_clone' role.id %}" class="btn btn-sm btn-secondary">🧬 ক্লোন</a>
+        </td>
+        <td class="text-center">
+          {% if not role.is_protected %}
+          <form method="POST" action="{% url 'accounts:role_delete' role.id %}" onsubmit="return confirm('আপনি কি নিশ্চিত?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-danger">🗑️ মুছে ফেলুন</button>
+          </form>
+          {% else %}
+          <span class="text-muted">🔒 সুরক্ষিত</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ✅ Modal -->
+<div class="modal fade" id="roleModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <form id="roleForm" class="modal-content">
+      {% csrf_token %}
+      <div class="modal-header">
+        <h5 class="modal-title" id="roleModalLabel">রোল</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <input type="text" name="name" id="roleName" class="form-control mb-2" placeholder="রোল নাম" required>
+        <div class="invalid-feedback" id="nameError"></div>
+
+        <div class="form-check mb-3">
+          <input type="checkbox" name="is_protected" class="form-check-input" id="isProtected">
+          <label class="form-check-label" for="isProtected">🔒 সুরক্ষিত রোল</label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">💾 সংরক্ষণ করুন</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  const roleForm = document.getElementById('roleForm');
+const roleModal = new bootstrap.Modal(document.getElementById('roleModal'));
+
+document.getElementById('addRoleBtn')?.addEventListener('click', () => {
+  roleForm.reset();
+  roleForm.setAttribute('data-role-id', '');
+  document.getElementById('roleModalLabel').textContent = '➕ নতুন রোল';
+  clearErrors();
+  roleModal.show();
+});
+
+document.querySelectorAll('.edit-role-btn').forEach(button => {
+  button.addEventListener('click', () => {
+    const role = JSON.parse(button.getAttribute('data-role') || '{}');
+    roleForm.setAttribute('data-role-id', role.id || '');
+    roleForm.name.value = role.name || '';
+    roleForm.is_protected.checked = role.is_protected === true;
+    document.getElementById('roleModalLabel').textContent = '✏️ রোল সম্পাদনা';
+    clearErrors();
+    roleModal.show();
+  });
+});
+
+
+
+roleForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const roleId = this.getAttribute('data-role-id');
+  const formData = new FormData(this);
+  const url = roleId
+    ? `/accounts/roles/edit/${roleId}/`
+    : `/accounts/roles/create/`;
+
+  fetch(url, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showToast('✅ রোল সফলভাবে সংরক্ষণ হয়েছে');
+      roleModal.hide();
+
+      if (!roleId && data.role_id) {
+        setTimeout(() => {
+          if (confirm('পারমিশন নির্ধারণ করতে চান?')) {
+            window.location.href = `/accounts/permissions/matrix/?role_id=${data.role_id}`;
+          } else {
+            location.reload();
+          }
+        }, 500);
+      } else {
+        setTimeout(() => location.reload(), 800);
+      }
+    } else {
+      showErrors(data.error);
+      showToast('❌ কিছু ভুল হয়েছে', 'danger');
+    }
+  })
+  .catch(() => showToast('❌ সংযোগ ব্যর্থ হয়েছে', 'danger'));
+});
+
+function showErrors(errors) {
+  if (errors.name) {
+    const nameInput = document.getElementById('roleName');
+    nameInput.classList.add('is-invalid');
+    document.getElementById('nameError').textContent = errors.name.join(', ');
+  }
+}
+
+function clearErrors() {
+  document.getElementById('roleName').classList.remove('is-invalid');
+  document.getElementById('nameError').textContent = '';
+}
+
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type} border-0 show`;
+    toast.role = 'alert';
+    toast.innerHTML = `
+      <div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+  
+  window.addEventListener('error', function (e) {
+    console.error('JS Error:', e.message);
+  });
+
+</script>
+{% endblock %}

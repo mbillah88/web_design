@@ -1,0 +1,28 @@
+<!-- ✅ Product Preview Modal -->
+<div class="modal fade" id="productPreviewModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-primary text-white py-2">
+        <h5 class="modal-title fw-semibold">🔍 Product Preview</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-4 text-center">
+            <img id="previewImage" src="" class="img-fluid rounded shadow-sm" alt="Product Image">
+          </div>
+          <div class="col-md-8">
+            <h5 id="previewName" class="fw-bold mb-1"></h5>
+            <p id="previewModel" class="mb-1 text-muted"></p>
+            <p><strong>Brand:</strong> <span id="previewBrand"></span></p>
+            <p><strong>Category:</strong> <span id="previewCategory"></span></p>
+            <p><strong>Barcode:</strong> <code id="previewBarcode"></code></p>
+            <p><strong>Purchase Price:</strong> <span id="previewPurchase"></span> ৳</p>
+            <p><strong>Sale Price:</strong> <span id="previewSale"></span> ৳</p>
+            <p><strong>Status:</strong> <span id="previewStatus" class="badge"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

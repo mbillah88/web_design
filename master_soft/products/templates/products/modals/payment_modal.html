@@ -1,0 +1,127 @@
+<!-- ✅ Enterprise Payment Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1">
+  <div class="modal-dialog modal-xl">
+    <form id="paymentForm" class="modal-content">
+      {% csrf_token %}  
+      <input type="hidden" name="object_id">           <!-- ✅ replaces reference_id -->
+      <input type="hidden" name="content_type_id">     <!-- ✅ required for GenericFK -->
+      <input type="hidden" name="type" value="purchase"> <!-- purchase/sale/expense/refund -->
+      <input type="hidden" name="payment_id" id="paymentId"> <!-- ✅ Add this for update -->
+      
+      <div class="modal-header bg-light">
+        <h5 class="modal-title">💳 পেমেন্ট করুন</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 🔹 Purchase Summary (Two-Column Aligned) -->
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          <!-- 🔸 Left Column -->
+          <div class="col-md-6">
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold text-primary">📄 ইনভয়েস:</span>
+              <span id="paymentInvoice" class="text-dark"></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold text-primary">📅 তারিখ:</span>
+              <span id="paymentDate" class="text-dark"></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold text-primary">🏢 সাপ্লাইয়ার:</span>
+              <span id="paymentSupplier" class="text-dark"></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold text-primary">🔗 রেফারেন্স:</span>
+              <span id="paymentReference" class="text-dark"></span>
+            </div>
+          </div>
+
+          <!-- 🔸 Right Column -->
+          <div class="col-md-6">
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold text-success">💰 মোট:</span>
+              <span>৳<span id="paymentTotal" class="text-dark"></span></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold text-info">🎁 ডিসকাউন্ট:</span>
+              <span>৳<span id="paymentDiscount" class="text-dark"></span></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold text-primary">🧮 নেট টোটাল:</span>
+              <span>৳<span id="paymentNetTotal" class="text-dark"></span></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold text-success">✅ পরিশোধ:</span>
+              <span>৳<span id="paymentPaid" class="text-dark"></span></span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold text-danger">⚠️ বাকি:</span>
+              <span class="badge bg-warning text-dark" id="paymentDue"></span>
+            </div>
+            <div class="text-end text-muted small">
+              🔄 বাকি থাকবে: <span id="remainingDue" class="fw-bold text-danger">0.00</span>
+            </div>
+          </div>
+      </div>
+      <br>
+
+        <!-- 🔹 Item Summary -->
+        <div class="border rounded p-3 bg-light">
+          <table class="table table-sm table-bordered mb-3">
+            <thead>
+              <tr>
+                <th>পণ্য</th>
+                <th>পরিমাণ</th>
+                <th>দাম</th>
+                <th>ডিসকাউন্ট</th>
+                <th>সাবটোটাল</th>
+                <th>সিরিয়াল</th>
+              </tr>
+            </thead>
+            <tbody id="paymentItemList"></tbody>
+          </table>
+        </div>
+
+        <!-- 🔹 Payment Entry -->
+       <div class="table-responsive">
+          <table class="table table-bordered table-sm align-middle" id="paymentTable">
+            <thead class="table-light">
+              <tr>
+                <th>পেমেন্ট মাধ্যম</th>
+                <th style="width: 100px;">পরিমাণ</th>
+                <th>নোট</th>
+                <th style="width: 140px;">তারিখ</th>
+                <th style="width: 100px;">অ্যাকশন</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button type="button" class="btn btn-outline-primary" onclick="addPaymentRow()">➕ নতুন পেমেন্ট</button>
+      </div>
+
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success">✅ সংরক্ষণ করুন</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ বাতিল</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">⚠️ নিশ্চিত করুন</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        আপনি কি নিশ্চিতভাবে এই পেমেন্টটি ডিলিট করতে চান?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ না</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">✅ হ্যাঁ, ডিলিট করুন</button>
+      </div>
+    </div>
+  </div>
+</div>

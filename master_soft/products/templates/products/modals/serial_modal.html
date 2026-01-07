@@ -1,0 +1,19 @@
+<div class="modal fade" id="serialModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">🔢 Enter Serial Numbers</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="serialContainer" class="mb-2"></div>
+        <button type="button" class="btn btn-sm btn-outline-success" onclick="addSerialInput()">➕ Add Serial</button>
+        <div id="serialWarning" class="text-danger mt-2" style="display: none;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">❌ Cancel</button>
+        <button type="button" class="btn btn-success" onclick="saveSerials()">✅ Save Serials</button>
+      </div>
+    </div>
+  </div>
+</div>

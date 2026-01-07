@@ -1,0 +1,27 @@
+<!-- 🧩 Modal -->
+<div class="modal fade" id="unitModal" tabindex="-1" aria-labelledby="unitModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="unitForm" method="post">
+      {% csrf_token %}
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="unitModalLabel">➕ নতুন ইউনিট যুক্ত করুন</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">ইউনিট নাম</label>
+            <input type="text" name="name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">প্রতীক</label>
+            <input type="text" name="symbol" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">✅ সংরক্ষণ করুন</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

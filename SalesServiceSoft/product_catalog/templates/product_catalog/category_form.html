@@ -1,0 +1,37 @@
+{% extends 'base_software.html' %}
+{% block title %}🗂️ ক্যাটাগরি {% if form.instance.pk %}সম্পাদনা{% else %}যোগ{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">🗂️ {% if form.instance.pk %}ক্যাটাগরি সম্পাদনা{% else %}নতুন ক্যাটাগরি যোগ করুন{% endif %}</h5>
+      <a href="{% url 'category_list' %}" class="btn btn-light btn-sm">🔙 তালিকায় ফিরে যান</a>
+    </div>
+
+    <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">ক্যাটাগরি নাম</label>
+            {{ form.name }}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Slug</label>
+            {{ form.slug }}
+          </div>
+          <div class="col-md-12">
+            <label class="form-label">বর্ণনা</label>
+            {{ form.description }}
+          </div>
+        </div>
+
+        <div class="mt-4 text-end">
+          <button type="submit" class="btn btn-success">✅ {% if form.instance.pk %}আপডেট{% else %}সংরক্ষণ{% endif %}</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

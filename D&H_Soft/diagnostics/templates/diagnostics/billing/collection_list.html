@@ -1,0 +1,101 @@
+{% extends 'accounts/base.html' %}
+{% load custom_tags %}
+{% block title %}Collection List{% endblock %}
+{% block content %}
+<h5 class="mb-3">💰 Collection List</h5>
+
+<!-- 🔍 Filter Form -->
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-3">
+    <label class="form-label">From</label>
+    <input type="date" name="from" value="{{ from_date }}" class="form-control">
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">To</label>
+    <input type="date" name="to" value="{{ to_date }}" class="form-control">
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Created By</label>
+    <select name="user" class="form-select">
+      <option value="All">All</option>
+      {% for user in users %}
+        <option value="{{ user }}" {% if user == selected_user %}selected{% endif %}>{{ user }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-3 d-flex align-items-end">
+    <button type="submit" class="btn btn-primary w-100">🔍 Filter</button>
+  </div>
+</form>
+
+<!-- 📋 Payment Table -->
+<div class="table-responsive">
+  <table class="table table-bordered table-hover table-sm align-middle">
+    <thead class="table-light text-center">
+      <tr>
+        <th>Payment</th>
+        <th>Visit</th>
+        <th>Patient</th>
+        <th>Paid On</th>
+        <th>Amount</th>
+        <th>Method Summary</th>
+        <th>Remarks</th>
+        <th>Cancelled?</th>
+        <th>Created By</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in page_obj %}
+        <tr class="{% if p.is_cancelled %}table-danger{% endif %}">
+          <td><strong>{{ p.payment_code }}</strong></td>
+          <td>{{ p.visit_code }}</td>
+          <td>{{ visit_map|dict_get:p.visit_code }}</td>
+          <td>{{ p.paid_on|date:"d M Y, h:i A" }}</td>
+          <td class="text-end">{{ p.total_amount }}</td>
+          <td>
+            {% for m in p.paymentmethod_set.all %}
+              {{ m.method_type.name }} ({{ m.amount }}){% if not forloop.last %}, {% endif %}
+            {% empty %}
+              <span class="text-muted">—</span>
+            {% endfor %}
+          </td>
+          <td>{{ p.remarks|default:"—" }}</td>
+          <td class="text-center">{% if p.is_cancelled %}❌{% else %}✅{% endif %}</td>
+          <td>{{ p.created_by.username }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="9" class="text-center text-muted">No payments found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- 📄 Pagination -->
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?from={{ from_date }}&to={{ to_date }}&user={{ selected_user }}&page={{ page_obj.previous_page_number }}">&laquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+      {% if page_obj.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+      {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <li class="page-item"><a class="page-link" href="?from={{ from_date }}&to={{ to_date }}&user={{ selected_user }}&page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?from={{ from_date }}&to={{ to_date }}&user={{ selected_user }}&page={{ page_obj.next_page_number }}">&raquo;</a>
+      </li>
+    {% else %}
+      <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock %}

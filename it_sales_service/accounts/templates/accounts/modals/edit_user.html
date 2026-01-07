@@ -1,0 +1,32 @@
+<div class="modal fade" id="editUserModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form id="editUserForm">
+      <div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">ইউজার এডিট করুন</h5></div>
+        <div class="modal-body">
+          {% csrf_token %}
+          <input type="hidden" name="user_id" id="editUserId">
+          <div class="mb-2">
+            <label>নাম</label>
+            <input type="text" name="first_name" id="editFirstName" class="form-control">
+          </div>
+          <div class="mb-2">
+            <label>ইমেইল</label>
+            <input type="email" name="email" id="editEmail" class="form-control">
+          </div>
+          <div class="mb-2">
+            <label>রোল</label>
+            <select name="role" id="editRole" class="form-select">
+              {% for role in roles %}
+                <option value="{{ role.id }}">{{ role.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">আপডেট করুন</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,121 @@
+<div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <form id="purchaseForm" class="modal-content bg-light border-0 shadow-sm rounded needs-validation" novalidate>
+      {% csrf_token %}
+      <input type="hidden" id="purchaseId" name="id">
+
+      <!-- 🔹 Header -->
+      <div class="modal-header bg-primary text-white rounded-top">
+        <h5 class="modal-title fw-bold" id="purchaseModalTitle">➕ নতুন পারচেস যোগ করুন</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- 🔹 Body -->
+      <div class="modal-body px-4 py-3">
+        <!-- 🔸 Invoice Info -->
+        <div class="row g-3 mb-3">
+          <div class="col-md-3">
+            <label for="invoiceNo" class="form-label">Invoice No</label>
+            <input type="text" name="invoice_no" id="invoiceNo" class="form-control" placeholder="Auto-generated if blank">
+          </div>
+          <div class="col-md-3">
+            <label for="purchaseDate" class="form-label">Date & Time</label>
+            <input type="datetime-local" name="date" id="purchaseDate" class="form-control" value="{{ today|date:'Y-m-d\\TH:i' }}">
+          </div>
+          <div class="col-md-3">
+            <label for="reference" class="form-label">Reference</label>
+            <input type="text" name="reference" id="reference" class="form-control" placeholder="Optional (e.g. PO, Memo)">
+          </div>
+          <div class="col-md-3">
+            <label for="createdBy" class="form-label">Created By</label>
+            <input type="text" id="createdBy" class="form-control bg-light" value="{{ request.user.username }}" readonly>
+          </div>
+        </div>
+
+        <!-- 🔸 Supplier + Transaction Type -->
+        <div class="row g-3 mb-3 align-items-end">
+          <div class="col-md-9">
+            <label for="supplierSelect" class="form-label d-flex justify-content-between align-items-center">
+              <span class="text-danger">Search Supplier</span>
+              <button type="button" class="btn btn-outline-secondary btn-sm" onclick="openSupplierModal()">➕ Add</button>
+            </label>
+            <select id="supplierSelect" name="supplier_id" class="form-select" style="width: 100%"></select>
+          </div>
+          <div class="col-md-3">
+            <label for="transactionType" class="form-label">Purchase Type</label>
+            <select id="transactionType" name="transaction_type" class="form-select" required>
+              {% for type in transaction_types %}
+                <option value="{{ type.id }}">{{ type.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+<hr>
+        <!-- 🔸 Product Search + Item Count -->
+        <div class="row g-3 mb-3 align-items-end">
+          <div class="col-md-8">
+            <label for="productSelect" class="form-label">Search Product</label>
+            <select id="productSelect" class="form-select" style="width: 100%"></select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">🧮 Product Count</label>
+            <div class="form-control bg-light fw-bold text-center">
+              <span id="itemCount">0</span> টি প্রোডাক্ট
+            </div>
+          </div>
+        </div>
+
+        <!-- 🔸 Item Table -->
+        <div class="table-responsive mt-3">
+          <table class="table table-bordered table-hover align-middle" id="itemTable">
+            <thead class="table-light text-center">
+              <tr>
+                <th>#</th><th>Code</th><th>Name</th><th>Warranty</th><th>Qty</th><th>Price</th><th>Discount</th><th>Total</th><th>Action</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <!-- 🔸 Summary -->
+        <div class="row g-3 mt-3">
+          <div class="col-md-4">
+            <label for="subtotal" class="form-label">Subtotal</label>
+            <input type="text" id="subtotal" class="form-control bg-light" readonly>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Discount</label>
+            <div class="input-group">
+              <input type="number" id="discountValue" class="form-control" placeholder="Amount or %">
+              <select id="discountType" class="form-select">
+                <option value="amount">৳ Amount</option>
+                <option value="percent">% Percent</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label for="grandTotal" class="form-label">Grand Total</label>
+            <input type="text" id="grandTotal" class="form-control fw-bold text-success bg-light" readonly>
+          </div>
+        </div>
+
+        <!-- 🔸 Note -->
+        <div class="mt-3">
+          <label for="note" class="form-label">Note (optional)</label>
+          <textarea name="note" id="note" class="form-control" rows="2" placeholder="Any remarks..."></textarea>
+        </div>
+      </div>
+
+      <!-- 🔹 Footer -->
+      <div class="modal-footer bg-light rounded-bottom justify-content-between">
+        <span class="text-muted">Ensure all fields are validated before saving</span>
+        <div>
+          <button type="submit" id="savePurchaseBtn" class="btn btn-success px-4">💾 সেভ করুন</button>
+          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">❌ বাতিল</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% include "products/modals/serial_modal.html" %}

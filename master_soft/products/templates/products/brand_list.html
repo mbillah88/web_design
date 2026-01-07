@@ -1,0 +1,96 @@
+{% extends 'accounts/base.html' %}
+{% load custom_tags %}
+{% load static %}
+{% block title %}Brand List{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="fw-bold">🏷️ Brand List</h5>
+    {% if can_add %}
+      <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#brandModal" onclick="clearBrandForm()">➕ Add New Brand</button>
+    {% endif %}
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover table-sm align-middle">
+      <thead class="table-light">
+        <tr class="text-center">
+          <th>#</th>
+          <th>Name</th>
+          <th>Country</th>
+          <th>Logo</th>
+          <th>Support</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="brandTableBody">
+        {% for brand in brands %}
+          <tr id="brandRow{{ brand.id }}">
+            <td class="text-center">{{ forloop.counter }}</td>
+            <td>{{ brand.name }}</td>
+            <td>{{ brand.country }}</td>
+            <td class="text-center">
+              {% if brand.logo %}
+                <img src="{{ brand.logo.url }}" class="img-thumbnail" style="max-height: 40px;">
+              {% else %}
+                <span class="text-muted">❌</span>
+              {% endif %}
+            </td>
+            <td>{{ brand.support_contact|default:"—" }}</td>
+            <td class="text-center">
+              <span class="badge {% if brand.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                {% if brand.is_active %}Active{% else %}Inactive{% endif %}
+              </span>
+            </td>
+            <td class="text-center">
+              {% if can_edit %}
+                <button class="btn btn-warning btn-sm edit-brand-btn" data-id="{{ brand.id }}">✏️</button>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="7" class="text-center text-muted">❌ No brands found</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ✅ Brand Modal -->
+<div class="modal fade" id="brandModal" tabindex="-1" aria-labelledby="brandModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg rounded-3">
+      
+      <!-- Modal Header -->
+      <div class="modal-header bg-primary text-white py-2 px-3">
+        <h5 class="modal-title fw-semibold" id="brandModalLabel">
+          <i class="bi bi-tags-fill me-2"></i> Brand Details
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body px-3 py-2">
+        {% include 'products/modals/brand_modal.html' %}
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer bg-light py-2 px-3 d-flex justify-content-between">
+        <small class="text-muted">🕒 Last updated: {{ brand.updated_at|date:"d M Y, h:i A" }}</small>
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i> Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ Toast Container -->
+<div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1055"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'products/js/brand.js' %}"></script>
+{% endblock %}
