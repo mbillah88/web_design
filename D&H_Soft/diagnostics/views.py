@@ -749,6 +749,11 @@ def collection_list(request):
     return render(request, 'diagnostics/billing/collection_list.html', context)
 
 # Jasper Report Views can be added here if needed
+import os
+
+java_home = r"C:\Program Files\Java\jdk-17"
+os.environ['JAVA_HOME'] = java_home
+os.environ['PATH'] = java_home + r"\bin;" + java_home + r"\bin\server;" + os.environ['PATH']
 
 def download_invoice(request, visit_code):
     if not visit_code:
@@ -769,25 +774,26 @@ def download_invoice(request, visit_code):
     return FileResponse(open(pdf_path, 'rb'), content_type='application/pdf')
 
 def generate_invoice_pdf(visit_code, copy_type, output_filename):
-    db = settings.DATABASES['default']
+    input_file = os.path.join('reports', 'invoice_patient.jrxml')
+    output_file = os.path.join('reports', 'output', output_filename.replace('.pdf', ''))
+    logo_file = os.path.join(settings.BASE_DIR, 'static', 'profile_images', 'default_profile.png')
+    subreport_file = os.path.join(settings.BASE_DIR, 'reports', 'sub_access_reports.jasper')
+
     db_connection = {
         'driver': 'mysql',
-        'username': db.get('USER', ''),
-        'password': db.get('PASSWORD', ''),
-        'host': db.get('HOST', 'localhost'),
-        'database': db.get('NAME', ''),
-        'port': db.get('PORT', '3307'),
+        'username': 'LabExpert',
+        'password': 'LabExpert2025',
+        'host': 'localhost',
+        'database': 'dh_soft_db',
+        'port': '3307',
     }
 
-    input_file = os.path.join(settings.BASE_DIR, 'reports', 'invoice_patient.jrxml')
-    subreport_file = os.path.join(settings.BASE_DIR, 'reports', 'sub_access_reports.jasper')
-    logo_file = os.path.join(settings.BASE_DIR, 'static', 'profile_images', 'default_profile.png')
-    output_file = os.path.join(settings.BASE_DIR, 'reports', 'output', output_filename.replace('.pdf', ''))
-
-    # Validate input files
-    for path, label in [(input_file, 'JRXML'), (subreport_file, 'Subreport'), (logo_file, 'Logo')]:
-        if not os.path.exists(path):
-            raise FileNotFoundError(f"{label} file not found at: {path}")
+    parameters = {
+        'visit_code': visit_code,
+        'copy_type': copy_type,
+        'img': logo_file,
+        'sub': subreport_file,
+    }
 
     report = PyReportJasper()
     report.config(
@@ -795,13 +801,17 @@ def generate_invoice_pdf(visit_code, copy_type, output_filename):
         output_file=output_file,
         output_formats=["pdf"],
         db_connection=db_connection,
-        parameters={
-            'visit_code': visit_code,
-            'img': logo_file,
-            'sub': subreport_file,
-            'copy_type': copy_type  # Optional: use in Jasper to show copy label
-        }
+        parameters=parameters
     )
+    
+    print("Generating report with parameters:")
+    print("Input file:", input_file)
+    print("Output file:", output_file)
+    print("DB:", db_connection)
+    print("Parameters:", parameters)
+    print("Logo exists:", os.path.exists(logo_file))
+    print("Subreport exists:", os.path.exists(subreport_file))
+
     report.process_report()
 
 def invoice_print(request, visit_code):

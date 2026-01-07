@@ -127,6 +127,34 @@
     createItemRow();
   }
 
+function createItemRow(itemId = '', itemName = '', isChecked = false) {
+  const tbody = document.querySelector('#item-table tbody');
+  const rowIndex = tbody.rows.length;
+
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>
+      <select name="item_id[]" class="form-select form-select-sm select2" required>
+        <option value="">— Select —</option>
+        {% for item in all_items %}
+          <option value="{{ item.id }}">{{ item.name }}</option>
+        {% endfor %}
+        ${itemId ? `<option value="${itemId}" selected>${itemName}</option>` : ''}
+      </select>
+    </td>
+    <td><input type="number" name="item_order[]" class="form-control form-control-sm" value="0"></td>
+    <td class="text-center">
+      <input type="checkbox" name="item_active[]" value="${rowIndex}" ${isChecked ? 'checked' : ''}>
+    </td>
+    <td class="text-center">
+      <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeRow(this)">🗑️</button>
+    </td>
+  `;
+  tbody.appendChild(row);
+  initializeSelect2(row);
+  updateCheckboxValues();
+}
+
   function removeRow(btn) {
     btn.closest('tr').remove();
     updateCheckboxValues();

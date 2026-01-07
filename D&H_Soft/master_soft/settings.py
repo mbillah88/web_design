@@ -1,5 +1,10 @@
 import os
 from pathlib import Path
+import os
+
+java_home = r"C:\Program Files\Java\jdk-17"
+os.environ['JAVA_HOME'] = java_home
+os.environ['PATH'] = java_home + r"\bin;" + java_home + r"\bin\server;" + os.environ['PATH']
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
