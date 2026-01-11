@@ -1,55 +1,110 @@
 {% extends 'accounts/base.html' %}
 {% block title %}Lab Report Detail{% endblock %}
 {% block content %}
-<form method="post">
-  {% csrf_token %}
-  <h4>🧬 Lab Report for {{ visit.patient.name }}</h4>
-  <p><strong>Visit Date:</strong> {{ visit.visit_date }}</p>
-  <p><strong>Consultant:</strong> {{ visit.consultant.name|default:"—" }}</p>
-
-  {% regroup results by advice_entry.group as grouped_results %}
-
-  {% for group in grouped_results %}
-    <h5 class="mt-4">🧪 {{ group.grouper.name|default:"Unnamed Group" }}</h5>
-    <table class="table table-sm table-bordered">
-      <thead class="table-light">
-        <tr>
-          <th>Test</th>
-          <th>Result</th>
-          <th>Unit</th>
-          <th>Reference</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for result in group.list %}
-          <tr>
-            <td>{{ result.test_item.name }}</td>
-            <td>
-              <input type="text" name="result_{{ result.id }}" class="form-control form-control-sm"
-                     value="{{ result.edited_result|default:result.machine_result }}">
-            </td>
-            <td>
-              <input type="text" name="unit_{{ result.id }}" class="form-control form-control-sm"
-                     value="{{ result.edited_unit|default:result.machine_unit }}">
-            </td>
-            <td>{{ result.test_item.reference_range|default:"—" }}</td>
-            <td>
-              {% if result.is_verified %}
-                <span class="badge bg-success">Verified</span>
-              {% else %}
-                <span class="badge bg-warning text-dark">Pending</span>
-              {% endif %}
-            </td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% endfor %}
-
-  <div class="text-end mt-3">
-    <button type="submit" class="btn btn-primary">💾 Save Results</button>
+<div class="container mt-4">
+  <h4>📊 Patient Report</h4>
+  <!-- Patient Info -->
+  <div class="card mb-4 shadow-lg border-0">
+    <div class="card-header bg-primary text-white d-flex align-items-center">
+      <i class="bi bi-person-circle me-2 fs-4"></i>
+      <h5 class="mb-0">Patient Information</h5>
+    </div>
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <p class="mb-1"><i class="bi bi-person-fill text-secondary"></i> 
+            <strong>Name:</strong> {{ visit.patient.name }}
+          </p>
+          <p class="mb-1"><i class="bi bi-calendar-heart text-secondary"></i> 
+            <strong>Age/Gender:</strong> {{ visit.patient.age }} / {{ visit.patient.gender }}
+          </p>
+        </div>
+        <div class="col-md-6">
+          <p class="mb-1"><i class="bi bi-calendar-event text-secondary"></i> 
+            <strong>Visit Date:</strong> {{ visit.visit_date|date:"d M Y, h:i A" }}
+          </p>
+          <p class="mb-1"><i class="bi bi-person-badge text-secondary"></i> 
+            <strong>Consultant:</strong> {{ visit.consultant.name }}
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
-</form>
 
+
+  <!-- Tabs -->
+  <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#all">📑 All</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#subcategory">📂 By Subcategory</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#individual">🔬 Individual Tests</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#summary">📊 Summary</button></li>
+  </ul>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="tab-content mt-3">
+      <!-- All Results -->
+      <div class="tab-pane fade show active" id="all">
+        <h4 class="mt-3">📑 All Test Groups</h4>
+        <table class="table table-sm table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th>Subcategory</th>
+              <th>Group Name</th>
+              <th>Group Type</th>
+              <th>Total Tests</th>
+              <th>Verified</th>
+              <th>Pending</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for entry in advice_data_all %}
+              <tr>
+                <td>{{ entry.subcategory }}</td>
+                <td>{{ entry.group_name }}</td>
+                <td>{{ entry.group_type }}</td>
+                <td>{{ entry.total_count }}</td>
+                <td>{{ entry.verified_count }}</td>
+                <td>{{ entry.pending_count }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Subcategory -->
+      <div class="tab-pane fade" id="subcategory">
+        {% include 'diagnostics/test_manage/_report_subcategory.html' %}
+      </div>
+
+      <!-- Individual -->
+      <div class="tab-pane fade" id="individual">
+        {% include 'diagnostics/test_manage/_report_individual.html' %}
+      </div>
+
+      <!-- Summary -->
+      <div class="tab-pane fade" id="summary">
+        {% include 'diagnostics/test_manage/_report_summary.html' %}
+      </div>
+    </div>
+
+    <div class="mt-3 d-flex justify-content-between">
+      <a href="{% url 'diagnostics:report_patient_list' %}" class="btn btn-secondary">← Back to Reports</a>
+      <button type="submit" class="btn btn-success">💾 Save All Results</button>
+      <a href="{% url 'diagnostics:patient_report_pdf' visit.visit_code %}" class="btn btn-outline-info">📥 Export PDF</a>
+      <button type="button" class="btn btn-outline-secondary" onclick="window.print()">🖨 Print</button>
+
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Enable Bootstrap tooltips
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+</script>
 {% endblock %}
